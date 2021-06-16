@@ -66,7 +66,6 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 #### June 01, 2020
 * Added an interface to get service status：
     GET /api/v1/status
-    
 #### May 13, 2020
 * Added an interface to get K line data:
     GET /api/v1/kline/query
@@ -81,7 +80,6 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 #### April 15，2020
 * New field "memo" (address ID) is added to the response from GET /api/v1/withdrawal-list
-  
 #### March 30, 2020 
 The USDT-Margined Contracts is scheduled to be launched on March 30, 2020 on KuCoin Futures and the supported types of crypto will be expanded from the original one (XBT) to two (XBT and USDT). The detailed modifications for API document is as follows:
 
@@ -2407,90 +2405,6 @@ GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200
 
 
 
-## Get Full Order Book- Level 3 V2
-
-```json
- {
-   "code": "200000",
-   "data": {
-       "symbol": "XBTUSDM",    //Ticker symbol of the contract
-     "sequence":  100,   // Sequence number of the last message pulled through Level 3
-     "bids": [[5567483701231, "dfa123124", "123.12312", "10", 5567483701231], ...],  // Selling data: order palcing time - nanosecond, order ID, price, quantity, time at which the order enters the order book - nanosecond
-     "asks": [[5567483701231, "dfa123124", "123.12312", "10", 5567483701231], ...],  // Buying data: order placing time - nanosecond, order ID, price, quantity, time at which the order enters the order book - nanosecond
-     "ts": 1590634672060667000 // Nanosecond
-   }
- }
-```
-
-Get a snapshot of all the open orders for a symbol. Level 3 order book includes all bids and asks (the data is non-aggregated, and each item means a single order).
-
-To ensure your local orderbook data is the latest one, please use [Websocket](full-matching-engine-data-:Level-3)incremental feed after retrieving the level 3 snapshot.
-
-In the orderbook, the selling data is sorted low to high by price and orders with the same price are sorted in time sequence. The buying data is sorted high to low by price and orders with the same price are sorted in time sequence. The matching engine will match the orders according to the price and time sequence.
-
-The returned data is not sorted, you may sort the data yourselves.
-
-To improve your trading experience over the usage of Level 3, we provide a detailed User Guide on the implementation of Level 3 and a demo on the API invoking via Python:
-[https://github.com/Kucoin/kucoin-level3-sdk](https://github.com/Kucoin/kucoin-level3-sdk)
-
-### HTTP REQUEST
-GET /api/v2/level3/snapshot
-
-### EXAMPLE
-GET /api/v2/level3/snapshot?symbol=XBTUSDM
-
-
-### PARAMETERS
-| Param | Type  | Description|
-| ------ | ------ | ----------- |
-| symbol | String | Symbol of the contract   |
-
-
-
-## Level 3 Pulling Messages
-
-```json
-  {
-    "code": "200000",
-    "data": [
-        {
-          "symbol": "XBTUSDM",			//Symbol
-          "sequence": 1,				//Message sequence number
-          "side": "sell",				//Order side
-          "orderTime": 1558074650840002300,	      //Order placing time
-          "size": 10,					//Order quantity
-          "orderId": "5cde551aa14a9cad7e454374", //Order ID
-          "price": "7000.0",			//Order price
-          "type": "open",						      //Message type
-          "clientOid": "xxxxxxxxxx",			      //Optional, this is a user-defined parameter which is used to identify the order
-          "ts": 1558074652423004000			      //Time at which the order enters the order book- nanosecond
-        },
-        {
-          "symbol": "XBTUSDM",			//Symbol
-          "reason": "canceled",		//Reason: canceld or filled
-          "sequence": 2,				//Message sequence number
-          "orderId": "5cde551aa14a9cad7e454374", //Order ID
-          "type": "done",				//Message type
-          "ts": 1558075303543002400	//Time at which the order is removed- nanosecond
-        }
-    ]
-  }
-```
-If the messages pushed by Websocket is not continuous, you can submit the following request and re-pull the data to ensure that the sequence is not missing. In the request, the start parameter is the sequence number of your last received message plus 1, and the end parameter is the sequence number of your current received message minus 1. After re-pulling the messages and applying them to your local exchange order book, you can continue to update the order book via Websocket incremental feed. If the difference between the end and start parameter is more than 500, please stop using this request and we suggest you to rebuild the Level 3 orderbook.
-
-### HTTP Request
-GET /api/v1/level3/message/query [Deprecated，GET /api/v1/level3/snapshot is suggested]
-
-### Example
-GET /api/v1/level3/message/query?symbol=XBTUSDM&start=100&end=200
-
-### Parameters
-| Param  | Type   | Description |
-| ------ | ------ | ----------- |
-| symbol | String | Symbol of the contract |
-| start | long | Start sequence number (included in the returned data)|
-| end | long | End sequence number (included in the returned data)  |
-
 # Historical Data
 
 ## Transaction History
@@ -2995,7 +2909,7 @@ ID is unique string to mark the request which is same as id property of ack.
 The topic you want to subscribe to.
 
 #### Private Channel
-For some specific topics (e.g. /market/level3), **privateChannel** is available. The default value of **privateChannel** is **False**. If the **privateChannel** is set to **true**, the user will only receive messages related himself on the topic. 
+For some specific topics (e.g. /contractMarket/level2), **privateChannel** is available. The default value of **privateChannel** is **False**. If the **privateChannel** is set to **true**, the user will only receive messages related himself on the topic. 
 
 #### Response
 If the response is set as ture, the system will return the ack messages after the subscription succeed.
@@ -3029,7 +2943,7 @@ Unique string to mark the request.
 The topic you want to subscribe.
 
 #### PrivateChannel
-For some specific **public** topics (e.g. /market/level3), **privateChannel** is available. The default value of **privateChannel** is **False**. If the **privateChannel** is set to **true**, the user will only receive messages related himself on the topic.
+For some specific **public** topics (e.g. /contractMarket/level2), **privateChannel** is available. The default value of **privateChannel** is **False**. If the **privateChannel** is set to **true**, the user will only receive messages related himself on the topic.
 
 #### Response
 If the response is set as ture, the system would return the ack messages after the unsubscription succeed.
@@ -3312,199 +3226,6 @@ For each order executed, the system will send you the match messages in the form
 ```
 
 
-## Full matching engine data：Level 3 V2
-
-```json
- {
-   "id": 1545910660742,                         
-   "type": "subscribe",
-   "topic": "/contractMarket/level3v2:{symbol}",  
-   "response": true                             
- }
-```
-
-Topic: **/contractMarket/level3v2:{symbol}**
-
-Subscribe this topic to get the full data of orders and trades of Level 3.
-After subscription, you will receive the Level 3 real-time order and trading data, you can use the data to maintain and update your local Level 3 order book data.
-
-**Note: please subscribe the topic for Level 2 if Level 2 order book data needs to be maintained.**
-
-The process to maintain an up-to-date Level 3 order book is described below.
-
-1. Send a subscribe message for a symbol of which you want to build the order book.
-2. Queue every messages received over the websocket stream.
-3. Make a REST request to [Get Full Order Book - Level 3] and get the snapshot data of the order book.
-4. Playback queued messages, and discard sequence numbers before or equal to the snapshot sequence number.
-5. Apply playback messages to the snapshot as needed (see below).
-6. After playback is complete, apply real-time stream messages as they arrive.
-7. If the sequence of the received message is not constant with the previous message, please request via REST [Level-3 Message Pull] (#Get Full Data-Level-3) (GET /api/level3/message/query) to get the missing messages. The specified duration between start and end should be less than 500. (This method has been abandoned, please see 1-6 to rebuild the orderbook).
-
-**Any Open and Match messages will result in changes to the order book.**
-The following messages(**RECEIVED**, **OPEN**, **UPDATE**, **MATCH**, **DONE**) are sent over the websocket stream in JSON format after subscribing to this channel:
-
-
-### RECEIVED
-
-```json
-//RECEIVED
- {
-   "topic": "/contractMarket/level3v2:XBTUSDM",
-   "subject": "received",
-   "data": {
-       "symbol": "XBTUSDM",                        // symbol
-       "sequence": 3262786900,                 // sequence
-       "orderId": "5c0b520032eba53a888fd02x",  // order ID
-       "clientOid": "ad123ad",                 // optional, for you to identify your order
-       "ts": 1545914149935808589
-   }
- }
-```
-When the matching engine receives an order command, the system would send a received message to you. Please specify the clientOid in your request to judge if the order is your own in the public channel.
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-### OPEN
-When the remaining part in a limit order enters the order book, the system will send an OPEN message to the user.
-
-```json
- //OPEN
- {
-   "topic": "/contractMarket/level3v2:XBTUSDM",
-   "subject": "open",
-   "data": {
-       "symbol": "XBTUSDM",                // symbol
-       "sequence": 3262786900,              // sequence
-       "side": "buy",                    // buy or sell
-       "price": "3634.5",                        // price
-       "size": "10",                             // size
-       "orderId": "5c0b520032eba53a888fd02x",  // order ID
-       "orderTime": 1547697294838004923,       // time
-       "ts": 1547697294838004923,              // time when the order enters the order book
-   }
- }
-```
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-### UPDATE
-If the order is updated, the system will send an UPDATE message to the user.
-
-```json
- //UPDATE
- {
- "topic": "/contractMarket/level3v2:XBTUSDM",
- "subject": "update",
- "data": {
-   "symbol": "XBTUSDM",                 // symbol
-   "sequence": 3262786897,               // sequence
-   "orderId": "5c0b520032eba53a888fd01f",  // order ID
-   "size": "100",                            // updated size
-   "ts": 1547697294838004923               // update time - nanosecond
-   }
- }
-```
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-### MATCH
-If the order is matched, the system will send a MATCH message to the user. Level 3 here means buy/sell of the taker order.
-
-
-```json
- //MATCH
- {
-   "topic": "/contractMarket/level3v2:XBTUSDM",
-   "subject": "match",
-   "data": {
-     "symbol": "XBTUSDM",                  // symbol
-     "sequence": 3262786901,                // sequence
-     "side": "buy",                   // buy or sell of taker
-     "price": "3634",                     // filled price
-     "size": "10",                                // filled size
-     "makerOrderId": "5c0b520032eba53a888fd01e",   // maker order ID
-     "takerOrderId": "5c0b520032eba53a888fd01f",   // taker order ID
-     "tradeId": "6c23b5454353a8882d023b3o",   // trade ID
-     "ts": 1547697294838004923              // transaction time - nanosecond
-   }
- }
-```
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-### DONE
-When the matching life cycle of an order ends, the order will no longer be displayed on the order book and the system will send a DONE message to the user.
-
-```json
- //DONE
- {
-   "topic": "/contractMarket/level3v2:XBTUSDM",
-   "subject": "done",
-   "data": {
-     "symbol": "XBTUSDM",                       // symbol
-     "sequence": 3262786901,                   // sequence
-     "reason": "filled",                      // filled or canceled
-       "orderId": "5c0b520032eba53a888fd02x",    // order ID
-     "ts": 1547697294838004923,          // completion time
-   }
- }
-```
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
 ## Message channel for the 5 best ask/bid full data of Level 2
 
