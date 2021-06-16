@@ -49,7 +49,6 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 * 合约信息中添加24小时成交量, 24小时成交额, 活动仓位数, 影响接口
     GET /api/v1/contracts/active
     GET /api/v1/contracts/{symbol}
-    
 
 #### 2020.06.12
 * level3消息格式全新改版，提供更全面的消息字段
@@ -66,7 +65,6 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 #### 2020.06.01
 * 新增获取服务状态接口，新增的接口：
     GET /api/v1/status
-    
 #### 2020.05.13
 * 新增获取合约K线数据接口，新增的接口：
     GET /api/v1/kline/query
@@ -178,7 +176,6 @@ USDT结算合约上线, 交易所从只支持一个币种 XBT, 变为同时支�
 
 ####2020.03.05
 * 修复 accountEquity 和 marginBalance 含义，修复后 accountEquity为账户总权益，= unrealisedPNL + marginBalance;
-  
 
 ## 客户端开发库
 
@@ -186,8 +183,15 @@ USDT结算合约上线, 交易所从只支持一个币种 XBT, 变为同时支�
 
 **官方软件开发工具包（SDK）**
 
-- [PHP SDK](https://github.com/Kucoin/KuMEX-PHP-SDK)
+- [PHP SDK](https://github.com/Kucoin/kucoin-futures-php-sdk)
+
 - [Java SDK](https://github.com/Kucoin/kucoin-futures-java-sdk)
+
+- [Node.js SDK](https://github.com/Kucoin/kucoin-futures-node-sdk)
+
+- [Python SDK](https://github.com/Kucoin/kucoin-futures-python-sdk)
+
+- [Go SDK](https://github.com/Kucoin/kucoin-futures-go-sdk)
 
   
 
@@ -522,6 +526,7 @@ Key和Secret由KuCoin Futures随机生成并提供，Passphrase是您在创建AP
 {timestamp + method+ endpoint + body} 拼接的字符串进行**HMAC-sha256**加密。
 2. 再将加密内容使用 **base64** 编码。
                        
+
 请求头中的 **KC-API-PASSPHRASE**:
 
 1. 对于V1版的API-KEY，请使用明文传递
@@ -2495,90 +2500,6 @@ GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200
 | end | long | 结束顺序号（返回的数据会包含该顺序号）   |
 
 
-## 获取全部买卖盘数据 - Level 3 V2
-
-```json
- {
-   "code": "200000",
-   "data": {
-       "symbol": "XBTUSDM",    // 合约
-     "sequence":  100,   // 构建level3的最后一条消息的顺序号
-     "bids": [[5567483701231, "dfa123124", "123.12312", "10", 5567483701231], ...],  // 卖盘数据：下单时间 - 纳秒, 订单号, 价格, 数量, 进入买卖盘时间 - 纳秒
-     "asks": [[5567483701231, "dfa123124", "123.12312", "10", 5567483701231], ...],  // 买盘数据：下单时间 - 纳秒, 订单号, 价格, 数量, 进入买卖盘时间 - 纳秒
-     "ts": 1590634672060667000 // 纳秒
-   }
- }
-```
-
-获取指定合约的所有未结委托的快照。Level 3 返回了买卖盘上的所有数据（未按价格汇总，一个价格对应一个挂单）。
-
-为保证本地买卖盘数据为最新数据，在获取Level 3快照后，请使用[Websocket](#撮合引擎全量数据(full-matching-engine-data-:Level-3))推送的增量消息来更新Level 3买卖盘。
-
-在买卖盘中，卖盘是以价格从低到高排序的，价格相同的订单以进入买卖盘的时间从低到高排序。买盘是以价格从高到低排序的，价格相同的订单以进入买卖盘的时间从低到高排序。撮合引擎将按照订单在买卖盘中排列顺序依次进行撮合。
-
-返回值的数据未排序，请用户自行排序。
-
-为了帮助您更好的使用 Level 3，我们提供了一篇详细的使用说明文档 ，一个完整的L3实现，以及简易的python调用的demo，他们位于
-[https://github.com/Kucoin/kucoin-level3-sdk](https://github.com/Kucoin/kucoin-level3-sdk)
-
-### HTTP请求
-GET /api/v2/level3/snapshot
-
-### 示例
-GET /api/v2/level3/snapshot?symbol=XBTUSDM
-
-
-### 参数
-| 参数  | 数据类型   | 含义 |
-| ------ | ------ | ----------- |
-| symbol | String | 合约名称    |
-
-
-
-## Level 3消息拉取
-```json
-  {
-	"code": "200000",
-	"data": [
-		{
-	      "symbol": "XBTUSDM",			// 合约
-	      "sequence": 1,				// 消息序号
-	      "side": "sell",				// 订单方向
-	      "orderTime": 1558074650840002300,	      // 下单时间
-	      "size": 10,					// 订单数量
-	      "orderId": "5cde551aa14a9cad7e454374", // 订单号
-	      "price": "7000.0",			// 订单价格
-	      "type": "open",						      // 消息类型
-	      "clientOid": "xxxxxxxxxx",			      // 可选，用户自定义参数，用于用户识别自己的订单
-	      "ts": 1558074652423004000			      // 进入买卖盘时间 - 纳秒
-	    },
-	    {
-	      "symbol": "XBTUSDM",			// 合约
-	      "reason": "canceled",		// 完成原因
-	      "sequence": 2,				// 消息序号
-	      "orderId": "5cde551aa14a9cad7e454374", // 订单ID
-	      "type": "done",				// 消息类型
-	      "ts": 1558075303543002400	// 从买卖盘移除的时间 - 纳秒
-	    }
-    ]   
-  }
-```
-
-当websocket推送的消息不连续时，您可以通过该请求拉取缺失的消息。start为上一次收到websocket推送的sequence+1，end为本次收到的websocket推送的sequence-1。重放拉取的消息，完成后继续消费websocket消息。如果end和start的差值超过500，则不能直接使用该接口，建议重新构建Level 3的买卖盘。
-
-
-### HTTP请求
-GET /api/v1/level3/message/query [已废弃，请读取全量数据，GET /api/v1/level3/snapshot]
-
-### 示例
-GET /api/v1/level3/message/query?symbol=XBTUSDM&start=100&end=200
-
-### 参数
-| 参数  | 数据类型   | 含义 |
-| ------ | ------ | ----------- |
-| symbol | String | 合约名称     |
-| start | long | 顺序号开始（包含）|
-| end | long | 顺序号结束（包含）  |
 
 # 历史数据
 
@@ -3084,7 +3005,7 @@ ID用于标识请求和ack的唯一字符串。
 
 #### PrivateChannel
 
-您可通过privateChannel参数订阅以一些用户私有的topic（如： /market/level3）。该参数默认设置为“false”。设置为“true”时，则您只能收到与您订阅的topic相关的内容推送。
+您可通过privateChannel参数订阅以一些用户私有的topic（如：/contractMarket/level2）。该参数默认设置为“false”。设置为“true”时，则您只能收到与您订阅的topic相关的内容推送。
 
 #### Response
 若设置为True, 用户成功订阅后，系统将返回ack消息。
@@ -3135,7 +3056,7 @@ ID用于标识请求和ack的唯一字符串。
 您订阅的topic内容。
 
 #### PrivateChannel
-您可通过privateChannel参数订阅以一些公共topic（如：/market/level3）。该参数默认设置为“false”。设置为“true”，您只能收到与您订阅相关的内容推送。
+您可通过privateChannel参数订阅以一些公共topic（如：/contractMarket/tradeOrders）。该参数默认设置为“false”。设置为“true”，您只能收到与您订阅相关的内容推送。
 
 #### Response
 若设置为True, 用户成功取消订阅后，系统将返回ack消息。
@@ -3426,221 +3347,6 @@ Topic: **/contractMarket/execution:{symbol}**
 ```
 
 
-## 撮合引擎全量数据V2 (Full matching engine data：Level 3 V2)
-
-```json
- {
-   "id": 1545910660742,                         
-   "type": "subscribe",
-   "topic": "/contractMarket/level3v2:{symbol}",  
-   "response": true                             
- }
-```
-
-Topic: **/contractMarket/level3v2:{symbol}**
-
-订阅此topic，可获取Level 3完整的买卖盘撮合引擎数据。
-订阅成功后，您将收到该渠道推送的Level 3买卖盘的实时订单和交易数据，您可用使用该数据维护及更新您本地的Level 3买卖盘数据。
-
-**注意：欲维护本地Level 2买卖盘，请订阅Level 2的渠道topic。**
-
-维护更新Level 3买卖盘的步骤如下：
-
- 1.  订阅Topic: /contractMarket/level3v2:{symbol}，获取Level 3买卖盘数据流。
- 2.  对接收到的Websocket信息流数据进行排序。
- 3.  向接口[Get Full Order Book - Level 3]发送REST请求，获取Level 3买卖盘的快照信息。
- 4.  回放已排序的信息流，丢弃掉旧Level 3数据该顺序号之前的数据。
- 5.  将回放消息应用于快照（见下文）。
- 6.  回放完成后，重复上述步骤，实时更新买卖盘数据。
- 7.  如果收到的消息的sequence与上一条消息不连续，可通过REST[Level-3消息拉取](#获取全部买卖盘数据-Level-3)(GET /api/level3/message/query)接口，拉取缺失的消息。start和end间隔不超过500。(该方式已废弃，请通过1-6重新构建买卖盘)
-
-
-**任意Open和Match消息都将导致买卖盘发生变更。**
-订阅成功后，系统将以JSON格式，将**RECEIVED**、**OPEN**、**UPDATE**、**MATCH**及**DONE**消息推送到Websocket消息流中。
-
-### RECEIVED
-
-```json
-//RECEIVED
- {
-   "topic": "/contractMarket/level3v2:XBTUSDM",
-   "subject": "received",
-   "data": {
-       "symbol": "XBTUSDM",                        // 合约 symbol
-       "sequence": 3262786900,                 // 顺序号
-       "orderId": "5c0b520032eba53a888fd02x",  // 订单号
-       "clientOid": "ad123ad",                 // 可选，用于用户鉴别自己的订单 
-       "ts": 1545914149935808589
-   }
- }
-```
-撮合引擎接收到用户下单的指令，发出received消息。消息中的clientOid由用户传入，可用于在公用频道判断订单是自己的。
-
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-### OPEN
-当限价订单中的剩余部分进入买卖盘时，系统将向用户发送OPEN消息。
-
-
-```json
- //OPEN
- {
-   "topic": "/contractMarket/level3v2:XBTUSDM",
-   "subject": "open",
-   "data": {
-       "symbol": "XBTUSDM",                // 合约 symbol
-       "sequence": 3262786900,              // 顺序号 
-       "side": "buy",                    // 委托方向 
-       "price": "3634.5",                        // 委托价格 
-       "size": "10",                             // 委托数量 
-       "orderId": "5c0b520032eba53a888fd02x",  // 订单号 
-       "orderTime": 1547697294838004923,       // 下单时间 
-       "ts": 1547697294838004923,              // 进入买卖盘时间 
-   }
- }
-```
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-### UPDATE
-如果有订单被更新，系统将向用户发送UPDATE消息。
-
-```json
- //UPDATE
- {
- "topic": "/contractMarket/level3v2:XBTUSDM",
- "subject": "update",
- "data": {
-   "symbol": "XBTUSDM",                 // 合约 symbol
-   "sequence": 3262786897,               // 顺序号 
-   "orderId": "5c0b520032eba53a888fd01f",  // 订单号 
-   "size": "100",                            // 改变后数量 
-   "ts": 1547697294838004923               // 更新时间 - 纳秒 
-   }
- }
-```
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-### MATCH
-如果有订单被撮合，系统将向用户发送MATCH消息。side指taker订单方向。
-
-```json
- //MATCH
- {
-   "topic": "/contractMarket/level3v2:XBTUSDM",
-   "subject": "match",
-   "data": {
-     "symbol": "XBTUSDM",                  // 合约 symbol
-     "sequence": 3262786901,                // 顺序号 
-     "side": "buy",                   // taker的方向 
-     "price": "3634",                     // 成交价格
-     "size": "10",                                // 成交数量 
-     "makerOrderId": "5c0b520032eba53a888fd01e",   // maker订单号 
-     "takerOrderId": "5c0b520032eba53a888fd01f",   // taker订单号 
-     "tradeId": "6c23b5454353a8882d023b3o",   // 交易号
-     "ts": 1547697294838004923              // 成交时间 - 纳秒 
-   }
- }
-```
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-### DONE
-
-当一个订单的生命周期结束时，订单将不会再展示在买卖盘中，系统将向用户发送DONE消息。
-
-```json
- //DONE
- {
-   "topic": "/contractMarket/level3v2:XBTUSDM",
-   "subject": "done",
-   "data": {
-     "symbol": "XBTUSDM",                       // 合约 symbol
-     "sequence": 3262786901,                   // 顺序号 
-     "reason": "filled",                      // filled 或 canceled
-       "orderId": "5c0b520032eba53a888fd02x",    // 订单号 
-     "ts": 1547697294838004923,          // 完成时间 
-   }
- }
-```
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
 ## level2的5档全量数据推送频道 
 
