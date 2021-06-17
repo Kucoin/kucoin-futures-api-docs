@@ -1903,44 +1903,44 @@ symbol |String| 指定合约的活动订单，如：XBTUSDM的活动订单。
 ## 获取仓位详情
 
 ```json
-  {
-    "id": "5ce3cda60c19fc0d4e9ae7cd",                //仓位id
-    "symbol": "XBTUSDM",                              //合约symbol
-    "autoDeposit": true,                             //是否自动追加保证金
-    "maintMarginReq": 0.005,                         //维持保证金比例
-    "riskLimit": 200,                                //风险限额
-    "realLeverage": 1.06,                            //杠杆倍数
-    "crossMode": false,                              //是否全仓
-    "delevPercentage": 0.1,                          //ADL分位数
-    "openingTimestamp": 1558433191000,               //开仓时间
-    "currentTimestamp": 1558507727807,               //当前时间戳
-    "currentQty": -20,                               //当前仓位
-    "currentCost": 0.00266375,                       //当前总仓位价值
-    "currentComm": 0.00000271,                       //当前总费用
-    "unrealisedCost": 0.00266375,                    //未实现价值
-    "realisedGrossCost": 0,                          //累加已实现毛利价值
-    "realisedCost": 0.00000271,                      //当前累计已实现仓位价值
-    "isOpen": true,                                  //是否开仓
-    "markPrice": 7933.01,                            //标记价格
-    "markValue": 0.00252111,                         //标记价值
-    "posCost": 0.00266375,                           //仓位价值
-    "posCross": 1.2e-7,                              //手动追加的保证金
-    "posInit": 0.00266375,                           //杠杆保证金
-    "posComm": 0.00000392,                           //破产费用
-    "posLoss": 0,                                    //资金费用减少的资金
-    "posMargin": 0.00266779,                         //仓位保证金
-    "posMaint": 0.00001724,                          //维持保证金
-    "maintMargin": 0.00252516,                       //仓位保证金
-    "realisedGrossPnl": 0,                           //累加已实现毛利
-    "realisedPnl": -0.00000253,                      //已实现盈亏
-    "unrealisedPnl": -0.00014264,                    //未实现盈亏
-    "unrealisedPnlPcnt": -0.0535,                    //仓位盈亏率
-    "unrealisedRoePcnt": -0.0535,                    //投资回报率
-    "avgEntryPrice": 7508.22,                        //平均开仓价格
-    "liquidationPrice": 1000000,                     //强平价格
-    "bankruptPrice": 1000000,                         //破产价格
-    "settleCurrency": "XBT"                         //结算币种
-  }
+ 	{
+    'id': '5e81a7827911f40008e80715',                //仓位id
+    'symbol': 'XBTUSDTM',  													 //合约symbol
+    'autoDeposit': False,  													 //是否自动追加保证金
+    'maintMarginReq': 0.005,  											 //维持保证金率
+    'riskLimit': 2000000,  													 //风险限额
+    'realLeverage': 5.0,  													 //杠杆倍数
+    'crossMode': False,  													 	 //是否全仓模式
+    'delevPercentage': 0.35,  											 //ADL分位数
+    'openingTimestamp': 1623832410892,  						 //开仓时间
+    'currentTimestamp': 1623832488929,  						 //当前时间戳
+    'currentQty': 1,  											 				 //当前仓位数量
+    'currentCost': 40.008,  												 //当前仓位价值
+    'currentComm': 0.0240048,  											 //当前仓位总费用
+    'unrealisedCost': 40.008,  											 //未实现价值
+    'realisedGrossCost': 0.0,  											 //累计已实现毛利价值
+    'realisedCost': 0.0240048,  										 //累计已实现仓位价值
+    'isOpen': True,  																 //是否开仓
+    'markPrice': 40014.93,  												 //标记价格
+    'markValue': 40.01493,  												 //标记价值
+    'posCost': 40.008,  														 //仓位价值
+    'posCross': 0.0,  															 //追加到仓位的保证金
+    'posInit': 8.0016,  														 //杠杆保证金
+    'posComm': 0.02880576,  												 //破产费用
+    'posLoss': 0.0,  																 //资金费用减少的资金
+    'posMargin': 8.03040576,  											 //仓位保证金
+    'posMaint': 0.23284656,  											 	 //维持保证金
+    'maintMargin': 8.03733576, 											 //包含未实现盈亏的仓位保证金
+    'realisedGrossPnl': 0.0,  											 //累计已实现毛利
+    'realisedPnl': -0.0240048,  										 //已实现盈亏
+    'unrealisedPnl': 0.00693,  											 //未实现盈亏
+    'unrealisedPnlPcnt': 0.0002,  									 //仓位盈亏率
+    'unrealisedRoePcnt': 0.0009,  									 //投资回报率
+    'avgEntryPrice': 40008.0,  											 //平均开仓价格
+    'liquidationPrice': 32211.0,  									 //强平价格
+    'bankruptPrice': 32006.0,  											 //破产价格
+    'settleCurrency': 'USDT',  											 //结算币种
+	}
 ```
 
 获取用户指定合约的仓位详情
@@ -1986,43 +1986,43 @@ GET /api/v1/position?symbol=XBTUSDM
 
 ```json
     {
-      "id": "5ce3cda60c19fc0d4e9ae7cd",                //仓位id
-      "symbol": "XBTUSDM",                              //合约symbol
-      "autoDeposit": true,                             //是否自动追加保证金
-      "maintMarginReq": 0.005,                         //维持保证金比例
-      "riskLimit": 200,                                //风险限额
-      "realLeverage": 1.06,                            //杠杆倍数
-      "crossMode": false,                              //是否全仓
-      "delevPercentage": 0.1,                          //ADL分位数
-      "openingTimestamp": 1558433191000,               //开仓时间
-      "currentTimestamp": 1558507727807,               //当前时间戳
-      "currentQty": -20,                               //当前仓位
-      "currentCost": 0.00266375,                       //当前总仓位价值
-      "currentComm": 0.00000271,                       //当前总费用
-      "unrealisedCost": 0.00266375,                    //未实现价值
-      "realisedGrossCost": 0,                          //累加已实现毛利价值
-      "realisedCost": 0.00000271,                      //当前累计已实现仓位价值
-      "isOpen": true,                                  //是否开仓
-      "markPrice": 7933.01,                            //标记价格
-      "markValue": 0.00252111,                         //标记价值
-      "posCost": 0.00266375,                           //仓位价值
-      "posCross": 1.2e-7,                              //手动追加的保证金
-      "posInit": 0.00266375,                           //杠杆保证金
-      "posComm": 0.00000392,                           //破产费用
-      "posLoss": 0,                                    //资金费用减少的资金
-      "posMargin": 0.00266779,                         //仓位保证金
-      "posMaint": 0.00001724,                          //维持保证金
-      "maintMargin": 0.00252516,                       //仓位保证金
-      "realisedGrossPnl": 0,                           //累加已实现毛利
-      "realisedPnl": -0.00000253,                      //已实现盈亏
-      "unrealisedPnl": -0.00014264,                    //未实现盈亏
-      "unrealisedPnlPcnt": -0.0535,                    //仓位盈亏率
-      "unrealisedRoePcnt": -0.0535,                    //投资回报率
-      "avgEntryPrice": 7508.22,                        //平均开仓价格
-      "liquidationPrice": 1000000,                     //强平价格
-      "bankruptPrice": 1000000,                         //破产价格
-      "settleCurrency": "XBT"                        //结算币种
-    }
+    'id': '5e81a7827911f40008e80715',                //仓位id
+    'symbol': 'XBTUSDTM',  													 //合约symbol
+    'autoDeposit': False,  													 //是否自动追加保证金
+    'maintMarginReq': 0.005,  											 //维持保证金率
+    'riskLimit': 2000000,  													 //风险限额
+    'realLeverage': 5.0,  													 //杠杆倍数
+    'crossMode': False,  													 	 //是否全仓模式
+    'delevPercentage': 0.35,  											 //ADL分位数
+    'openingTimestamp': 1623832410892,  						 //开仓时间
+    'currentTimestamp': 1623832488929,  						 //当前时间戳
+    'currentQty': 1,  											 				 //当前仓位数量
+    'currentCost': 40.008,  												 //当前仓位价值
+    'currentComm': 0.0240048,  											 //当前仓位总费用
+    'unrealisedCost': 40.008,  											 //未实现价值
+    'realisedGrossCost': 0.0,  											 //累计已实现毛利价值
+    'realisedCost': 0.0240048,  										 //累计已实现仓位价值
+    'isOpen': True,  																 //是否开仓
+    'markPrice': 40014.93,  												 //标记价格
+    'markValue': 40.01493,  												 //标记价值
+    'posCost': 40.008,  														 //仓位价值
+    'posCross': 0.0,  															 //追加到仓位的保证金
+    'posInit': 8.0016,  														 //杠杆保证金
+    'posComm': 0.02880576,  												 //破产费用
+    'posLoss': 0.0,  																 //资金费用减少的资金
+    'posMargin': 8.03040576,  											 //仓位保证金
+    'posMaint': 0.23284656,  											 	 //维持保证金
+    'maintMargin': 8.03733576, 											 //包含未实现盈亏的仓位保证金
+    'realisedGrossPnl': 0.0,  											 //累计已实现毛利
+    'realisedPnl': -0.0240048,  										 //已实现盈亏
+    'unrealisedPnl': 0.00693,  											 //未实现盈亏
+    'unrealisedPnlPcnt': 0.0002,  									 //仓位盈亏率
+    'unrealisedRoePcnt': 0.0009,  									 //投资回报率
+    'avgEntryPrice': 40008.0,  											 //平均开仓价格
+    'liquidationPrice': 32211.0,  									 //强平价格
+    'bankruptPrice': 32006.0,  											 //破产价格
+    'settleCurrency': 'USDT',  											 //结算币种
+	}
 ```
 
 使用该请求，可获取用户所有的仓位列表。

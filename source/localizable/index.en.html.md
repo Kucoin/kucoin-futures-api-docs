@@ -1823,43 +1823,46 @@ symbol |String| Symbol of the contract
 
 ```json
   {
-    "id": "5ce3cda60c19fc0d4e9ae7cd",                //Position ID
-    "symbol": "XBTUSDM",                              //Symbol
-    "autoDeposit": true,                             //Auto deposit margin or not
-    "maintMarginReq": 0.005,                         //Maintenance margin requirement
-    "riskLimit": 200,                                //Risk limit
-    "realLeverage": 1.06,                            //Leverage of the order
-    "crossMode": false,                              //Cross mode or not
-    "delevPercentage": 0.1,                          //ADL ranking percentile
-    "openingTimestamp": 1558433191000,               //Open time
-    "currentTimestamp": 1558507727807,               //Current timestamp
-    "currentQty": -20,                               //Current position
-    "currentCost": 0.00266375,                       //Current position value
-    "currentComm": 0.00000271,                       //Current commission
-    "unrealisedCost": 0.00266375,                    //Unrealised value
-    "realisedGrossCost": 0,                          //Accumulated realised gross profit value
-    "realisedCost": 0.00000271,                      //Current realised position value
-    "isOpen": true,                                  //Opened position or not
-    "markPrice": 7933.01,                            //Mark price
-    "markValue": 0.00252111,                         //Mark value
-    "posCost": 0.00266375,                           //Position value
-    "posCross": 1.2e-7,                              //Manually added margin
-    "posInit": 0.00266375,                           //Leverage margin
-    "posComm": 0.00000392,                           //Bankruptcy cost
-    "posLoss": 0,                                    //Funding fees paid out
-    "posMargin": 0.00266779,                         //Position margin
-    "posMaint": 0.00001724,                          //Maintenance margin
-    "maintMargin": 0.00252516,                       //Position margin
-    "realisedGrossPnl": 0,                           //Accumulated realised gross profit value
-    "realisedPnl": -0.00000253,                      //Realised profit and loss
-    "unrealisedPnl": -0.00014264,                    //Unrealised profit and loss
-    "unrealisedPnlPcnt": -0.0535,                    //Profit-loss ratio of the position
-    "unrealisedRoePcnt": -0.0535,                    //Rate of return on investment
-    "avgEntryPrice": 7508.22,                        //Average entry price
-    "liquidationPrice": 1000000,                     //Liquidation price
-    "bankruptPrice": 1000000,                         //Bankruptcy price
-    "settleCurrency": "XBT"                         //Currency used to clear and settle the trades     
+    'code': '200000',
+    'data': {
+    'id': '5e81a7827911f40008e80715',                //Position ID
+    'symbol': 'XBTUSDTM',                            //Symbol
+    'autoDeposit': False, 													 //Auto deposit margin or not
+    'maintMarginReq': 0.005, 												 //Maintenance margin requirement
+    'riskLimit': 2000000, 													 //Risk limit 
+    'realLeverage': 5.0, 														 //Leverage o the order
+    'crossMode': False, 														 //Cross mode or not
+    'delevPercentage': 0.35, 												 //ADL ranking percentile
+    'openingTimestamp': 1623832410892, 							 //Open time
+    'currentTimestamp': 1623832488929, 							 //Current timestamp
+    'currentQty': 1, 																 //Current postion quantity
+    'currentCost': 40.008, 													 //Current postion value
+    'currentComm': 0.0240048, 											 //Current commission
+    'unrealisedCost': 40.008, 											 //Unrealised value
+    'realisedGrossCost': 0.0, 											 //Accumulated realised gross profit value
+    'realisedCost': 0.0240048, 											 //Current realised position value
+    'isOpen': True, 																 //Opened position or not
+    'markPrice': 40014.93, 													 //Mark price
+    'markValue': 40.01493, 													 //Mark value
+    'posCost': 40.008, 															 //Position value
+    'posCross': 0.0, 																 //added margin
+    'posInit': 8.0016, 															 //Leverage margin
+    'posComm': 0.02880576, 													 //Bankruptcy cost
+    'posLoss': 0.0, 													 			 //Funding fees paid out
+    'posMargin': 8.03040576, 												 //Position margin
+    'posMaint': 0.23284656, 												 //Maintenance margin
+    'maintMargin': 8.03733576, 											 //Position margin
+    'realisedGrossPnl': 0.0, 												 //Accumulated realised gross profit value
+    'realisedPnl': -0.0240048, 											 //Realised profit and loss
+    'unrealisedPnl': 0.00693, 											 //Unrealised profit and loss
+    'unrealisedPnlPcnt': 0.0002, 										 //Profit-loss ratio of the position
+    'unrealisedRoePcnt': 0.0009, 										 //Rate of return on investment
+    'avgEntryPrice': 40008.0, 											 //Average entry price
+    'liquidationPrice': 32211.0, 										 //Liquidation price
+    'bankruptPrice': 32006.0, 											 //Bankruptcy price
+    'settleCurrency': 'USDT', 											 //Currency used to clear and settle the trades
   }
+
 ```
 
 Get the position details of a specified position.
@@ -1892,44 +1895,46 @@ This endpoint requires the **General** permission.
 ## Get Position List                   
 
 ```json
-    {
-      "id": "5ce3cda60c19fc0d4e9ae7cd",                //Position ID
-      "symbol": "XBTUSDM",                              //Symbol
-      "autoDeposit": true,                             //Auto deposit margin or not
-      "maintMarginReq": 0.005,                         //Maintenance margin requirement
-      "riskLimit": 200,                                //Risk limit
-      "realLeverage": 1.06,                            //Leverage of the order
-      "crossMode": false,                              //Cross mode or not
-      "delevPercentage": 0.1,                          //ADL ranking percentile
-      "openingTimestamp": 1558433191000,               //Open time
-      "currentTimestamp": 1558507727807,               //Current timestamp
-      "currentQty": -20,                               //Current position
-      "currentCost": 0.00266375,                       //Current position value
-      "currentComm": 0.00000271,                       //Current commission 
-      "unrealisedCost": 0.00266375,                    //Unrealised value
-      "realisedGrossCost": 0,                          //Accumulated realised gross profit value
-      "realisedCost": 0.00000271,                      //Current realised position value
-      "isOpen": true,                                  //Opened position or not
-      "markPrice": 7933.01,                            //Mark price
-      "markValue": 0.00252111,                         //Mark value
-      "posCost": 0.00266375,                           //Position value
-      "posCross": 1.2e-7,                              //Manually added margin
-      "posInit": 0.00266375,                           //Leverage margin
-      "posComm": 0.00000392,                           //Bankruptcy cost
-      "posLoss": 0,                                    //Funding fees paid out
-      "posMargin": 0.00266779,                         //Position margin
-      "posMaint": 0.00001724,                          //Maintenance margin
-      "maintMargin": 0.00252516,                       //Position margin
-      "realisedGrossPnl": 0,                           //Accumulated realised gross profit value
-      "realisedPnl": -0.00000253,                      //Realised profit and loss
-      "unrealisedPnl": -0.00014264,                    //Unrealised profit and loss
-      "unrealisedPnlPcnt": -0.0535,                    //Profit-loss ratio of the position
-      "unrealisedRoePcnt": -0.0535,                    //Rate of return on investment
-      "avgEntryPrice": 7508.22,                        //Average entry price
-      "liquidationPrice": 1000000,                     //Liquidation price
-      "bankruptPrice": 1000000,                         //Bankruptcy price
-      "settleCurrency": "XBT"                         //Currency used to clear and settle the trades
-    }
+   {
+    'code': '200000',
+    'data': {
+    'id': '5e81a7827911f40008e80715',                //Position ID
+    'symbol': 'XBTUSDTM',                            //Symbol
+    'autoDeposit': False, 													 //Auto deposit margin or not
+    'maintMarginReq': 0.005, 												 //Maintenance margin requirement
+    'riskLimit': 2000000, 													 //Risk limit 
+    'realLeverage': 5.0, 														 //Leverage o the order
+    'crossMode': False, 														 //Cross mode or not
+    'delevPercentage': 0.35, 												 //ADL ranking percentile
+    'openingTimestamp': 1623832410892, 							 //Open time
+    'currentTimestamp': 1623832488929, 							 //Current timestamp
+    'currentQty': 1, 																 //Current postion quantity
+    'currentCost': 40.008, 													 //Current postion value
+    'currentComm': 0.0240048, 											 //Current commission
+    'unrealisedCost': 40.008, 											 //Unrealised value
+    'realisedGrossCost': 0.0, 											 //Accumulated realised gross profit value
+    'realisedCost': 0.0240048, 											 //Current realised position value
+    'isOpen': True, 																 //Opened position or not
+    'markPrice': 40014.93, 													 //Mark price
+    'markValue': 40.01493, 													 //Mark value
+    'posCost': 40.008, 															 //Position value
+    'posCross': 0.0, 																 //added margin
+    'posInit': 8.0016, 															 //Leverage margin
+    'posComm': 0.02880576, 													 //Bankruptcy cost
+    'posLoss': 0.0, 													 			 //Funding fees paid out
+    'posMargin': 8.03040576, 												 //Position margin
+    'posMaint': 0.23284656, 												 //Maintenance margin
+    'maintMargin': 8.03733576, 											 //Position margin
+    'realisedGrossPnl': 0.0, 												 //Accumulated realised gross profit value
+    'realisedPnl': -0.0240048, 											 //Realised profit and loss
+    'unrealisedPnl': 0.00693, 											 //Unrealised profit and loss
+    'unrealisedPnlPcnt': 0.0002, 										 //Profit-loss ratio of the position
+    'unrealisedRoePcnt': 0.0009, 										 //Rate of return on investment
+    'avgEntryPrice': 40008.0, 											 //Average entry price
+    'liquidationPrice': 32211.0, 										 //Liquidation price
+    'bankruptPrice': 32006.0, 											 //Bankruptcy price
+    'settleCurrency': 'USDT', 											 //Currency used to clear and settle the trades
+  }
 ```
 
 Get the position details of a specified position.
