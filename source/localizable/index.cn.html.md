@@ -1,6 +1,6 @@
 # 基本介绍
 ## 简介
-欢迎使用库币合约(KuCoin Futures)开发者文档。 此文档概述了交易功能、市场行情和其他应用开发接口。
+欢迎使用KuCoin合约(KuCoin Futures)开发者文档。 此文档概述了交易功能、市场行情和其他应用开发接口。
 
 
 KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
@@ -60,7 +60,7 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 * 增加level2的50档全量数据推送频道：/contractMarket/level2Depth50:{symbol}
 
 #### 2020.06.03
-* 品牌升级合约域名为库币合约(KuCoin Futures)
+* 品牌升级合约域名为KuCoin合约(KuCoin Futures)
 
 #### 2020.06.01
 * 新增获取服务状态接口，新增的接口：
