@@ -12,6 +12,9 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+#### 2021.07.15
+* modify the strategy of [Request Rate Limit](#request-rate-limit).
+
 #### 2021.03.18
 * Added field holdBalance to subject:availableBalance.change in the topic of account balance /contractAccount/wallet <br/>
 
@@ -201,25 +204,12 @@ The login session and the API key in the sandbox environment are completely sepa
 * REST API: **https://api-sandbox-futures.kucoin.com**  (https://sandbox-api.kumex.com has been Deprecated)
 
 ## Request Rate Limit
-When a rate limit is exceeded, a status of **429 Too Many Requests** will be returned. If the rate limit is exceeded multiple times,  the system will restrict your use of your IP and account for 1 minute. Your remaining request times will be returned in the results.
-
-**Apply for Higher Request Rate Limit**
-If you are a professional trader or market maker and need a higher limit, please send your KuCoin Futures account, reason and approximate trading volume to [newapi@kucoin.plus](mailto:newapi@kucoin.plus).
+When a rate limit is exceeded, a status of **429** will be returned.
+<aside class="notice">Once the rate limit is exceeded, the system will restrict your use of your IP or account for 10s.</aside>
 
 ### REST API
-**PRIVATE ENDPOINTS**
-The access limit for private endpoint is applied per API key.
-
-* Rate limit for order placing/order canceling/operations to position: **200 requests per 10 seconds.**
-* Rate limit for Mass Cancelation ：**1 requests per 5 seconds**
-* Rate limit for other operations: **300 requests per 10 seconds.**
-
-**PUBLIC ENDPOINTS**
-The rate limit for requests via public endpoint is calculated based on IP：
-
-* Rate limit for Level 2 order book: **100 requests per minute**
-* Rate limit for Level 3 order book: **1 request/minute per IP**
-* Rate limit for other operations: **180 requests per minute**
+The limit strategy of private endpoints will restrict account by userid. The limit strategy of public endpoints will restrict IP.
+<aside class="notice">Note that when an API has a specific rate limit, please refer to the specific limit.</aside>
 
 ### WEBSOCKET
 **Number of Connections**
@@ -620,7 +610,8 @@ currency | String | [Optional] Currecny ,including **XBT,USDT**,Default XBT
 ### API Permission
 This endpoint requires the **General** permission.
 
-
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **30 times/3s**.
 
 ## Get Transaction History
 
@@ -666,6 +657,9 @@ GET /api/v1/transaction-history?offset=1&forward=true&maxCount=50
 
 ### API Permission
 This endpoint requires the **General** permission.
+
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **9 times/3s**.
 
 ### Parameters
 Param | Type | Description
@@ -1060,6 +1054,9 @@ POST /api/v1/orders
 ### API Permission
 This endpoint requires the **Trade** permission
 
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **30 times/3s**.
+
 ### Parameters
 
 | Param     | type   | Description  |
@@ -1276,6 +1273,9 @@ DELETE /api/v1/orders/5cdfc120b21023a909e5ad52
 ### API Permission ###
 This endpoint requires the **Trade** permission.
 
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **40 times/3s**.
+
 ## Limit Order Mass Cancelation
 
 ```json
@@ -1303,6 +1303,9 @@ DELETE /api/v1/orders?symbol=XBTUSDM
 
 ### API Permission
 This endpoint requires the **Trade** permission.
+
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **9 times/3s**.
 
 ### PARAMETERS
 
@@ -1408,6 +1411,9 @@ Submit the request to get all the active orders.
 
 ### API Permission
 This endpoint requires the **General** permission.
+
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **30 times/3s**.
 
 ### PARAMETERS
 You can request for specific orders using query parameters.
@@ -1715,6 +1721,9 @@ GET /api/v1/fills
 ### API Permission
 This endpoint requires the **General** permission.
 
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **9 times/3s**.
+
 ### PARAMETERS
 You can request fills for specific orders using query parameters. If you need to get your recent trade history with low latency, please query endpoint Get List of Orders Completed in 24H. The requested data is not real-time.  
 
@@ -1785,6 +1794,9 @@ GET /api/v1/recentFills
 
 ### API Permission
 This endpoint requires the **General** permission.
+
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **9 times/3s**.
 
 ## Active Order Value Calculation
 
@@ -1948,6 +1960,9 @@ GET /api/v1/positions
 ### API Permission
 This endpoint requires the **General** permission.
 
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **9 times/3s**.
+
 <br/>
 <br/>
 <br/>
@@ -2059,6 +2074,9 @@ GET /api/v1/funding-history?symbol=XBTUSDM
 
 ### API Permission
 This endpoint requires the **General** permission.
+
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **9 times/3s**.
 
 ### PARAMETERS
 
@@ -2318,6 +2336,8 @@ GET /api/v1/level2/snapshot
 ### Example
 GET /api/v1/level2/snapshot?symbol=XBTUSDM
 
+### REQUEST RATE LIMIT
+This API is restricted for each account, the request rate limit is **30 times/3s**.
 
 ### Parameters
 | Param  | Type   | Description |
