@@ -12,6 +12,10 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
+#### 2021.08.18
+* 移除了[POST /api/v2/transfer-out](#kucoin-2)接口的输出参数BizNo.
+* 修正了[GET /api/v1/account-overview](#8ec888deb4)接口的返回字段marginBalance描述.
+
 #### 2021.07.15
 * 修改[请求频率限制](#26435b04cf)
 
@@ -611,7 +615,7 @@ KC-API-SIGN = 7QP/oM0ykidMdrfNEUmng8eZjg/ZvPafjIqmxiVfYu4=
     "data": {
       "accountEquity": 99.8999305281, //账户总权益 = 账户余额 + 未实现盈亏
       "unrealisedPNL": 0, //未实现盈亏
-      "marginBalance": 99.8999305281, //账户余额 = 仓位保证金 + 委托保证金 + 转出提现冻结 + 可用余额
+      "marginBalance": 99.8999305281, //账户余额 = 仓位保证金 + 委托保证金 + 转出提现冻结 + 可用余额 - 未实现盈亏
       "positionMargin": 0, //仓位保证金
       "orderMargin": 0, //委托保证金
       "frozenFunds": 0, //转出提现冻结
@@ -950,7 +954,6 @@ POST /api/v2/transfer-out
 ### 参数
 参数 | 数据类型 | 含义
 --------- | ------- | -----------
-bizNo | String | 业务请求号，建议使用UUID
 amount | Number | 转出金额
 currency | String | 币种 **XBT,USDT**
 
