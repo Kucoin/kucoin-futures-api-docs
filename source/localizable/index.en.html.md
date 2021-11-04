@@ -12,6 +12,11 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+#### 2021.11.04
+* Added an interface for querying contract risk-limit: [GET /api/v1/contracts/risk-limit/{symbol}](#).
+* Added an interface for modifying the risk-limit level: [POST /api/v1/position/risk-limit-level/change](#).
+* Added Websocket push for positions subject of [position.adjustRiskLimit](#).
+
 #### 2021.08.18
 * Remove the BizNo parameter in interface [POST /api/v2/transfer-out](#transfer-funds-to-kucoin-main-account-2).
 * Modify the field marginBalance comment in interface [GET /api/v1/account-overview](#get-account-overview).
