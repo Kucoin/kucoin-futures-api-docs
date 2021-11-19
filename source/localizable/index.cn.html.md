@@ -12,10 +12,9 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
-#### 2021.11.04
-* 新增查询合约限额等级接口:[GET /api/v1/contracts/risk-limit/{symbol}](#).
-* 新增修改限额等级接口:[POST /api/v1/position/risk-limit-level/change](#).
-* 新增仓位的Websocket推送:限额等级调整消息subject:[position.adjustRiskLimit](#).
+#### 2021.11.19
+* 新增阶梯风险限额相关接口:[GET /v1/contracts/risk-limit/{symbol}](#8159742eec))、[POST /v1/position/risk-limit-level/change](#6728847f23) <br/> 
+* 仓位推送的topic:/contract/position:{symbol} 新增风险限额调整结果[subject: position.adjustRiskLimit](#f9c6e147de).
 
 #### 2021.08.18
 * 移除了[POST /api/v2/transfer-out](#kucoin-2)接口的输出参数BizNo.
@@ -280,7 +279,7 @@ REST API对用户、交易及市场数据均提供了接口。
 请求URL由基本URL和指定接口端点组成。
 
 
-### 接口端点
+## 接口端点
 
 每个接口都提供了对应的端点，可在**HTTP请求**模块下获取。
 
@@ -289,13 +288,13 @@ REST API对用户、交易及市场数据均提供了接口。
 
 例如：对于“仓位” 接口，其默认端点为/api/v1/position。请求“合约”参数（XBTUSDM）时，该端点将变为：**/api/v1/position?symbol=XBTUSDM**。因此，您最终请求的URL应为：**https://api-futures.kucoin.com/api/v1/position?symbol=XBTUSDM**。
 
-### 请求
+## 请求
 所有的请求和响应的内容类型都是application/json。  
 
 
 除非另行说明，所有的时间戳参数均以Unix时间戳毫秒计算。如：**1544657947759**
 
-### 参数
+## 参数
 
 对于**GET**和**DELETE**请求，需将参数拼接在请求URL中（如：**/api/v1/position?symbol=XBTUSDM**）。
 
@@ -412,6 +411,7 @@ GET /api/v1/interest/query?symbol=.XBTINT&offset=1558079160000&forward=true&maxC
 ## 类型说明 
 ### 时间戳 
 API中的所有时间戳以Unix时间戳毫秒为单位返回（如：**546658861000**）
+
 ## 接口认证
 ### 创建API KEY
 通过接口进行请求前，您需在Web端创建API-KEY。创建成功后，您需妥善保管好以下三条信息：
@@ -487,7 +487,7 @@ Key和Secret由KuCoin Futures随机生成并提供，Passphrase是您在创建AP
         "KC-API-TIMESTAMP": str(now),
         "KC-API-KEY": api_key,
         "KC-API-PASSPHRASE": passphrase
-        "KC-API-KEY-VERSION": 2
+        "KC-API-KEY-VERSION": "2"
     }
     response = requests.request('get', url, headers=headers)
     print(response.status_code)
@@ -507,14 +507,14 @@ Key和Secret由KuCoin Futures随机生成并提供，Passphrase是您在创建AP
         "KC-API-TIMESTAMP": str(now),
         "KC-API-KEY": api_key,
         "KC-API-PASSPHRASE": passphrase,
-        "KC-API-KEY-VERSION": 2,
+        "KC-API-KEY-VERSION": "2",
         "Content-Type": "application/json" # specifying content type or using json=data in request
     }
     response = requests.request('post', url, headers=headers, data=data_json)
     print(response.status_code)
     print(response.json())
 ```
-请求头中的 KC-API-SIGN: 
+请求头中的 **KC-API-SIGN**: 
 
 1. 使用 API-Secret 对
 {timestamp + method+ endpoint + body} 拼接的字符串进行**HMAC-sha256**加密。
@@ -600,6 +600,7 @@ KC-API-SIGN = 7QP/oM0ykidMdrfNEUmng8eZjg/ZvPafjIqmxiVfYu4=
 <br/>
 <br/>
 <br/>
+
 ----------
 
 ### 选择时间戳
@@ -2108,6 +2109,96 @@ POST /api/v1/position/margin/deposit-margin
 | symbol | String | 合约名称    |
 | margin | Number | 保证金数量（增加保证金不能低于0.00001667XBT）|
 | bizNo  | String | 业务唯一id  |
+
+# 阶梯风险限额
+## 获取合约阶梯风险
+
+```json
+{
+  "code": "200000",
+  "data": [
+    {
+      "symbol": "ADAUSDTM",
+      "level": 1,
+      "maxRiskLimit": 500, // 该等级所处最大限额（包含）
+      "minRiskLimit": 0, // 最小限额
+      "maxLeverage": 20, // 最大可用杠杆
+      "initialMargin": 0.05, // 初始保证金率
+      "maintainMargin": 0.025 // 维持保证金率
+    },
+    {
+      "symbol": "ADAUSDTM",
+      "level": 2,
+      "maxRiskLimit": 1000,
+      "minRiskLimit": 500,
+      "maxLeverage": 2,
+      "initialMargin": 0.5,
+      "maintainMargin": 0.25
+    }
+  ]
+}
+```
+
+使用此接口可获取指定合约的阶梯风险限额等级信息
+
+### HTTP请求
+GET /api/v1/contracts/risk-limit/{symbol}
+
+### 示例 Example
+GET /v1/contracts/risk-limit/ADAUSDTM
+
+### API权限
+该接口需要**通用权限**
+
+### 请求参数
+参数 | 数据类型 | 含义
+--------- | ------- | -----------
+symbol | String | 路径参数。合约名称.
+
+### 返回值
+参数  | 含义
+--------- | -----------
+symbol  | 路径参数。合约名称.
+level  | 等级
+maxRiskLimit  | 该等级所处最大限额（包含）
+minRiskLimit  | 最小限额
+maxLeverage  | 最大可用杠杆
+initialMargin | 初始保证金率
+maintainMargin | 维持保证金率
+
+## 修改阶梯风险限额等级
+```json 
+// request
+{ 
+    "symbol": "ADASUDTM", // 合约名称
+    "level": 2 // 等级
+} 
+``` 
+
+```json
+// response
+{
+  "code": "200000",
+  "data": true
+} 
+``` 
+
+该接口用于修改用户风险限额等级，修改会撤销用户当前挂单，返回结果仅代表修改申请提交是否成功。修改是否成功需要监听ws消息:[风险限额调整结果](#f9c6e147de)
+
+### HTTP请求
+POST /api/v1/position/risk-limit-level/change
+
+### 示例
+POST /v1/position/risk-limit-level/change
+
+### API权限
+该接口需要**交易权限**
+
+### 参数
+参数 | 数据类型 | 含义
+--------- | ------- | -----------
+symbol | String | 路径参数。合约名称.
+level | Integer | 等级.
 
 # 资金费用
 
@@ -4127,6 +4218,43 @@ topic:  **/contract/announcement**
 <br/>
 <br/>
 <br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
+### 风险限额调整结果
+
+```json 
+// Adjustment Result of Risk Limit Level
+{ 
+  "userId": "xbc453tg732eba53a88ggyt8c", 
+  "topic": "/contract/position:ADAUSDTM", 
+  "subject": "position.adjustRiskLimit", 
+  "data": { 
+    "success": true, // 是否成功 
+    "riskLimitLevel": 1, // 当前风险限额等级
+    "msg": "" // 失败原因 
+  }
+} 
+``` 
+失败原因有两种情况：1.持仓价值大于风险限额等级额度; 2.余额不足，保证金追加失败。
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 # 登录 KuCoin
 <a href="https://www.kucoin.com">登录 KuCoin</a>
