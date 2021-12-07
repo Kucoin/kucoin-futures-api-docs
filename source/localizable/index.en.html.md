@@ -12,6 +12,9 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+#### 2021.12.07
+* Modify comment in interface ["topic": "/contract/position:XBTUSDM"](#position-change-events).
+
 #### 2021.11.19
 * Added interface of risk limit level: [GET /v1/contracts/risk-limit/{symbol}](#obtain-futures-risk-limit-level) , [POST /v1/position/risk-limit-level/change](#adjust-risk-limit-level) <br/>
 * Added adjustment result of risk limit level to subject: [position.adjustRiskLimit](#adjustment-result-of-risk-limit-level). in the topic of position: /contract/position:{symbol} 
@@ -3909,11 +3912,14 @@ Topic: **/contract/position:{symbol}**
 ```json
   //Position Changes Caused Operations
   { 
+    "type": "message",
     "userId": "5c32d69203aa676ce4b543c7", // Deprecated, will detele later 
+    "channelType": "private",
     "topic": "/contract/position:XBTUSDM", 	
     "subject": "position.change", 
       "data": {
       "realisedGrossPnl": 0E-8,                //Accumulated realised profit and loss
+      "symbol":"XBTUSDM",                      //Symbol
       "crossMode": false,                      //Cross mode or not
       "liquidationPrice": 1000000.0,           //Liquidation price
       "posLoss": 0E-8,                         //Manually added margin amount 
@@ -3921,7 +3927,8 @@ Topic: **/contract/position:{symbol}**
       "unrealisedPnl": -0.00014735,            //Unrealised profit and loss
       "markPrice": 7947.83,                    //Mark price
       "posMargin": 0.00266779,                 //Position margin
-      "riskLimit": 200,                        //Risk limit
+      "autoDeposit": false,                    //Auto deposit margin or not
+      "riskLimit": 100000,                     //Risk limit
       "unrealisedCost": 0.00266375,            //Unrealised value
       "posComm": 0.00000392,                   //Bankruptcy cost 
       "posMaint": 0.00001724,                  //Maintenance margin
@@ -3934,6 +3941,7 @@ Topic: **/contract/position:{symbol}**
       "realisedPnl": -0.00000253,              //Realised profit and losts
       "maintMargin": 0.00252044,               //Position margin 
       "realLeverage": 1.06,                    //Leverage of the order
+      "changeReason": "positionChange",        //changeReason:marginChange、positionChange、liquidation、autoAppendMarginStatusChange、adl
       "currentCost": 0.00266375,               //Current position value
       "openingTimestamp": 1558433191000,       //Open time
       "currentQty": -20,                       //Current position
@@ -3949,6 +3957,12 @@ Topic: **/contract/position:{symbol}**
       }
   }
 ```
+**changeReason**
+“marginChange”: margin change;
+“positionChange”: position change;
+“liquidation”: liquidation;
+“autoAppendMarginStatusChange”: auto-deposit-status change;
+“adl”: adl;
 
 <br/>
 <br/>
