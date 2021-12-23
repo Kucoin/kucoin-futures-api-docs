@@ -12,8 +12,11 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
+#### 2021.12.07
+* 修改仓位变化接口["topic": "/contract/position:XBTUSDM"](#52fd7608a9)说明
+
 #### 2021.11.19
-* 新增阶梯风险限额相关接口:[GET /v1/contracts/risk-limit/{symbol}](#8159742eec))、[POST /v1/position/risk-limit-level/change](#6728847f23) <br/> 
+* 新增阶梯风险限额相关接口:[GET /v1/contracts/risk-limit/{symbol}](#8159742eec)、[POST /v1/position/risk-limit-level/change](#6728847f23) <br/> 
 * 仓位推送的topic:/contract/position:{symbol} 新增风险限额调整结果[subject: position.adjustRiskLimit](#f9c6e147de).
 
 #### 2021.08.18
@@ -4058,11 +4061,14 @@ topic:  **/contract/announcement**
 ```json
   //仓位操作引起的仓位变化
   { 
+    "type": "message",
     "userId": "5c32d69203aa676ce4b543c7",  // 不推荐使用, 后续版本将删除
+    "channelType": "private",
     "topic": "/contract/position:XBTUSDM", 	
     "subject": "position.change", 
       "data": {
       "realisedGrossPnl": 0E-8,                //累加已实现毛利
+      "symbol":"XBTUSDM",                      //有效合约代码
       "crossMode": false,                      //是否全仓
       "liquidationPrice": 1000000.0,           //强平价格
       "posLoss": 0E-8,                         //手动追加的保证金
@@ -4070,7 +4076,8 @@ topic:  **/contract/announcement**
       "unrealisedPnl": -0.00014735,            //未实现盈亏
       "markPrice": 7947.83,                    //标记价格
       "posMargin": 0.00266779,                 //仓位保证金
-      "riskLimit": 200,                        //风险限额
+      "autoDeposit": false,                    //是否自动追加保证金
+      "riskLimit": 100000,                     //风险限额
       "unrealisedCost": 0.00266375,            //未实现价值
       "posComm": 0.00000392,                   //破产费用
       "posMaint": 0.00001724,                  //维持保证金
@@ -4083,6 +4090,7 @@ topic:  **/contract/announcement**
       "realisedPnl": -0.00000253,              //已实现盈亏
       "maintMargin": 0.00252044,               //仓位保证金
       "realLeverage": 1.06,                    //杠杆倍数
+      "changeReason": "positionChange",        //变化原因:marginChange、positionChange、liquidation、autoAppendMarginStatusChange、adl
       "currentCost": 0.00266375,               //当前总仓位价值
       "openingTimestamp": 1558433191000,       //开仓时间
       "currentQty": -20,                       //当前仓位
@@ -4098,6 +4106,12 @@ topic:  **/contract/announcement**
       }
   }
 ```
+**changeReason**
+“marginChange”: 仓位保证金变化;
+“positionChange”: 仓位变化;
+“liquidation”: 强平;
+“autoAppendMarginStatusChange”: 修改是否自动追加保证金;
+“adl”: 自动减仓;
 
 <br/>
 <br/>
