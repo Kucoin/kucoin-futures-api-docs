@@ -12,6 +12,9 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+#### 2022.02.07
+* New response field maintainMargin,riskLimitLevel have been added to the [GET /api/v1/position](#get-position-details) endpoint
+
 #### 2021.12.07
 * Modify comment in interface ["topic": "/contract/position:XBTUSDM"](#position-change-events).
 
@@ -1237,7 +1240,7 @@ The execution of the order will incur  transaction fees. If a partially filled o
 ### CLOSE ORDER
 If closeOrder is set to TRUE, the system will close the position and the position size will become 0. Side, Size and Leverage fields can be left empty and the system will determine the side and size automatically.
 
-### CLOSE ONLY
+### REDUCE ONLY
 If set to TRUE, only the orders reducing the position size will be executed. If the reduce-only order size exceeds the position size, the extra size will be canceled.
 
 ### FORCE HOLD
@@ -1883,6 +1886,8 @@ symbol |String| Symbol of the contract
     'liquidationPrice': 32211.0, 										 //Liquidation price
     'bankruptPrice': 32006.0, 											 //Bankruptcy price
     'settleCurrency': 'USDT', 											 //Currency used to clear and settle the trades
+    'maintainMargin': 0.25,  											   //Maintenance margin rate
+    'riskLimitLevel': 1  											       //Risk Limit Level
   }
 
 ```

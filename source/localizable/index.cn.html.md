@@ -12,6 +12,9 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
+#### 2022.02.07
+* 新增[GET /api/v1/position](#844f298257)接口返回字段：maintainMargin、riskLimitLevel.
+
 #### 2021.12.07
 * 修改仓位变化接口["topic": "/contract/position:XBTUSDM"](#52fd7608a9)说明
 
@@ -1271,7 +1274,7 @@ ClientOid字段是客户端创建的唯一的ID（推荐使用UUID），只能�
 ### CLOSE ORDER 平仓
 平仓单会把当前用户的所有仓位修改为 0。平仓单标记为 true 时，不需要传入买卖方向和订单数量参数，系统会根据用户当前仓位的方向和数量动态决定订单的买卖方向和订单数量。由于减仓不需要冻结，所以有也不需要传入杠杆参数。
 
-### CLOSE ONLY 只减仓
+### REDUCE ONLY 只减仓
 被标记为只减仓的订单只会被以减仓的方向撮合（不会增加仓位），当用户仓位数量小于只减仓订单数量时，多余数量的订单数量会被撮合引擎取消掉。
 
 ### FORCE HOLD 强制冻结
@@ -1959,6 +1962,8 @@ symbol |String| 指定合约的活动订单，如：XBTUSDM的活动订单。
     'liquidationPrice': 32211.0,  									 //强平价格
     'bankruptPrice': 32006.0,  											 //破产价格
     'settleCurrency': 'USDT',  											 //结算币种
+    'maintainMargin': 0.25,  											   //维持保证金率
+    'riskLimitLevel': 1   											     //当前风险限额等级
 	}
 ```
 
