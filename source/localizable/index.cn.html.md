@@ -12,6 +12,12 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
+#### 2022.03.24
+* 废弃了[GET /api/v1/level2/message/query](#level-2-3)接口
+* 新增接口返回值描述
+* 新增[POST /api/v3/transfer-out](#kucoin-3)接口
+* 新增[POST /api/v1/transfer-in](#7d42c0706c)接口
+
 #### 2022.02.07
 * 新增[GET /api/v1/position](#844f298257)接口返回字段：maintainMargin、riskLimitLevel.
 
@@ -341,6 +347,36 @@ REST API对用户、交易及市场数据均提供了接口。
 
 代码 | 含义
 ---------- | -------
+1015 | cloudflare frequency limit according to IP, block 30s--超频错误:基于ip的cloudflare限制,触发限制时间30s
+40010 | Unavailable to place orders. Your identity information/IP/phone number shows you're at a country/region that is restricted from this service. -- 您当前属于限制国家，委托无法生效。
+100001 | There are invalid parameters -- 无效参数
+100002 | systemConfigError -- 系统配置有误
+100003 | Contract parameter invalid -- 没有此合约
+100004 | Order is in not cancelable state -- 订单不存在或者订单不可撤销
+100005 | contractRiskLimitNotExist -- 合约风险限额不存在
+200001 | The query scope for Level 2 cannot exceed xxx -- level2查询范围必须小于等于xxx　
+200002 | Too many requests in a short period of time, please retry later--超频错误:基于接口业务层面的限制, 触发限制时间10s
+200002 | The query scope for Level 3 cannot exceed xxx -- level3查询范围必须小于等于xxx
+200003 | The symbol parameter is invalid. -- 参数symbol无效
+300000 | request parameter illegal -- 请求参数非法
+300001 | Active order quantity limit exceeded (limit: xxx, current: xxx) -- 超过活动委托数量限制，最大可提交 xxx 个活动委托，当前活动委托数: xxx
+300002 | Order placement/cancellation suspended, please try again later. -- 系统暂停下单/撤单操作，将自动恢复，请稍后再试
+300003 | Balance not enough, please first deposit at least 2 USDT before you start the battle -- 可用余额不足，委托成本为 xxx
+300004 | Stop order quantity limit exceeded (limit: xxx, current: xxx) -- 超过条件委托数量限制，最大可提交 xxx 个条件委托，当前条件委托数: xxx
+300005 | xxx risk limit exceeded -- 委托会导致超过最大风险限额 xxx
+300006 | The close price shall be greater than the bankruptcy price. Current bankruptcy price: xxx. -- 平仓委托价格不能劣于仓位的破产价格，当前破产价格：xxx
+300007 | priceWorseThanLiquidationPrice -- 加仓委托价格不能劣于仓位的强平价格，当前强平价格：xxx
+300008 | Unavailable to place the order, there's no contra order in the market. -- 市场无订单，市价单提交失败
+300009 | Current position size: 0, unable to close the position. -- 当前仓位为0，无法平仓
+300010 | Failed to close the position -- 平仓失败
+300011 | Order price cannot be higher than xxx -- 委托价格不能高于xxx
+300012 | Order price cannot be lower than xxx -- 委托价格不能低于xxx
+300013 | Unable to proceed the operation, there's no contra order in order book. -- 委托订单没有合法可撮合价格，订单提交失败
+300014 | The position is being liquidated, unable to place/cancel the order. Please try again later. -- 强制平仓中，系统暂停下单/撤单，将自动恢复，请稍后重试
+300015 | The order placing/cancellation is currently not available. The Contract/Funding is under the settlement process. When the process is completed, the function will be restored automatically. Please wait patiently and try again later. -- 合约交割/资金费用结算中，系统暂停下单/撤单，将自动恢复，请稍后重试
+300016 | The leverage cannot be greater than xxx. -- 杠杆数不能大于xxx
+300017 | Unavailable to proceed the operation, this position is for Futures Brawl -- 该仓位为乱斗仓位，不支持操作
+300018 | clientOid parameter repeated -- clientOid参数重复
 400001 | Any of KC-API-KEY, KC-API-SIGN, KC-API-TIMESTAMP, KC-API-PASSPHRASE is missing in your request header -- 请求头中缺少KC-API-KEY、KC-API-SIGN、KC-API-TIMESTAMP和KC-API-PASSPHRASE参数
 400002 | KC-API-TIMESTAMP Invalid -- 请求时间与服务器时差超过5秒
 400003 | KC-API-KEY not exists -- API-KEY不存在
@@ -348,11 +384,11 @@ REST API对用户、交易及市场数据均提供了接口。
 400005 | Signature error -- 签名错误，请检查您的签名
 400006 | The requested ip address is not in the api whitelist -- 请求IP不在API白名单中
 400007 | Access Denied -- API权限不足，无法访问该URI目标地址。
-404000 | Url Not Found -- 找不到请求资源
 400100 | Parameter Error -- 请求参数不合法
+404000 | Url Not Found -- 找不到请求资源
 411100 | User are frozen -- 用户已被冻结，请联系帮助中心
+429000 | Too Many Requests -- 超频错误:基于接口的全站流量限制，可以直接重试请求
 500000 | Internal Server Error -- 服务器出错，请稍后再试
-
 
 系统返回的HTTP状态码不是200时，接口返回会显示错误码。调用成功时，系统将返回code和data字段；调用失败时，系统将返回code和msg字段。您可根据返回的参数消息排查错误。
 
@@ -646,6 +682,19 @@ GET /api/v1/account-overview?currency=XBT
 参数 | 数据类型 | 含义
 --------- | ------- | -----------
 currency | String | [可选] 币种 **XBT或USDT,默认XBT**
+
+### 返回值
+字段 | 含义
+--------- | -------
+| accountEquity | 账户总权益 = 账户余额 + 未实现盈亏 | 
+| unrealisedPNL | 未实现盈亏 | 
+| marginBalance | 账户余额 = 仓位保证金 + 委托保证金 + 转出提现冻结 + 可用余额 - 未实现盈亏 | 
+| positionMargin | 仓位保证金 | 
+| orderMargin | 委托保证金 | 
+| frozenFunds | 转出提现冻结 | 
+| availableBalance | 可用余额 | 
+| currency | 币种 | 
+
 ### API权限
 该接口需要**通用权限**
 
@@ -710,13 +759,18 @@ maxCount | long | [可选] 每页显示条数 默认50
 currency | String | [可选] 币种 **XBT或USDT**
 forward | boolean | [可选] 是否前向查询，**true**或者**false**，默认为**true** 
 
-
-### 返回
-
-**type:**  类型包括 **RealisedPNL-已实现盈亏,Deposit-充值,Withdrawal-提现,TransferIn-转入 ,TransferOut-转出**
-
-**status:**  状态包括 **Completed，Pending**
-
+### 返回值
+字段 | 含义
+--------- | -------
+| time | 业务发生时间 | 
+| type | 类型包括 **RealisedPNL-已实现盈亏,Deposit-充值,Withdrawal-提现,TransferIn-转入 ,TransferOut-转出** | 
+| amount | 交易金额 | 
+| fee | 手续费 | 
+| accountEquity | 账户权益 | 
+| status | 状态包括 **Completed，Pending** | 
+| remark | 合约 | 
+| offset | 起始偏移量，一般使用上个请求最后一条返回结果的唯一属性，默认返回第一页 | 
+| currnecy | 币种 | 
 
 # 充值
 ## 获取充币地址
@@ -725,8 +779,9 @@ forward | boolean | [可选] 是否前向查询，**true**或者**false**，默�
   {
     "code": "200000",
     "data": {
-      "address": "0x78d3ad1c0aa1bf068e19c94a2d7b16c9c0fcd8b1",//充币地址
-      "memo": null//地址标签，如果返回为空，则该币种没有memo。当您在其他平台申请提现到KuCoin的时候，如果该币种有memo(tag)，需要填写memo，确保能准确入账到您到账户
+      "address": "bc1q466dvmharut0uhycdqu9nlmwcw5gec4p8wt22j",//充币地址
+      "memo": null,//地址标签，如果返回为空，则该币种没有memo。当您在其他平台申请提现到KuCoin的时候，如果该币种有memo(tag)，需要填写memo，确保能准确入账到您到账户
+      "chain": "BTC-Segwit"//币种的链名
    } 
 }
 ```
@@ -745,6 +800,12 @@ GET /api/v1/deposit-address?currency=XBT
 --------- | ------- | -----------
 currency | String | 币种（**XBT 或USDT**）
 
+### 返回值
+字段 | 含义
+--------- | -------
+| address | 充值地址 | 
+| memo | 地址标签，如果返回为空，则该币种没有memo。当您在其他平台申请提现到KuCoin的时候，如果该币种有memo(tag)，需要填写memo，确保能准确入账到您到账户 | 
+| chain | 币种的链名。  | 
 
 ## 获取充值列表
 ```json
@@ -788,6 +849,18 @@ endAt | long | [可选]  截止时间（毫秒）
 status | String | [可选]  状态 **PROCESSING, SUCCESS, FAILURE**
 currency | String | [可选]  币种 **XBT,USDT**
 
+### 返回值
+字段 | 含义
+--------- | -------
+| currency | 币种 | 
+| status | 状态类型：PROCESSING, WALLET_PROCESSING, SUCCESS, FAILURE | 
+| address | 充值地址 | 
+| isInner | 是否站内充值 | 
+| amount | 充值金额 | 
+| fee | 充值手续费 | 
+| walletTxId | 钱包交易txId | 
+| createdAt | 充值时间 | 
+
 # 提现
 ## 获取提现额度
 
@@ -796,6 +869,7 @@ currency | String | [可选]  币种 **XBT,USDT**
     "code": "200000",
     "data": {
       "currency": "XBT",//币种
+      "chainId": "bech32",// 链标识
       "limitAmount": 2,//24H提现总额度
       "usedAmount": 0,//24H已使用提现额度
       "remainAmount": 2,//24H可提现额度
@@ -823,6 +897,20 @@ GET /api/v1/withdrawals/quotas?currency=XBT
 --------- | ------- | -----------
 currency | String | 币种（**XBT或USDT**）
 
+### 返回值
+字段 | 含义
+--------- | -------
+| currency | 币种 | 
+| chainId | 链标识 | 
+| limitAmount | 24H提现总额度 | 
+| remainAmount | 24H已使用提现额度 | 
+| usedAmount | 24H可提现额度 | 
+| availableAmount | 可用余额 | 
+| withdrawMinFee | 提现手续费 | 
+| innerWithdrawMinFee | 站内提现手续费 | 
+| withdrawMinSize | 最小提现数量 | 
+| isWithdrawEnabled | 是否可以提现 | 
+| precision | 提现金额精度 | 
 
 ## 发起提现
 
@@ -855,6 +943,11 @@ remark | String | [可选]  备注
 chain | String | [可选]  币种的链名。例如，对于USDT，现有的链有OMNI、ERC20、TRC20。默认值为ERC20。这个参数用于区分多链的币种，单链币种不需要。
 memo | String | [可选]  地址标签memo(tag)，如果返回为空，则该币种没有memo。对于没有memo的币种，在提现的时候不可以传递memo
 
+
+### 返回值
+参数  | 含义
+--------- | -----------
+withdrawalId  | 提现id，可以用于后续取消提现
 
 ## 获取提现列表
 ```json
@@ -901,6 +994,21 @@ startAt | long | [可选] 开始时间（毫秒）
 endAt | long | [可选]  截止时间（毫秒） 
 currency | String | [可选]  币种 **XBT,USDT**
 
+### 返回值
+参数  | 含义
+--------- | -----------
+withdrawalId  | 提现唯一标识，可用于取消提现
+currency  | 币种
+status  | 状态
+address  | 提现地址
+memo  | 提现地址标识
+isInner  | 是否站内提现
+amount  | 提现金额
+fee  | 提现手续费
+walletTxId  | 钱包交易txId
+createdAt  | 提现时间
+remark  | 提现备注
+reason  | 失败原因
 
 ## 取消提现
 只有在**PROCESSING**状态时才可能取消提现。
@@ -932,7 +1040,7 @@ withdrawalId | String | 路径参数，发起提现返回**withdrawalId**
  转出金额将从KuCoin Futures账户扣除，转出前请确保KuCoin Futures账户可用余额充足。接口响应表示转出成功后，系统将返回applyId。此ID可用于取消转出申请。
 
 ### HTTP请求
-POST /api/v1/transfer-out （已废弃，请使用 POST /api/v2/transfer-out）
+POST /api/v1/transfer-out （已废弃，请使用 POST /api/v3/transfer-out）
 ### 请求示例
 POST /api/v1/transfer-out
 ### API权限
@@ -947,17 +1055,30 @@ amount | Number | 转出金额
 
 ## 转出到KuCoin储蓄账户
 ```json
-  { 
-    "code": "200000",
-    "data": {
-      "applyId": "5bffb63303aa675e8bbe18f9" //转出申请id
-    }  
-  }
+{
+  "applyId": "620a0bbefeaa6a000110e833",//转出申请id
+  "bizNo": "620a0bbefeaa6a000110e832",//业务编号
+  "payAccountType": "CONTRACT",//付款账户类型
+  "payTag": "DEFAULT",//付款账户子类型
+  "remark": "",//用户备注
+  "recAccountType": "MAIN",//收款账户类型
+  "recTag": "DEFAULT",//收款账户子类型
+  "recRemark": "",//收款账户流水备注
+  "recSystem": "KUCOIN",//收款服务方
+  "status": "PROCESSING",//状态
+  "currency": "USDT",//币种
+  "amount": "0.001",//划转金额
+  "fee": "0",//划转手续费
+  "sn": 889048787670001,//序列号
+  "reason": "",//失败原因
+  "createdAt": 1644825534000,//创建时间
+  "updatedAt": 1644825534000//更新时间
+}
 ```
  转出金额将从KuCoin Futures账户扣除，转出前请确保KuCoin Futures账户可用余额充足。接口响应表示转出成功后，系统将返回applyId。此ID可用于取消转出申请。
 
 ### HTTP请求
-POST /api/v2/transfer-out
+POST /api/v2/transfer-out （推荐使用 POST /api/v3/transfer-out）
 ### 请求示例
 POST /api/v2/transfer-out
 ### API权限
@@ -969,26 +1090,133 @@ POST /api/v2/transfer-out
 amount | Number | 转出金额
 currency | String | 币种 **XBT,USDT**
 
+### 返回值
+参数  | 含义
+--------- | -----------
+applyId  | 转出申请id
+bizNo  | 业务编号
+payAccountType  | 付款账户类型
+payTag  | 付款账户子类型
+remark  | 用户备注
+recAccountType  | 收款账户类型
+recTag  | 收款账户子类型
+recRemark  | 收款账户流水备注
+recSystem  | 收款服务方
+status  | 状态：APPLY-待处理，PROCESSING-处理中，PENDING_APPROVAL-待审核，APPROVED-审核通过，REJECTED-审核拒绝，PENDING_CANCEL-待退款，CANCEL-取消，SUCCESS-成功
+currency  | 币种
+amount  | 划转金额
+fee  | 划转手续费
+sn  | 序列号
+reason  | 失败原因
+createdAt  | 创建时间
+updatedAt  | 更新时间
+
+## 转出到KuCoin储蓄/币币账户
+```json
+{
+  "applyId": "620a0bbefeaa6a000110e833",//转出申请id
+  "bizNo": "620a0bbefeaa6a000110e832",//业务编号
+  "payAccountType": "CONTRACT",//付款账户类型
+  "payTag": "DEFAULT",//付款账户子类型
+  "remark": "",//用户备注
+  "recAccountType": "MAIN",//收款账户类型
+  "recTag": "DEFAULT",//收款账户子类型
+  "recRemark": "",//收款账户流水备注
+  "recSystem": "KUCOIN",//收款服务方
+  "status": "PROCESSING",//状态
+  "currency": "USDT",//币种
+  "amount": "0.001",//划转金额
+  "fee": "0",//划转手续费
+  "sn": 889048787670001,//序列号
+  "reason": "",//失败原因
+  "createdAt": 1644825534000,//创建时间
+  "updatedAt": 1644825534000//更新时间
+}
+```
+ 转出金额将从KuCoin Futures账户扣除，转出前请确保KuCoin Futures账户可用余额充足。接口响应表示转出成功后，系统将返回applyId。此ID可用于取消转出申请。
+
+### HTTP请求
+POST /api/v3/transfer-out
+### 请求示例
+POST /api/v3/transfer-out
+### API权限
+该接口需要**交易权限**
+
+### 参数
+参数 | 数据类型 | 含义
+--------- | ------- | -----------
+amount | Number | 转出金额
+currency | String | 币种 **XBT,USDT**
+recAccountType | String | 收款账户，只能是*MAIN*-储蓄账户、*TRADE*-币币账户
+
+### 返回值
+参数  | 含义
+--------- | -----------
+applyId  | 转出申请id
+bizNo  | 业务编号
+payAccountType  | 付款账户类型
+payTag  | 付款账户子类型
+remark  | 用户备注
+recAccountType  | 收款账户类型
+recTag  | 收款账户子类型
+recRemark  | 收款账户流水备注
+recSystem  | 收款服务方
+status  | 状态：APPLY-待处理，PROCESSING-处理中，PENDING_APPROVAL-待审核，APPROVED-审核通过，REJECTED-审核拒绝，PENDING_CANCEL-待退款，CANCEL-取消，SUCCESS-成功
+currency  | 币种
+amount  | 划转金额
+fee  | 划转手续费
+sn  | 序列号
+reason  | 失败原因
+createdAt  | 创建时间
+updatedAt  | 更新时间
+
+## 资金转入合约账户
+```json
+{
+  "code": "200", //code为200代表转入成功，否则代表失败
+  "msg": "",
+  "retry": true,
+  "success": true
+}
+```
+从KuCoin付款账户(目前支持MAIN-储蓄账户、TRADE-币币账户)转入金额到合约账户，转出前请确保付款账户可用余额充足。
+
+### HTTP请求
+POST /api/v1/transfer-in
+### 请求示例
+POST /api/v1/transfer-in
+### API权限
+该接口需要**交易权限**
+
+### 参数
+参数 | 数据类型 | 含义
+--------- | ------- | -----------
+amount | Number | 转出金额
+currency | String | 币种 **XBT,USDT**
+payAccountType | String | 付款账户，只能是*MAIN*-储蓄账户、*TRADE*-币币账户
+
 ## 查询转出申请记录
 ```json
-  { 
-    "code": "200000",
-    "data": {
-      "currentPage": 1,
-      "pageSize": 50,
-      "totalNum": 6,
-      "totalPage": 1,
-      "items": [{
-        "applyId": "5cd53be30c19fc3754b60928", //转出申请id
-        "currency": "XBT", //币种
-        "status": "SUCCESS", //状态 PROCESSING-处理中，SUCCESS-成功, FAILURE-失败
-        "amount": "0.01", //交易金额
-        "reason": "", //失败原因
-        "offset": 31986850860000, // 起始偏移量，一般使用上个请求最后一条返回结果的唯一属性，默认返回第一页
-        "createdAt": 1557769977000 //提交申请时间
-      }]
-    }   
-  }
+{
+  "currentPage": 1,
+  "pageSize": 50,
+  "totalNum": 1,
+  "totalPage": 1,
+  "items": [
+    {
+      "applyId": "620a0bbefeaa6a000110e833",//转出申请id
+      "currency": "USDT",//币种
+      "recRemark": "",//收款账户流水备注
+      "recSystem": "KUCOIN",//收款服务方
+      "status": "SUCCESS",//状态 PROCESSING-处理中，SUCCESS-成功, FAILURE-失败
+      "amount": "0.001",//交易金额
+      "reason": "",//失败原因
+      "offset": 889048787670001,//起始偏移量，一般使用上个请求最后一条返回结果的唯一属性，默认返回第一页
+      "createdAt": 1644825534000,//提交申请时间
+      "remark": ""//用户备注
+    }
+  ]
+}
 ```
 默认查询第一页数据
 ### HTTP请求
@@ -1008,6 +1236,19 @@ endAt | long | [可选]  截止时间（毫秒）
 status | String | [可选] 状态 **PROCESSING-处理中，SUCCESS-成功, FAILURE-失败**
 currency | String | [可选]  币种 **XBT,USDT**
 
+### 返回值
+参数  | 含义
+--------- | -----------
+applyId  | 转出申请id
+currency  | 币种
+recRemark  | 收款账户流水备注
+recSystem  | 收款服务方
+status  | 状态 PROCESSING-处理中，SUCCESS-成功, FAILURE-失败
+amount  | 交易金额
+reason  | 失败原因
+offset  | 起始偏移量，一般使用上个请求最后一条返回结果的唯一属性，默认返回第一页
+createdAt  | 提交申请时间
+remark  | 用户备注
 
 ## 取消转出
 
@@ -1114,6 +1355,10 @@ POST /api/v1/orders
 | --------- | ------- | -----------
 | size | Integer | [可选] 下单数量
 
+### 返回值
+参数  | 含义
+--------- | -----------
+orderId  | 订单id
 
 ### 示例
 POST /api/v1/orders
@@ -1221,11 +1466,9 @@ ClientOid字段是客户端创建的唯一的ID（推荐使用UUID），只能�
 
 
 
-### SIZE
+### 订单数量
 
-订单数量是合约的张数, 订单数量不能小于合约最小数量（lotSize）或大于合约最大数量（maxOrderQty）。订单数量必须是lotSize的整数倍，否则下单时系统会报错。订单数量表示要买入或卖出的合约数量大小。
-每张 XBTUSDTM 合约对应 0.001 BTC, 每张 XBTUSDM 合约对应 1 USD.
-
+订单数量是合约的张数, 订单数量不能小于合约最小数量（lotSize）或大于合约最大数量（maxOrderQty）。订单数量必须是lotSize的整数倍，否则下单时系统会报错。订单数量表示要买入或卖出的合约数量大小。每张 XBTUSDTM 合约对应 0.001 BTC, 每张 XBTUSDM 合约对应 1 USD.
 
 
 ### 订单时效
@@ -1330,6 +1573,11 @@ DELETE /api/v1/orders/5cdfc120b21023a909e5ad52
 ### 频率限制
 此接口针对每个账号请求频率限制为**40次/3s**
 
+### 返回值
+参数  | 含义
+--------- | -----------
+cancelledOrderIds  | 取消的订单ID
+
 ## 限价单批量撤单
 
 ```json
@@ -1370,6 +1618,10 @@ symbol | String | [可选] 删除指定合约的所有限价单。
 
 使用查询参数可删除指定合约的全部订单。如果没有指定symbol参数，将取消全部限价单。
 
+### 返回值
+参数  | 含义
+--------- | -----------
+cancelledOrderIds  | 取消的订单ID
 
 ## 止损单批量撤单
 
@@ -1407,6 +1659,11 @@ symbol | String | [可选] 取消指定合约的所有未触发止损单。
 
 使用查询参数可删除指定合约的全部订单。如果没有指定symbol参数，将取消全部止损单。
 
+### 返回值
+参数  | 含义
+--------- | -----------
+cancelledOrderIds  | 取消的订单ID
+
 ## 查询订单列表
 
 ```json
@@ -1419,39 +1676,43 @@ symbol | String | [可选] 取消指定合约的所有未触发止损单。
       "totalPage": 10,
       "items": [
         {
-          "id": "5cdfc138b21023a909e5ad55", //订单编号
-          "symbol": "XBTUSDM",  //合约编号
-          "type": "limit",   //类型, 市价单或限价单
-          "side": "buy",  //买卖方向
-          "price": "3600",  //下单价格
-          "size": 20000,  //数量
-          "value": "56.1167227833",  //订单价值
-          "filledValue": "0",  //已经成交订单价值
-          "filledSize": 0,  //已经成交订单数量
-          "stp": "",  //stp 类型
-          "stop": "",  //止损订单类型
-          "stopPriceType": "",  //止损订单触发价格类型
-          "stopTriggered": false,  //止损订单是否触发标志
-          "stopPrice": null,  //止损订单触发价格
-          "timeInForce": "GTC",  //timeInForce类型
-          "postOnly": false,  //postOnly标志
-          "hidden": false,  //隐藏单标志
-          "iceberg": false,  //冰山单标志
-          "visibleSize": null,  //冰山单可见数量
-          "leverage": "20",  //杠杆倍数
-          "forceHold": false,  //强制冻结单标志
-          "closeOrder": false, //平仓单标志
-          "closeOnly": false,  //只减仓单标志
-          "clientOid": "5ce24c16b210233c36ee321d",  //客户订单编号
-          "remark": null,  //注解
-          "isActive": true,  //未完成订单标志
-          "cancelExist": false,  //订单存在取消数量标志
-          "createdAt": 1558167872000,  //创建时间
-          "settleCurrency": "XBT", //结算币种
-          "status": "open", //订单状态: “open” 或 “done”
-          "updatedAt": 1558167872000, //最新更新时间
-          "orderTime": 1558167872000000000 //下单时间纳秒
-        }
+            "id": "5cdfc138b21023a909e5ad55", //订单编号
+            "symbol": "XBTUSDM",  //合约编号
+            "type": "limit",   //类型, 市价单或限价单
+            "side": "buy",  //买卖方向
+            "price": "3600",  //下单价格
+            "size": 20000,  //数量
+            "value": "56.1167227833",  //订单价值
+            "dealValue": "56.1167227833",  //成交额
+            "dealSize": 20000,//成交数量
+            "stp": "",  //stp 类型
+            "stop": "",  //止损订单类型
+            "stopPriceType": "",  //止损订单触发价格类型
+            "stopTriggered": true,  //止损订单是否触发标志
+            "stopPrice": null,  //止损订单触发价格
+            "timeInForce": "GTC",  //timeInForce类型
+            "postOnly": false,  //postOnly标志
+            "hidden": false,  //隐藏单标志
+            "iceberg": false,  //冰山单标志 
+            "leverage": "20",  //杠杆倍数
+            "forceHold": false,  //强制冻结单标志
+            "closeOrder": false, //平仓单标志
+            "visibleSize": null,  //冰山单可见数量
+            "clientOid": "5ce24c16b210233c36ee321d",  //客户订单编号
+            "remark": null,  //注解
+            "tags": null,//订单标签
+            "isActive": false,  //未完成订单标志
+            "cancelExist": false,  //订单存在取消数量标志
+            "createdAt": 1558167872000,  //创建时间
+            "updatedAt": 1558167872000, //最新更新时间
+            "endAt": 1558167872000,//截止时间
+            "orderTime": 1558167872000000000, //下单时间纳秒
+            "settleCurrency": "XBT", //结算币种
+            "status": "done", //订单状态: “open” 或 “done”
+            "filledValue": "56.1167227833",  //已经成交订单价值
+            "filledSize": 20000,  //已经成交订单数量
+            "reduceOnly": false  //只减仓标记
+          }
       ]
     }  
  }
@@ -1483,6 +1744,46 @@ type | String | [可选] 订单类型，包括：限价单、市价单、限价�
 startAt | long | [可选] 开始时间（毫秒）
 endAt | long | [[可选]  截止时间（毫秒） 
 
+### 返回值
+参数  | 含义
+--------- | -----------
+id | 订单编号
+symbol | 合约编号
+type | 类型, 市价单或限价单
+side | 买卖方向
+price | 下单价格
+size | 数量
+value | 订单价值
+dealValue | 成交额
+dealSize | 成交数量
+stp | stp 类型
+stop | 止损订单类型
+stopPriceType | 止损订单触发价格类型
+stopTriggered | 止损订单是否触发标志
+stopPrice | 止损订单触发价格
+timeInForce | timeInForce类型
+postOnly | postOnly标志
+hidden | 隐藏单标志
+iceberg | 冰山单标志
+leverage | 杠杆倍数
+forceHold | 强制冻结单标志
+closeOrder | 平仓单标志
+visibleSize | 冰山单可见数量
+clientOid | 客户订单编号
+remark | 注解
+tags | 订单标签
+isActive | 未完成订单标志
+cancelExist | 订单存在取消数量标志
+createdAt | 创建时间
+updatedAt | 最新更新时间
+endAt | 截止时间
+orderTime | 下单时间纳秒
+settleCurrency | 结算币种
+status | 订单状态: “open” 或 “done”
+filledSize | 已经成交订单价值
+filledValue | 已经成交订单数量
+reduceOnly | 只减仓标记
+
 请使用查询参数获取指定合约的订单。
 
 请求返回数据使用了**Pagination**分页方式。
@@ -1513,39 +1814,44 @@ endAt | long | [[可选]  截止时间（毫秒）
       "pageSize": 100,
       "totalNum": 1000,
       "totalPage": 10,
-      "items": [
+      "items":  [
         {
-            "id": "5cdfc138b21023a909e5ad55", //订单编号
-            "symbol": "XBTUSDM",  //合约编号
-            "type": "limit",   //类型, 市价单或限价单
-            "side": "buy",  //买卖方向
-            "price": "3600",  //下单价格
-            "size": 20000,  //数量
-            "value": "56.1167227833",  //订单价值
-            "filledValue": "0",  //已经成交订单价值
-            "filledSize": 0,  //已经成交订单数量
-            "stp": "",  //stp 类型
-            "stop": "",  //止损订单类型
-            "stopPriceType": "",  //止损订单触发价格类型
-            "stopTriggered": false,  //止损订单是否触发标志
-            "stopPrice": null,  //止损订单触发价格
-            "timeInForce": "GTC",  //timeInForce类型
-            "postOnly": false,  //postOnly标志
-            "hidden": false,  //隐藏单标志
-            "iceberg": false,  //冰山单标志
-            "visibleSize": null,  //冰山单可见数量
-            "leverage": "20",  //杠杆倍数
-            "forceHold": false,  //强制冻结单标志
-            "closeOrder": false, //平仓单标志
-            "closeOnly": false,  //只减仓单标志
-            "clientOid": "5ce24c16b210233c36ee321d",  //客户订单编号
-            "remark": null,  //注解
-            "isActive": true,  //未完成订单标志
-            "cancelExist": false,  //订单存在取消数量标志
-            "createdAt": 1558167872000,  //创建时间
-            "settleCurrency": "XBT", //结算币种
-            "status": "open", //订单状态: “open”
-            "updatedAt": 1558167872000 //最新更新时间
+          "id": "622076e79f12700001f84138",
+          "symbol": "XBTUSDTM",
+          "type": "limit",
+          "side": "sell",
+          "price": "32000",
+          "size": 2,
+          "value": "0",
+          "dealValue": "0",
+          "dealSize": 0,
+          "stp": "",
+          "stop": "down",
+          "stopPriceType": "TP",
+          "stopTriggered": null,
+          "stopPrice": "3000",
+          "timeInForce": "GTC",
+          "postOnly": false,
+          "hidden": false,
+          "iceberg": false,
+          "leverage": "20",
+          "forceHold": false,
+          "closeOrder": false,
+          "visibleSize": null,
+          "clientOid": null,
+          "remark": null,
+          "tags": null,
+          "isActive": true,
+          "cancelExist": false,
+          "createdAt": 1646294759000,
+          "updatedAt": 1646294759000,
+          "endAt": null,
+          "orderTime": null,
+          "settleCurrency": "USDT",
+          "status": "open",
+          "filledValue": "0",
+          "filledSize": 0,
+          "reduceOnly": false
         }
       ]
     }
@@ -1577,22 +1883,45 @@ endAt | long | [可选]  截止时间（毫秒）
 
 **请求返回数据使用了Pagination分页方式。**
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
+### 返回值
+参数  | 含义
+--------- | -----------
+id | 订单编号
+symbol | 合约编号
+type | 类型, 市价单或限价单
+side | 买卖方向
+price | 下单价格
+size | 数量
+value | 订单价值
+dealValue | 成交额
+dealSize | 成交数量
+stp | stp 类型
+stop | 止损订单类型
+stopPriceType | 止损订单触发价格类型
+stopTriggered | 止损订单是否触发标志
+stopPrice | 止损订单触发价格
+timeInForce | timeInForce类型
+postOnly | postOnly标志
+hidden | 隐藏单标志
+iceberg | 冰山单标志
+leverage | 杠杆倍数
+forceHold | 强制冻结单标志
+closeOrder | 平仓单标志
+visibleSize | 冰山单可见数量
+clientOid | 客户订单编号
+remark | 注解
+tags | 订单标签
+isActive | 未完成订单标志
+cancelExist | 订单存在取消数量标志
+createdAt | 创建时间
+updatedAt | 最新更新时间
+endAt | 截止时间
+orderTime | 下单时间纳秒
+settleCurrency | 结算币种
+status | 订单状态: “open” 或 “done”
+filledSize | 已经成交订单价值
+filledValue | 已经成交订单数量
+reduceOnly | 只减仓标记
 
 
 
@@ -1610,8 +1939,8 @@ endAt | long | [可选]  截止时间（毫秒）
             "price": "3600",  //下单价格
             "size": 20000,  //数量
             "value": "56.1167227833",  //订单价值
-            "filledValue": "56.1167227833",  //已经成交订单价值
-            "filledSize": 20000,  //已经成交订单数量
+            "dealValue": "56.1167227833",  //成交额
+            "dealSize": 20000,//成交数量
             "stp": "",  //stp 类型
             "stop": "",  //止损订单类型
             "stopPriceType": "",  //止损订单触发价格类型
@@ -1620,27 +1949,31 @@ endAt | long | [可选]  截止时间（毫秒）
             "timeInForce": "GTC",  //timeInForce类型
             "postOnly": false,  //postOnly标志
             "hidden": false,  //隐藏单标志
-            "iceberg": false,  //冰山单标志
-            "visibleSize": null,  //冰山单可见数量
+            "iceberg": false,  //冰山单标志 
             "leverage": "20",  //杠杆倍数
             "forceHold": false,  //强制冻结单标志
             "closeOrder": false, //平仓单标志
-            "closeOnly": false,  //只减仓单标志
+            "visibleSize": null,  //冰山单可见数量
             "clientOid": "5ce24c16b210233c36ee321d",  //客户订单编号
             "remark": null,  //注解
+            "tags": null,//订单标签
             "isActive": false,  //未完成订单标志
             "cancelExist": false,  //订单存在取消数量标志
             "createdAt": 1558167872000,  //创建时间
+            "updatedAt": 1558167872000, //最新更新时间
+            "endAt": 1558167872000,//截止时间
+            "orderTime": 1558167872000000000, //下单时间纳秒
             "settleCurrency": "XBT", //结算币种
             "status": "done", //订单状态: “open” 或 “done”
-            "updatedAt": 1558167872000, //最新更新时间
-            "orderTime": 1558167872000000000 //下单时间纳秒
+            "filledValue": "56.1167227833",  //已经成交订单价值
+            "filledSize": 20000,  //已经成交订单数量
+            "reduceOnly": false  //只减仓标记
           }
     ]
  }
 ```
 
-Get a list of 1000 orders in the last 24 hours. 如果需要低延时获取自己的最近成交历史订单, 请使用此接口。 使用此接口可获取过去24小时内最近完成的1000笔订单。
+如果需要低延时获取自己的最近成交历史订单, 请使用此接口。 使用此接口可获取过去24小时内最近完成的1000笔订单。
 
 ### HTTP请求
 GET /api/v1/recentDoneOrders
@@ -1651,33 +1984,45 @@ GET /api/v1/recentDoneOrders
 ### API权限
 该接口需获取**通用权限**。
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+参数  | 含义
+--------- | -----------
+id | 订单编号
+symbol | 合约编号
+type | 类型, 市价单或限价单
+side | 买卖方向
+price | 下单价格
+size | 数量
+value | 订单价值
+dealValue | 成交额
+dealSize | 成交数量
+stp | stp 类型
+stop | 止损订单类型
+stopPriceType | 止损订单触发价格类型
+stopTriggered | 止损订单是否触发标志
+stopPrice | 止损订单触发价格
+timeInForce | timeInForce类型
+postOnly | postOnly标志
+hidden | 隐藏单标志
+iceberg | 冰山单标志
+leverage | 杠杆倍数
+forceHold | 强制冻结单标志
+closeOrder | 平仓单标志
+visibleSize | 冰山单可见数量
+clientOid | 客户订单编号
+remark | 注解
+tags | 订单标签
+isActive | 未完成订单标志
+cancelExist | 订单存在取消数量标志
+createdAt | 创建时间
+updatedAt | 最新更新时间
+endAt | 截止时间
+orderTime | 下单时间纳秒
+settleCurrency | 结算币种
+status | 订单状态: “open” 或 “done”
+filledSize | 已经成交订单价值
+filledValue | 已经成交订单数量
+reduceOnly | 只减仓标记
 
 ## 单个订单详情
 
@@ -1685,39 +2030,43 @@ GET /api/v1/recentDoneOrders
   {
     "code": "200000",
     "data": {
-      "id": "5cdfc138b21023a909e5ad55", //订单编号
-      "symbol": "XBTUSDM",  //合约编号
-      "type": "limit",   //类型, 市价单或限价单
-      "side": "buy",  //买卖方向
-      "price": "3600",  //下单价格
-      "size": 20000,  //数量
-      "value": "56.1167227833",  //订单价值
-      "filledValue": "56.1167227833",  //已经成交订单价值
-      "filledSize": 20000,  //已经成交订单数量
-      "stp": "",  //stp 类型
-      "stop": "",  //止损订单类型
-      "stopPriceType": "",  //止损订单触发价格类型
-      "stopTriggered": true,  //止损订单是否触发标志
-      "stopPrice": null,  //止损订单触发价格
-      "timeInForce": "GTC",  //timeInForce类型
-      "postOnly": false,  //postOnly标志
-      "hidden": false,  //隐藏单标志
-      "iceberg": false,  //冰山单标志
-      "visibleSize": null,  //冰山单可见数量
-      "leverage": "20",  //杠杆倍数
-      "forceHold": false,  //强制冻结单标志
-      "closeOrder": false, //平仓单标志
-      "closeOnly": false,  //只减仓单标志
-      "clientOid": "5ce24c16b210233c36ee321d",  //客户订单编号
-      "remark": null,  //注解
-      "isActive": false,  //未完成订单标志
-      "cancelExist": false,  //订单存在取消数量标志
-      "createdAt": 1558167872000,  //创建时间
-      "settleCurrency": "XBT", //结算币种
-      "status": "open", //订单状态: “open” 或 “done”
-      "updatedAt": 1558167872000, //最新更新时间
-      "orderTime": 1558167872000000000 //下单时间纳秒
-    }
+            "id": "5cdfc138b21023a909e5ad55", //订单编号
+            "symbol": "XBTUSDM",  //合约编号
+            "type": "limit",   //类型, 市价单或限价单
+            "side": "buy",  //买卖方向
+            "price": "3600",  //下单价格
+            "size": 20000,  //数量
+            "value": "56.1167227833",  //订单价值
+            "dealValue": "56.1167227833",  //成交额
+            "dealSize": 20000,//成交数量
+            "stp": "",  //stp 类型
+            "stop": "",  //止损订单类型
+            "stopPriceType": "",  //止损订单触发价格类型
+            "stopTriggered": true,  //止损订单是否触发标志
+            "stopPrice": null,  //止损订单触发价格
+            "timeInForce": "GTC",  //timeInForce类型
+            "postOnly": false,  //postOnly标志
+            "hidden": false,  //隐藏单标志
+            "iceberg": false,  //冰山单标志 
+            "leverage": "20",  //杠杆倍数
+            "forceHold": false,  //强制冻结单标志
+            "closeOrder": false, //平仓单标志
+            "visibleSize": null,  //冰山单可见数量
+            "clientOid": "5ce24c16b210233c36ee321d",  //客户订单编号
+            "remark": null,  //注解
+            "tags": null,//订单标签
+            "isActive": false,  //未完成订单标志
+            "cancelExist": false,  //订单存在取消数量标志
+            "createdAt": 1558167872000,  //创建时间
+            "updatedAt": 1558167872000, //最新更新时间
+            "endAt": 1558167872000,//截止时间
+            "orderTime": 1558167872000000000, //下单时间纳秒
+            "settleCurrency": "XBT", //结算币种
+            "status": "done", //订单状态: “open” 或 “done”
+            "filledValue": "56.1167227833",  //已经成交订单价值
+            "filledSize": 20000,  //已经成交订单数量
+            "reduceOnly": false  //只减仓标记
+          }
 }
 ```
 您可通过订单号获取单个订单的详情（包括止损单）。
@@ -1734,21 +2083,45 @@ GET /api/v1/orders/byClientOid?clientOid=eresc138b21023a909e5ad59 (通过用户�
 ### API权限
 该接口需获取**通用权限**。
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+参数  | 含义
+--------- | -----------
+id | 订单编号
+symbol | 合约编号
+type | 类型, 市价单或限价单
+side | 买卖方向
+price | 下单价格
+size | 数量
+value | 订单价值
+dealValue | 成交额
+dealSize | 成交数量
+stp | stp 类型
+stop | 止损订单类型
+stopPriceType | 止损订单触发价格类型
+stopTriggered | 止损订单是否触发标志
+stopPrice | 止损订单触发价格
+timeInForce | timeInForce类型
+postOnly | postOnly标志
+hidden | 隐藏单标志
+iceberg | 冰山单标志
+leverage | 杠杆倍数
+forceHold | 强制冻结单标志
+closeOrder | 平仓单标志
+visibleSize | 冰山单可见数量
+clientOid | 客户订单编号
+remark | 注解
+tags | 订单标签
+isActive | 未完成订单标志
+cancelExist | 订单存在取消数量标志
+createdAt | 创建时间
+updatedAt | 最新更新时间
+endAt | 截止时间
+orderTime | 下单时间纳秒
+settleCurrency | 结算币种
+status | 订单状态: “open” 或 “done”
+filledSize | 已经成交订单价值
+filledValue | 已经成交订单数量
+reduceOnly | 只减仓标记
 
 # 成交记录
 
@@ -1769,6 +2142,7 @@ GET /api/v1/orders/byClientOid?clientOid=eresc138b21023a909e5ad59 (通过用户�
             "orderId": "5ce24c16b210233c36ee321d",  //订单编号
             "side": "sell",  //买卖方向
             "liquidity": "taker",  //流动性类型 taker or maker
+            "forceTaker": true, //是否强制作为taker处理
             "price": "8302",  //成交价格
             "size": 10,  //成交数量
             "value": "0.001204529",  //成交价值
@@ -1814,6 +2188,29 @@ type | String |[可选] **limit**, **market**, **limit_stop** or **market_stop**
 startAt | long |[可选] 开始时间（毫秒）
 endAt | long |[可选]  截止时间（毫秒） 
 
+### 返回值
+参数  | 含义
+--------- | -----------
+symbol  | 合约编号
+tradeId  | 交易编号
+orderId  | 订单编号
+side  | 买卖方向
+liquidity  | 流动性类型 taker or maker
+forceTaker  | 是否强制作为taker处理
+price  | 成交价格
+size  | 成交数量
+value  | 成交价值
+feeRate  | 费率
+fixFee  | 固定费用(废弃字段，没有实际使用价值)
+feeCurrency  | 收费币种
+stop  | 止损单类型标记
+fee  | 交易费用
+orderType  | 订单类型
+tradeType  | 交易类型: trade, liquidation, ADL or settlement
+createdAt  | 创建时间
+settleCurrency  | 结算币种
+tradeTime  | 交易时间纳秒
+
 如果需要低延时获取自己的最近成交历史记录, 请使用24小时成交列表接口。 此接口返回的历史成交可能存在一定的延迟。
 请使用查询参数获取指定合约的已成交订单。
 
@@ -1848,7 +2245,7 @@ KuCoin Futures平台上的订单分为两种类型：**Taker** 和 **Maker**。T
      "size": 10,  //成交数量
      "value": "0.001204529",  //成交价值
      "feeRate": "0.0005",  //费用率
-     "fixFee": "0.00000006",  //固定费用
+     "fixFee": "0.00000006",  //固定费用(废弃字段，没有实际使用价值)
      "feeCurrency": "XBT",  //收费币种
      "stop": "",  //止损单类型标记
      "fee": "0.0000012022",  //交易费用
@@ -1877,16 +2274,28 @@ GET /api/v1/recentFills
 ### 频率限制
 此接口针对每个账号请求频率限制为**9次/3s**
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+参数  | 含义
+--------- | -----------
+symbol  | 合约编号
+tradeId  | 交易编号
+orderId  | 订单编号
+side  | 买卖方向
+liquidity  | 流动性类型 taker or maker
+forceTaker  | 是否强制作为taker处理
+price  | 成交价格
+size  | 成交数量
+value  | 成交价值
+feeRate  | 费率
+fixFee  | 固定费用(废弃字段，没有实际使用价值)
+feeCurrency  | 收费币种
+stop  | 止损单类型标记
+fee  | 交易费用
+orderType  | 订单类型
+tradeType  | 交易类型: trade, liquidation, ADL or settlement
+createdAt  | 创建时间
+settleCurrency  | 结算币种
+tradeTime  | 交易时间纳秒
 
 ## 活动订单价值统计
 
@@ -1919,52 +2328,60 @@ GET /api/v1/openOrderStatistics
 --------- | ------- | -----------
 symbol |String| 指定合约的活动订单，如：XBTUSDM的活动订单。
 
+### 返回值
+参数  | 含义
+--------- | -----------
+openOrderBuySize  | 未完成买单总数量
+openOrderSellSize  | 未完成卖单总数量
+openOrderBuyCost  | 未完成买单价值总量
+openOrderSellCost  | 未完成卖单价值总量
+settleCurrency  | 结算币种
 
 # 仓位
 
 ## 获取仓位详情
 
 ```json
- 	{
-    'id': '5e81a7827911f40008e80715',                //仓位id
-    'symbol': 'XBTUSDTM',  													 //合约symbol
-    'autoDeposit': False,  													 //是否自动追加保证金
-    'maintMarginReq': 0.005,  											 //维持保证金率
-    'riskLimit': 2000000,  													 //风险限额
-    'realLeverage': 5.0,  													 //杠杆倍数
-    'crossMode': False,  													 	 //是否全仓模式
-    'delevPercentage': 0.35,  											 //ADL分位数
-    'openingTimestamp': 1623832410892,  						 //开仓时间
-    'currentTimestamp': 1623832488929,  						 //当前时间戳
-    'currentQty': 1,  											 				 //当前仓位数量
-    'currentCost': 40.008,  												 //当前仓位价值
-    'currentComm': 0.0240048,  											 //当前仓位总费用
-    'unrealisedCost': 40.008,  											 //未实现价值
-    'realisedGrossCost': 0.0,  											 //累计已实现毛利价值
-    'realisedCost': 0.0240048,  										 //累计已实现仓位价值
-    'isOpen': True,  																 //是否开仓
-    'markPrice': 40014.93,  												 //标记价格
-    'markValue': 40.01493,  												 //标记价值
-    'posCost': 40.008,  														 //仓位价值
-    'posCross': 0.0,  															 //追加到仓位的保证金
-    'posInit': 8.0016,  														 //杠杆保证金
-    'posComm': 0.02880576,  												 //破产费用
-    'posLoss': 0.0,  																 //资金费用减少的资金
-    'posMargin': 8.03040576,  											 //仓位保证金
-    'posMaint': 0.23284656,  											 	 //维持保证金
-    'maintMargin': 8.03733576, 											 //包含未实现盈亏的仓位保证金
-    'realisedGrossPnl': 0.0,  											 //累计已实现毛利
-    'realisedPnl': -0.0240048,  										 //已实现盈亏
-    'unrealisedPnl': 0.00693,  											 //未实现盈亏
-    'unrealisedPnlPcnt': 0.0002,  									 //仓位盈亏率
-    'unrealisedRoePcnt': 0.0009,  									 //投资回报率
-    'avgEntryPrice': 40008.0,  											 //平均开仓价格
-    'liquidationPrice': 32211.0,  									 //强平价格
-    'bankruptPrice': 32006.0,  											 //破产价格
-    'settleCurrency': 'USDT',  											 //结算币种
-    'maintainMargin': 0.25,  											   //维持保证金率
-    'riskLimitLevel': 1   											     //当前风险限额等级
-	}
+{
+    "id": "5e81a7827911f40008e80715",                //仓位id
+    "symbol": "XBTUSDTM",  							//合约symbol
+    "autoDeposit": False,  							//是否自动追加保证金
+    "maintMarginReq": 0.005,  						//维持保证金率
+    "riskLimit": 2000000,  							//风险限额
+    "realLeverage": 5.0,  							//杠杆倍数
+    "crossMode": False,  							//是否全仓模式
+    "delevPercentage": 0.35,  						//ADL分位数
+    "openingTimestamp": 1623832410892,  			//开仓时间
+    "currentTimestamp": 1623832488929,  			//当前时间戳
+    "currentQty": 1,  								//当前仓位数量
+    "currentCost": 40.008,  						//当前仓位价值
+    "currentComm": 0.0240048,  						//当前仓位总费用
+    "unrealisedCost": 40.008,  						//未实现价值
+    "realisedGrossCost": 0.0,  						//累计已实现毛利价值
+    "realisedCost": 0.0240048,  					//累计已实现仓位价值
+    "isOpen": True,  								//是否开仓
+    "markPrice": 40014.93,  						//标记价格
+    "markValue": 40.01493,  						//标记价值
+    "posCost": 40.008,  							//仓位价值
+    "posCross": 0.0,  								//追加到仓位的保证金
+    "posInit": 8.0016,  							//杠杆保证金
+    "posComm": 0.02880576,  						//破产费用
+    "posLoss": 0.0,  								//资金费用减少的资金
+    "posMargin": 8.03040576,  						//仓位保证金
+    "posMaint": 0.23284656,  						//维持保证金
+    "maintMargin": 8.03733576, 						//包含未实现盈亏的仓位保证金
+    "realisedGrossPnl": 0.0,  						//累计已实现毛利
+    "realisedPnl": -0.0240048,  					//已实现盈亏
+    "unrealisedPnl": 0.00693,  						//未实现盈亏
+    "unrealisedPnlPcnt": 0.0002,  					//仓位盈亏率
+    "unrealisedRoePcnt": 0.0009,  					//投资回报率
+    "avgEntryPrice": 40008.0,  						//平均开仓价格
+    "liquidationPrice": 32211.0,  					//强平价格
+    "bankruptPrice": 32006.0,  						//破产价格
+    "settleCurrency": "USDT",  						//结算币种
+    "maintainMargin": 0.25,  						//维持保证金率
+    "riskLimitLevel": 1   							//当前风险限额等级
+}
 ```
 
 获取用户指定合约的仓位详情
@@ -1985,68 +2402,91 @@ GET /api/v1/position?symbol=XBTUSDM
 | ------ | ------ | ----------- |
 | symbol | String | 合约名称    |
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+参数  | 含义
+--------- | -----------
+id  | 仓位id
+symbol  | 合约symbol
+autoDeposit  | 是否自动追加保证金
+maintMarginReq  | 维持保证金率
+riskLimit  | 风险限额
+realLeverage  | 杠杆倍数
+crossMode  | 是否全仓模式
+delevPercentage  | ADL分位数
+openingTimestamp  | 开仓时间
+currentTimestamp  | 当前时间戳
+currentQty  | 当前仓位数量
+currentCost  | 当前仓位价值
+currentComm  | 当前仓位总费用
+unrealisedCost  | 未实现价值
+realisedGrossCost  | 累计已实现毛利价值
+realisedCost  | 累计已实现仓位价值
+isOpen  | 是否开仓
+markPrice  | 标记价格
+markValue  | 标记价值
+posCost  | 仓位价值
+posCross  | 追加到仓位的保证金
+posInit  | 杠杆保证金
+posComm  | 破产费用
+posLoss  | 资金费用减少的资金
+posMargin  | 仓位保证金
+posMaint  | 维持保证金
+maintMargin  | 包含未实现盈亏的仓位保证金
+realisedGrossPnl  | 累计已实现毛利
+realisedPnl  | 已实现盈亏
+unrealisedPnl  | 未实现盈亏
+unrealisedPnlPcnt  | 仓位盈亏率
+unrealisedRoePcnt  | 投资回报率
+avgEntryPrice  | 平均开仓价格
+liquidationPrice  | 强平价格
+bankruptPrice  | 破产价格
+settleCurrency  | 结算币种
+maintainMargin  | 维持保证金率
+riskLimitLevel  | 当前风险限额等级
 
 ## 获取用户仓位列表
 
 ```json
     {
-    'id': '5e81a7827911f40008e80715',                //仓位id
-    'symbol': 'XBTUSDTM',  													 //合约symbol
-    'autoDeposit': False,  													 //是否自动追加保证金
-    'maintMarginReq': 0.005,  											 //维持保证金率
-    'riskLimit': 2000000,  													 //风险限额
-    'realLeverage': 5.0,  													 //杠杆倍数
-    'crossMode': False,  													 	 //是否全仓模式
-    'delevPercentage': 0.35,  											 //ADL分位数
-    'openingTimestamp': 1623832410892,  						 //开仓时间
-    'currentTimestamp': 1623832488929,  						 //当前时间戳
-    'currentQty': 1,  											 				 //当前仓位数量
-    'currentCost': 40.008,  												 //当前仓位价值
-    'currentComm': 0.0240048,  											 //当前仓位总费用
-    'unrealisedCost': 40.008,  											 //未实现价值
-    'realisedGrossCost': 0.0,  											 //累计已实现毛利价值
-    'realisedCost': 0.0240048,  										 //累计已实现仓位价值
-    'isOpen': True,  																 //是否开仓
-    'markPrice': 40014.93,  												 //标记价格
-    'markValue': 40.01493,  												 //标记价值
-    'posCost': 40.008,  														 //仓位价值
-    'posCross': 0.0,  															 //追加到仓位的保证金
-    'posInit': 8.0016,  														 //杠杆保证金
-    'posComm': 0.02880576,  												 //破产费用
-    'posLoss': 0.0,  																 //资金费用减少的资金
-    'posMargin': 8.03040576,  											 //仓位保证金
-    'posMaint': 0.23284656,  											 	 //维持保证金
-    'maintMargin': 8.03733576, 											 //包含未实现盈亏的仓位保证金
-    'realisedGrossPnl': 0.0,  											 //累计已实现毛利
-    'realisedPnl': -0.0240048,  										 //已实现盈亏
-    'unrealisedPnl': 0.00693,  											 //未实现盈亏
-    'unrealisedPnlPcnt': 0.0002,  									 //仓位盈亏率
-    'unrealisedRoePcnt': 0.0009,  									 //投资回报率
-    'avgEntryPrice': 40008.0,  											 //平均开仓价格
-    'liquidationPrice': 32211.0,  									 //强平价格
-    'bankruptPrice': 32006.0,  											 //破产价格
-    'settleCurrency': 'USDT',  											 //结算币种
-	}
+    "id": "5e81a7827911f40008e80715",                //仓位id
+    "symbol": "XBTUSDTM",                            //合约symbol
+    "autoDeposit": False,                            //是否自动追加保证金
+    "maintMarginReq": 0.005,                         //维持保证金率
+    "riskLimit": 2000000,                            //风险限额
+    "realLeverage": 5.0,                             //杠杆倍数
+    "crossMode": False,                              //是否全仓模式
+    "delevPercentage": 0.35,                         //ADL分位数
+    "openingTimestamp": 1623832410892,               //开仓时间
+    "currentTimestamp": 1623832488929,               //当前时间戳
+    "currentQty": 1,                                 //当前仓位数量
+    "currentCost": 40.008,                           //当前仓位价值
+    "currentComm": 0.0240048,                        //当前仓位总费用
+    "unrealisedCost": 40.008,                        //未实现价值
+    "realisedGrossCost": 0.0,                        //累计已实现毛利价值
+    "realisedCost": 0.0240048,                       //累计已实现仓位价值
+    "isOpen": True,                                  //是否开仓
+    "markPrice": 40014.93,                           //标记价格
+    "markValue": 40.01493,                           //标记价值
+    "posCost": 40.008,                               //仓位价值
+    "posCross": 0.0,                                 //追加到仓位的保证金
+    "posInit": 8.0016,                               //杠杆保证金
+    "posComm": 0.02880576,                           //破产费用
+    "posLoss": 0.0,                                  //资金费用减少的资金
+    "posMargin": 8.03040576,                         //仓位保证金
+    "posMaint": 0.23284656,                          //维持保证金
+    "maintMargin": 8.03733576,                       //包含未实现盈亏的仓位保证金
+    "realisedGrossPnl": 0.0,                         //累计已实现毛利
+    "realisedPnl": -0.0240048,                       //已实现盈亏
+    "unrealisedPnl": 0.00693,                        //未实现盈亏
+    "unrealisedPnlPcnt": 0.0002,                     //仓位盈亏率
+    "unrealisedRoePcnt": 0.0009,                     //投资回报率
+    "avgEntryPrice": 40008.0,                        //平均开仓价格
+    "liquidationPrice": 32211.0,                     //强平价格
+    "bankruptPrice": 32006.0,                        //破产价格
+    "settleCurrency": "USDT",                        //结算币种
+    "isInverse": false,                              //是否是反向合约
+    "maintainMargin": 0.005                          //维持保证金率
+  }
 ```
 
 使用该请求，可获取用户所有的仓位列表。
@@ -2063,28 +2503,55 @@ GET /api/v1/positions
 ### 频率限制
 此接口针对每个账号请求频率限制为**9次/3s**
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+参数  | 含义
+--------- | -----------
+id  | 仓位id
+symbol  | 合约symbol
+autoDeposit  | 是否自动追加保证金
+maintMarginReq  | 维持保证金率
+riskLimit  | 风险限额
+realLeverage  | 杠杆倍数
+crossMode  | 是否全仓模式
+delevPercentage  | ADL分位数
+openingTimestamp  | 开仓时间
+currentTimestamp  | 当前时间戳
+currentQty  | 当前仓位数量
+currentCost  | 当前仓位价值
+currentComm  | 当前仓位总费用
+unrealisedCost  | 未实现价值
+realisedGrossCost  | 累计已实现毛利价值
+realisedCost  | 累计已实现仓位价值
+isOpen  | 是否开仓
+markPrice  | 标记价格
+markValue  | 标记价值
+posCost  | 仓位价值
+posCross  | 追加到仓位的保证金
+posInit  | 杠杆保证金
+posComm  | 破产费用
+posLoss  | 资金费用减少的资金
+posMargin  | 仓位保证金
+posMaint  | 维持保证金
+maintMargin  | 包含未实现盈亏的仓位保证金
+realisedGrossPnl  | 累计已实现毛利
+realisedPnl  | 已实现盈亏
+unrealisedPnl  | 未实现盈亏
+unrealisedPnlPcnt  | 仓位盈亏率
+unrealisedRoePcnt  | 投资回报率
+avgEntryPrice  | 平均开仓价格
+liquidationPrice  | 强平价格
+bankruptPrice  | 破产价格
+settleCurrency  | 结算币种
+isInverse  | 是否是反向合约
+maintainMargin  | 维持保证金率
 
 ## 更改自动追加保证金状态
+```json
+{
+  "code": "200000",
+  "data": false
+}
+```
 ### HTTP请求
 POST /api/v1/position/margin/auto-deposit-status
 
@@ -2101,6 +2568,46 @@ POST /api/v1/position/margin/auto-deposit-status
 | status | boolean | 状态        |
 
 ## 手动追加保证金
+```json
+{
+  "id": "6200c9b83aecfb000152ddcd",
+  "symbol": "XBTUSDTM",
+  "autoDeposit": false,
+  "maintMarginReq": 0.005,
+  "riskLimit": 500000,
+  "realLeverage": 18.72,
+  "crossMode": false,
+  "delevPercentage": 0.66,
+  "openingTimestamp": 1646287090131,
+  "currentTimestamp": 1646295055021,
+  "currentQty": 1,
+  "currentCost": 43.388,
+  "currentComm": 0.0260328,
+  "unrealisedCost": 43.388,
+  "realisedGrossCost": 0.0,
+  "realisedCost": 0.0260328,
+  "isOpen": true,
+  "markPrice": 43536.65,
+  "markValue": 43.53665,
+  "posCost": 43.388,
+  "posCross": 2.4985e-05,
+  "posInit": 2.1694,
+  "posComm": 0.02733446,
+  "posLoss": 0.0,
+  "posMargin": 2.19675944,
+  "posMaint": 0.24861326,
+  "maintMargin": 2.34540944,
+  "realisedGrossPnl": 0.0,
+  "realisedPnl": -0.0260328,
+  "unrealisedPnl": 0.14865,
+  "unrealisedPnlPcnt": 0.0034,
+  "unrealisedRoePcnt": 0.0685,
+  "avgEntryPrice": 43388.0,
+  "liquidationPrice": 41440.0,
+  "bankruptPrice": 41218.0,
+  "settleCurrency": "USDT"
+}
+```
 ### HTTP请求
 POST /api/v1/position/margin/deposit-margin
 
@@ -2117,6 +2624,46 @@ POST /api/v1/position/margin/deposit-margin
 | symbol | String | 合约名称    |
 | margin | Number | 保证金数量（增加保证金不能低于0.00001667XBT）|
 | bizNo  | String | 业务唯一id  |
+
+### 返回值
+参数  | 含义
+--------- | -----------
+id  | 仓位id
+symbol  | 合约symbol
+autoDeposit  | 是否自动追加保证金
+maintMarginReq  | 维持保证金率
+riskLimit  | 风险限额
+realLeverage  | 杠杆倍数
+crossMode  | 是否全仓模式
+delevPercentage  | ADL分位数
+openingTimestamp  | 开仓时间
+currentTimestamp  | 当前时间戳
+currentQty  | 当前仓位数量
+currentCost  | 当前仓位价值
+currentComm  | 当前仓位总费用
+unrealisedCost  | 未实现价值
+realisedGrossCost  | 累计已实现毛利价值
+realisedCost  | 累计已实现仓位价值
+isOpen  | 是否开仓
+markPrice  | 标记价格
+markValue  | 标记价值
+posCost  | 仓位价值
+posCross  | 追加到仓位的保证金
+posInit  | 杠杆保证金
+posComm  | 破产费用
+posLoss  | 资金费用减少的资金
+posMargin  | 仓位保证金
+posMaint  | 维持保证金
+maintMargin  | 包含未实现盈亏的仓位保证金
+realisedGrossPnl  | 累计已实现毛利
+realisedPnl  | 已实现盈亏
+unrealisedPnl  | 未实现盈亏
+unrealisedPnlPcnt  | 仓位盈亏率
+unrealisedRoePcnt  | 投资回报率
+avgEntryPrice  | 平均开仓价格
+liquidationPrice  | 强平价格
+bankruptPrice  | 破产价格
+settleCurrency  | 结算币种
 
 # 阶梯风险限额
 ## 获取合约阶梯风险
@@ -2208,6 +2755,11 @@ POST /v1/position/risk-limit-level/change
 symbol | String | 路径参数。合约名称.
 level | Integer | 等级.
 
+### 返回值
+字段 | 含义
+--------- | -------
+data | 修改会撤销用户当前挂单，返回结果仅代表修改申请提交是否成功。
+
 # 资金费用
 
 ## 查询资金费用历史
@@ -2277,26 +2829,19 @@ GET /api/v1/funding-history
 | forward   | boolean | [可选] 是否前向查询，**true**或者**false**，默认为**true** |
 | maxCount  | int     | [可选] 最大记录条数，默认为10                          |
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+字段 | 含义
+--------- | -------
+id | id
+symbol | 合约symbol
+timePoint | 时间点(毫秒)
+fundingRate | 资金费率
+markPrice | 标记价格
+positionQty | 结算时的仓位数
+positionCost | 结算时的仓位价值
+funding | 结算的资金费用，正数表示收入；负数表示支出
+settleCurrency | 结算币种
+hasMore | 是否还有下一页
 
 # 市场数据
 
@@ -2306,48 +2851,70 @@ GET /api/v1/funding-history
 ## 获取开放合约列表
 
 ```json
-  {
-    "code": "200000",
-    "data": {
-      "baseCurrency": "XBT",  //基础货币
-      "fairMethod": "FundingRate", //合理标记方式
-      "fundingBaseSymbol": ".XBTINT8H",  //基础货币symbol
-      "fundingQuoteSymbol": ".USDINT8H", //计价货币symbol
-      "fundingRateSymbol": ".XBTUSDMFPI8H",  //资金费率symbol
-      "indexSymbol": ".KXBT",    //指数symbol
-      "initialMargin": 0.01, //起始保证金比例
-      "isDeleverage": true,   //是否支持自动减仓
-      "isInverse": true,  //是否是反向合约
-      "isQuanto": false,   //是否quanto
-      "lotSize": 1,   //最小合约数量
-      "maintainMargin": 0.005,    //维持保证金比例
-      "makerFeeRate": -0.00025,  //maker手续费
-      "makerFixFee":  -0.0000000200,   //maker手续费固定值
-      "markMethod": "FairPrice", //标记方式
-      "maxOrderQty": 1000000,   //最大委托数量
-      "maxPrice": 1000000.0000000000,  //最大下单价格    
-      "maxRiskLimit": 200,  //最大风险限额(以XBT为单位)
-      "minRiskLimit": 200,  //最小风险限额(以XBT为单位)
-      "multiplier": -1,    //合约乘数
-      "quoteCurrency": "USD",  //计价货币
-      "riskStep": 100,  //风险限额递增值(以XBT为单位)
-      "rootSymbol": "XBT", //合约系列
-      "status": "Open", //合约状态
-      "symbol": "XBTUSDM", //合约名称
-      "takerFeeRate": 0.0005,  //taker手续费
-      "takerFixFee": 0.0000000600,   //taker手续费固定值
-      "tickSize": 1,  //最小的价格变化
-      "type": "FFWCSX",    //合约类型
-      "maxLeverage": 100,   //最大可用杠杆倍数
-      "volumeOf24h": 14848115, //24 小时成交量
-      "turnoverOf24h": 1590.20278373, //24 小时成交额
-      "openInterest": "10621721",  //活动仓位数
-      "lowPrice": 19445, //24 小时最低成交价
-      "highPrice": 23862, //24 小时最高成交价
-      "priceChgPct": 1000, //24 小时涨跌幅
-      "priceChg": 0.1646 //24 小时涨跌价格
-   }
-  }
+[{
+  "symbol": "XBTUSDTM",
+  "rootSymbol": "USDT",
+  "type": "FFWCSX",
+  "firstOpenDate": 1585555200000,
+  "expireDate": null,
+  "settleDate": null,
+  "baseCurrency": "XBT",
+  "quoteCurrency": "USDT",
+  "settleCurrency": "USDT",
+  "maxOrderQty": 1000000,
+  "maxPrice": 1000000.0,
+  "lotSize": 1,
+  "tickSize": 1.0,
+  "indexPriceTickSize": 0.01,
+  "multiplier": 0.001,
+  "initialMargin": 0.01,
+  "maintainMargin": 0.005,
+  "maxRiskLimit": 2000000,
+  "minRiskLimit": 2000000,
+  "riskStep": 1000000,
+  "makerFeeRate": 0.0002,
+  "takerFeeRate": 0.0006,
+  "takerFixFee": 0.0,
+  "makerFixFee": 0.0,
+  "settlementFee": null,
+  "isDeleverage": true,
+  "isQuanto": true,
+  "isInverse": false,
+  "markMethod": "FairPrice",
+  "fairMethod": "FundingRate",
+  "fundingBaseSymbol": ".XBTINT8H",
+  "fundingQuoteSymbol": ".USDTINT8H",
+  "fundingRateSymbol": ".XBTUSDTMFPI8H",
+  "indexSymbol": ".KXBTUSDT",
+  "settlementSymbol": "",
+  "status": "Open",
+  "fundingFeeRate": 0.0001,
+  "predictedFundingFeeRate": 0.0001,
+  "openInterest": "5191275",
+  "turnoverOf24h": 2361994501.712677,
+  "volumeOf24h": 56067.116,
+  "markPrice": 44514.03,
+  "indexPrice": 44510.78,
+  "lastTradePrice": 44493.0,
+  "nextFundingRateTime": 21031525,
+  "maxLeverage": 100,
+  "sourceExchanges": [
+    "huobi",
+    "Okex",
+    "Binance",
+    "Kucoin",
+    "Poloniex",
+    "Hitbtc"
+  ],
+  "premiumsSymbol1M": ".XBTUSDTMPI",
+  "premiumsSymbol8H": ".XBTUSDTMPI8H",
+  "fundingBaseSymbol1M": ".XBTINT",
+  "fundingQuoteSymbol1M": ".USDTINT",
+  "lowPrice": 38040,
+  "highPrice": 44948,
+  "priceChgPct": 0.1702,
+  "priceChg": 6476
+}]
 ```
 
 获取所有开放的合约信息
@@ -2361,71 +2928,131 @@ GET /api/v1/contracts/active
 ### 参数
 无
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 合约名称
+rootSymbol | 合约系列
+type | 合约类型
+firstOpenDate | 首次开放时间
+expireDate | 到期日期, 为NULL表示永不过期
+settleDate | 结算日期, 为NULL表示不支持自动结算
+baseCurrency | 基础货币
+quoteCurrency | 计价货币
+settleCurrency | 结算币种
+maxOrderQty | 最大委托数量
+maxPrice | 最大下单价格
+lotSize | 最小合约数量
+tickSize | 最小的价格变化
+indexPriceTickSize | 指数价格变化步长
+multiplier | 合约乘数
+initialMargin | 初始保证金率
+maintainMargin | 维持保证金率
+maxRiskLimit | 最大风险限额(以XBT为单位)
+minRiskLimit | 最小风险限额(以XBT为单位)
+riskStep | 风险限额递增值(以XBT为单位)
+makerFeeRate | maker手续费
+takerFeeRate | taker手续费
+takerFixFee | taker手续费固定值(废弃字段，没有实际使用价值)
+makerFixFee | maker手续费固定值(废弃字段，没有实际使用价值)
+settlementFee | 结算手续费
+isDeleverage | 是否支持自动减仓
+isQuanto | 是否quanto(废弃字段，没有实际使用价值)
+isInverse | 是否是反向合约
+markMethod | 标记方式
+fairMethod | 合理标记方式
+fundingBaseSymbol | 基础货币symbol
+fundingQuoteSymbol | 计价货币symbol
+fundingRateSymbol | 资金费率symbol
+indexSymbol | 指数symbol
+settlementSymbol | 结算symbol
+status | 合约状态
+fundingFeeRate | 资金费率值
+predictedFundingFeeRate | 预测资金费率值
+openInterest | 活动仓位数
+turnoverOf24h | 24 小时成交额
+volumeOf24h | 24 小时成交量
+markPrice | 标记价格
+indexPrice | 指数价格
+lastTradePrice | 最新成交价
+nextFundingRateTime | 下次资金费率时间
+maxLeverage | 最大可用杠杆
+sourceExchanges | 该合约指数来源交易所
+premiumsSymbol1M | 溢价指数symbol(1分钟)
+premiumsSymbol8H | 溢价指数symbol 8小时
+fundingBaseSymbol1M | 基础货币利率symbol(1分钟)
+fundingQuoteSymbol1M | 计价货币利率symbol(1分钟)
+lowPrice | 24 小时最低成交价
+highPrice | 24 小时最高成交价
+priceChgPct | 24 小时涨跌幅
+priceChg | 24 小时涨跌价格
 
 ## 获取合约详细信息
 ```json
-  {
-    "code": "200000",
-    "data": {
-      "baseCurrency": "XBT",  //基础货币
-      "fairMethod": "FundingRate", //合理标记方式
-      "fundingBaseSymbol": ".XBTINT8H",  //基础货币symbol
-      "fundingQuoteSymbol": ".USDINT8H", //计价货币symbol
-      "fundingRateSymbol": ".XBTUSDMFPI8H",  //资金费率symbol
-      "indexSymbol": ".KXBT",    //指数symbol
-      "initialMargin": 0.01, //起始保证金比例
-      "isDeleverage": true,   //是否支持自动减仓
-      "isInverse": true,  //是否是反向合约
-      "isQuanto": false,   //是否quanto
-      "lotSize": 1,   //最小合约数量
-      "maintainMargin": 0.005,    //维持保证金比例
-      "makerFeeRate": -0.00025,  //maker手续费
-      "makerFixFee":  -0.0000000200,   //maker手续费固定值
-      "markMethod": "FairPrice", //标记方式
-      "maxOrderQty": 1000000,   //最大委托数量
-      "maxPrice": 1000000.0000000000,  //最大下单价格    
-      "maxRiskLimit": 200,  //最大风险限额(以XBT为单位)
-      "minRiskLimit": 200,  //最小风险限额(以XBT为单位)
-      "multiplier": -1,    //合约乘数
-      "quoteCurrency": "USD",  //计价货币
-      "riskStep": 100,  //风险限额递增值(以XBT为单位)
-      "rootSymbol": "XBT", //合约系列
-      "status": "Open", //合约状态
-      "symbol": "XBTUSDM", //合约名称
-      "takerFeeRate": 0.0005,  //taker手续费
-      "takerFixFee": 0.0000000600,   //taker手续费固定值
-      "tickSize": 1,  //最小的价格变化
-      "type": "FFWCSX",    //合约类型
-      "maxLeverage": 100,   //最大可用杠杆倍数
-      "volumeOf24h": 14848115, //24 小时成交量
-      "turnoverOf24h": 1590.20278373, //24 小时成交量
-      "openInterest": "10621721",  //活动仓位数
-      "lowPrice": 19445, //24 小时最低成交价
-      "highPrice": 23862, //24 小时最高成交价
-      "priceChgPct": 1000, //24 小时涨跌幅
-      "priceChg": 0.1646 //24 小时涨跌价格
-   }
-  }
+{
+  "symbol": "DASHUSDTM",
+  "rootSymbol": "USDT",
+  "type": "FFWCSX",
+  "firstOpenDate": 1610697600000,
+  "expireDate": null,
+  "settleDate": null,
+  "baseCurrency": "DASH",
+  "quoteCurrency": "USDT",
+  "settleCurrency": "USDT",
+  "maxOrderQty": 1000000,
+  "maxPrice": 1000000.0,
+  "lotSize": 1,
+  "tickSize": 0.01,
+  "indexPriceTickSize": 0.01,
+  "multiplier": 0.01,
+  "initialMargin": 0.05,
+  "maintainMargin": 0.025,
+  "maxRiskLimit": 100000,
+  "minRiskLimit": 100000,
+  "riskStep": 50000,
+  "makerFeeRate": 0.0002,
+  "takerFeeRate": 0.0006,
+  "takerFixFee": 0.0,
+  "makerFixFee": 0.0,
+  "settlementFee": null,
+  "isDeleverage": true,
+  "isQuanto": false,
+  "isInverse": false,
+  "markMethod": "FairPrice",
+  "fairMethod": "FundingRate",
+  "fundingBaseSymbol": ".DASHINT8H",
+  "fundingQuoteSymbol": ".USDTINT8H",
+  "fundingRateSymbol": ".DASHUSDTMFPI8H",
+  "indexSymbol": ".KDASHUSDT",
+  "settlementSymbol": "",
+  "status": "Open",
+  "fundingFeeRate": 0.0001,
+  "predictedFundingFeeRate": 0.0001,
+  "openInterest": "2487402",
+  "turnoverOf24h": 3166644.36115288,
+  "volumeOf24h": 32299.4,
+  "markPrice": 101.6,
+  "indexPrice": 101.59,
+  "lastTradePrice": 101.54,
+  "nextFundingRateTime": 22646889,
+  "maxLeverage": 20,
+  "sourceExchanges": [
+    "huobi",
+    "Okex",
+    "Binance",
+    "Kucoin",
+    "Poloniex",
+    "Hitbtc"
+  ],
+  "premiumsSymbol1M": ".DASHUSDTMPI",
+  "premiumsSymbol8H": ".DASHUSDTMPI8H",
+  "fundingBaseSymbol1M": ".DASHINT",
+  "fundingQuoteSymbol1M": ".USDTINT",
+  "lowPrice": 88.88,
+  "highPrice": 102.21,
+  "priceChgPct": 0.1401,
+  "priceChg": 12.48
+}
 ```
 
 使用此接口可获取指定合约的信息
@@ -2442,31 +3069,64 @@ GET /api/v1/contracts/XBTUSDM
 --------- | ------- | -----------
 symbol | String | 路径参数。合约名称
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 合约名称
+rootSymbol | 合约系列
+type | 合约类型
+firstOpenDate | 首次开放时间
+expireDate | 到期日期, 为NULL表示永不过期
+settleDate | 结算日期, 为NULL表示不支持自动结算
+baseCurrency | 基础货币
+quoteCurrency | 计价货币
+settleCurrency | 结算币种
+maxOrderQty | 最大委托数量
+maxPrice | 最大下单价格
+lotSize | 最小合约数量
+tickSize | 最小的价格变化
+indexPriceTickSize | 指数价格变化步长
+multiplier | 合约乘数
+initialMargin | 初始保证金率
+maintainMargin | 维持保证金率
+maxRiskLimit | 最大风险限额(以XBT为单位)
+minRiskLimit | 最小风险限额(以XBT为单位)
+riskStep | 风险限额递增值(以XBT为单位)
+makerFeeRate | maker手续费
+takerFeeRate | taker手续费
+takerFixFee | taker手续费固定值(废弃字段，没有实际使用价值)
+makerFixFee | maker手续费固定值(废弃字段，没有实际使用价值)
+settlementFee | 结算手续费
+isDeleverage | 是否支持自动减仓
+isQuanto | 是否quanto(废弃字段，没有实际使用价值)
+isInverse | 是否是反向合约
+markMethod | 标记方式
+fairMethod | 合理标记方式
+fundingBaseSymbol | 基础货币symbol
+fundingQuoteSymbol | 计价货币symbol
+fundingRateSymbol | 资金费率symbol
+indexSymbol | 指数symbol
+settlementSymbol | 结算symbol
+status | 合约状态
+fundingFeeRate | 资金费率值
+predictedFundingFeeRate | 预测资金费率值
+openInterest | 活动仓位数
+turnoverOf24h | 24 小时成交额
+volumeOf24h | 24 小时成交量
+markPrice | 标记价格
+indexPrice | 指数价格
+lastTradePrice | 最新成交价
+nextFundingRateTime | 下次资金费率时间
+maxLeverage | 最大可用杠杆
+sourceExchanges | 该合约指数来源交易所
+premiumsSymbol1M | 溢价指数symbol(1分钟)
+premiumsSymbol8H | 溢价指数symbol 8小时
+fundingBaseSymbol1M | 基础货币利率symbol(1分钟)
+fundingQuoteSymbol1M | 计价货币利率symbol(1分钟)
+lowPrice | 24 小时最低成交价
+highPrice | 24 小时最高成交价
+priceChgPct | 24 小时涨跌幅
+priceChg | 24 小时涨跌价格
 
 # 行情快照
 
@@ -2505,6 +3165,20 @@ GET /api/v1/ticker?symbol=XBTUSDM
 --------- | ------- | -----------
 symbol | string | 合约名称
 
+### 返回值
+字段 | 含义
+--------- | -------
+sequence | 顺序号
+symbol | 合约
+side | 成交方向
+size | 成交数量
+price | 成交价格
+bestBidSize | 最佳买一价总量
+bestBidPrice | 最佳买一价
+bestAskSize | 最佳卖一价总量
+bestAskPrice | 最佳卖一价
+tradeId | 交易号
+ts | 成交时间 - 纳秒
 
 # 委托买卖盘
 ## 获取全部买卖盘 - Level 2
@@ -2550,6 +3224,15 @@ GET /api/v1/level2/snapshot?symbol=XBTUSDM
 | ------ | ------ | ----------- |
 | symbol | String | 合约名称    |
 
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 合约
+sequence | 快照序号
+asks | 卖盘
+bids | 买盘
+ts | 时间戳
+
 ## 获取部分买卖盘 - Level 2
 ```json
 {
@@ -2586,7 +3269,16 @@ GET /api/v1/level2/depth100?symbol=XBTUSDM
 | ------ | ------ | ----------- |
 | symbol | String | 合约名称    |
 
-## Level 2消息拉取
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 合约
+sequence | 快照序号
+asks | 卖盘
+bids | 买盘
+ts | 时间戳
+
+## Level 2消息拉取(废弃)
 ```json
   {
     "code": "200000",
@@ -2655,6 +3347,18 @@ GET /api/v1/trade/history?symbol=XBTUSDM
 | ------ | ------ | ----------- |
 | symbol | String | 合约名称     |
 
+### 返回值
+字段 | 含义
+--------- | -------
+sequence | 序号
+tradeId | 交易号
+takerOrderId | Taker方订单ID
+makerOrderId | Maker方订单ID
+price | 成交价格
+size | 成交数量
+side | 成交方向
+ts | 成交时间 - 纳秒
+
 ### 属性含义
 
 **交易方向**
@@ -2713,6 +3417,14 @@ GET /api/v1/interest/query?symbol=.XBTINT
 | forward   | boolean | [可选] 是否前向查询，true或false，默认为true |
 | maxCount  | int     | [可选] 最大记录条数，默认为10  |
 
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 利率symbol
+granularity | 粒度(毫秒)
+timePoint | 时间点(毫秒)
+value | 利率值
+hasMore | 是否还有下一页
 
 
 ## 查询指数列表
@@ -2779,11 +3491,18 @@ GET /api/v1/index/query
 | forward   | boolean | [可选] 是否前向查询，**true** 或 **false**，默认为**true** |
 | maxCount  | int     | [可选] 最大记录条数，默认为10      |
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 指数symbol
+granularity | 粒度(毫秒)
+timePoint | 时间点(毫秒)
+value | 指数值
+decomposionList | 成分列表
+exchange | 成分交易所
+price | 最近成交价
+weight | 权重
+hasMore | 是否还有下一页
 
 ## 查询当前标记价格
 
@@ -2811,7 +3530,14 @@ GET /api/v1/mark-price/XBTUSDM/current
 | ------ | ------ | ----------- |
 | symbol | String |  合约symbol  |
 
-
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 合约symbol
+granularity | 粒度(毫秒)
+timePoint | 时间点(毫秒)
+value | 标记价格
+indexPrice | 指数价格
 
 ## 查询溢价指数
 
@@ -2858,7 +3584,14 @@ GET /api/v1/premium/query
 | forward   | boolean | [可选] 是否前向查询, **true**或者**false**, 默认为**true** |
 | maxCount  | int     | [可选] 最大记录条数, 默认为10                          |
 
-
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 资金费率symbol
+granularity | 粒度(毫秒)
+timePoint | 时间点(毫秒)
+value | 资金费率
+predictedValue | 预测资金费率
 
 ## 查询当前资金费率
 
@@ -2886,6 +3619,15 @@ GET /api/v1/funding-rate/XBTUSDM/current
 | ------ | ------ | -------------- |
 | symbol | String | 合约名称|
 
+### 返回值
+字段 | 含义
+--------- | -------
+symbol | 资金费率symbol
+granularity | 粒度(毫秒)
+timePoint | 时间点(毫秒)
+value | 资金费率
+predictedValue | 预测资金费率
+
 # 时间
 ## 获取服务器时间
 
@@ -2901,6 +3643,11 @@ GET /api/v1/funding-rate/XBTUSDM/current
 
 ### HTTP请求
 GET /api/v1/timestamp
+
+### 返回值
+字段 | 含义
+--------- | -------
+data | 服务器时间, Unix时间戳。
 
 
 # 服务状态
@@ -2924,6 +3671,11 @@ GET /api/v1/timestamp
 ### HTTP Request
 GET /api/v1/status
 
+### 返回值
+字段 | 含义
+--------- | -------
+status | 服务状态。open: 正常运行, close: 服务关闭, cancelonly:只能撤单
+msg | 备注
 
 # K线
 
