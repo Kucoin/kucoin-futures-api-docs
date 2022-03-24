@@ -12,6 +12,12 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+#### 2022.03.16
+* Deprecate [GET /api/v1/level2/message/query](#level-2-pulling-messages-deprecated) endpoint
+* Added endpoint return value description.
+* Add [POST /api/v3/transfer-out](#transfer-funds-to-kucoin-main-account-or-kucoin-trade-account) endpoint
+* Add [POST /api/v1/transfer-in](#transfer-funds-to-kucoin-futures-account) endpoint
+
 #### 2022.02.07
 * New response field maintainMargin,riskLimitLevel have been added to the [GET /api/v1/position](#get-position-details) endpoint
 
@@ -201,8 +207,9 @@ Client libraries can help you integrate with our API quickly.
 
 - [PHP SDK](https://github.com/Kucoin/KuMEX-PHP-SDK)
 - [Java SDK](https://github.com/Kucoin/kucoin-futures-java-sdk)
-
-  
+- [Node.js SDK](https://github.com/Kucoin/kucoin-futures-node-sdk)
+- [Python SDK](https://github.com/Kucoin/kucoin-futures-python-sdk)
+- [Go SDK](https://github.com/Kucoin/kucoin-futures-go-sdk)
 
 
 ##Sandbox
@@ -320,6 +327,36 @@ Code | Meaning
 
 Code | Meaning
 ---------- | -------
+1015 | cloudflare frequency limit according to IP, block 30s
+40010 | Unavailable to place orders. Your identity information/IP/phone number shows you're at a country/region that is restricted from this service.
+100001 | There are invalid parameters
+100002 | systemConfigError
+100003 | Contract parameter invalid
+100004 | Order is in not cancelable state
+100005 | contractRiskLimitNotExist
+200001 | The query scope for Level 2 cannot exceed xxx
+200002 | Too many requests in a short period of time, please retry later--kucoin business layer request frequency limit, block 10s
+200002 | The query scope for Level 3 cannot exceed xxx
+200003 | The symbol parameter is invalid.
+300000 | request parameter illegal
+300001 | Active order quantity limit exceeded (limit: xxx, current: xxx)
+300002 | Order placement/cancellation suspended, please try again later.
+300003 | Balance not enough, please first deposit at least 2 USDT before you start the battle
+300004 | Stop order quantity limit exceeded (limit: xxx, current: xxx)
+300005 | xxx risk limit exceeded
+300006 | The close price shall be greater than the bankruptcy price. Current bankruptcy price: xxx.
+300007 | priceWorseThanLiquidationPrice
+300008 | Unavailable to place the order, there's no contra order in the market.
+300009 | Current position size: 0, unable to close the position.
+300010 | Failed to close the position
+300011 | Order price cannot be higher than xxx
+300012 | Order price cannot be lower than xxx
+300013 | Unable to proceed the operation, there's no contra order in order book.
+300014 | The position is being liquidated, unable to place/cancel the order. Please try again later.
+300015 | The order placing/cancellation is currently not available. The Contract/Funding is under the settlement process. When the process is completed, the function will be restored automatically. Please wait patiently and try again later.
+300016 | The leverage cannot be greater than xxx.
+300017 | Unavailable to proceed the operation, this position is for Futures Brawl
+300018 | clientOid parameter repeated
 400001 | Any of KC-API-KEY, KC-API-SIGN, KC-API-TIMESTAMP, KC-API-PASSPHRASE is missing in your request header.
 400002 | KC-API-TIMESTAMP Invalid -- Time differs from server time by more than 5 seconds
 400003 | KC-API-KEY not exists
@@ -327,9 +364,10 @@ Code | Meaning
 400005 | Signature error -- Please check your signature
 400006 | The IP address is not in the API whitelist
 400007 | Access Denied -- Your API key does not have sufficient permissions to access the URI
-404000 | URL Not Found -- The requested resource could not be found
 400100 | Parameter Error -- You tried to access the resource with invalid parameters
+404000 | URL Not Found -- The requested resource could not be found
 411100 | User is frozen -- Please contact us via support center
+429000 | Too Many Requests -- Trigger the total traffic limit of this interface of KuCoin server, you can retry the request
 500000 | Internal Server Error -- We had a problem with our server. Try again later.
 
 If the returned HTTP status code is not 200, the error code will be included in the returned results. If the interface call is successful, the system will return the code and data fields. If not, the system will return the code and msg fields. You can check the error code for details.  
@@ -408,7 +446,7 @@ The **Key** and **Secret** are generated and provided by KuCoin Futures and the 
 
 You can manage the API permission on [KuCoin Futures](https://futures.kucoin.com)’s official website. The permissions are:
 
-* **General** - Allows a key general permissions. This includes most of the GET endpoints.
+* **General** - Allows a key general permission. This includes most of the GET endpoints.
 * **Trade** -  Allows a key to create/cancel orders and manage positions. 
 * **Transfer** - Allows a key to withdraw funds. Enable with caution - API key transfers WILL BYPASS two-factor authentication.
 
@@ -621,6 +659,18 @@ Param | Type | Description
 --------- | ------- | -----------
 currency | String | [Optional] Currecny ,including **XBT,USDT**,Default XBT
 
+### RESPONSES
+Field | Description
+--------- | -------
+| accountEquity | Account equity = marginBalance + Unrealised PNL  | 
+| unrealisedPNL | Unrealised profit and loss | 
+| marginBalance | Margin balance = positionMargin + orderMargin + frozenFunds + availableBalance - unrealisedPNL | 
+| positionMargin | Position margin | 
+| orderMargin | Order margin | 
+| frozenFunds | Frozen funds for withdrawal and out-transfer | 
+| availableBalance | Available balance | 
+| currency | currency code | 
+
 ### API Permission
 This endpoint requires the **General** permission.
 
@@ -686,12 +736,18 @@ maxCount | long | *[Optional]* Displayed size per page. The default size is 50
 currency | String | *[Optional]* Currency of transaction history **XBT or USDT**
 forward | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default
 
-
-### Returned Data Types
-Field | Description |
---------- | ------- | 
-type | RealisedPNL, Deposit, Withdrawal, TransferIn, TransferOut
-status | Completed, Pending
+### RESPONSES
+Field | Description
+--------- | -------
+| time | Event time |
+| type | Type: RealisedPNL, Deposit, Withdrawal, TransferIn, TransferOut |
+| amount | Transaction amount |
+| fee | Fees |
+| accountEquity | Account equity |
+| status | Status: Completed, Pending |
+| remark | Ticker symbol of the contract |
+| offset | Offset |
+| currency | Currency |
 
 # Deposit
 ## Get Deposit Address
@@ -700,8 +756,9 @@ status | Completed, Pending
   {
     "code": "200000",
     "data": {
-      "address": "0x78d3ad1c0aa1bf068e19c94a2d7b16c9c0fcd8b1",//Deposit address
-      "memo": null//Address tag. If the returned value is null, it means that the requested token has no memo. If you are to transfer funds from another platform to KuCoin Futures and if the token to be transferred has memo(tag), you need to fill in the memo to ensure the transferred funds will be sent to the address you specified. 
+      "address": "bc1q466dvmharut0uhycdqu9nlmwcw5gec4p8wt22j",//Deposit address
+      "memo": null,//Address tag. If the returned value is null, it means that the requested token has no memo. If you are to transfer funds from another platform to KuCoin Futures and if the token to be transferred has memo(tag), you need to fill in the memo to ensure the transferred funds will be sent to the address you specified. 
+      "chain": "BTC-Segwit"//The chain name of currency
    } 
 }
 ```
@@ -720,6 +777,12 @@ Param | Type  | Description
 --------- | ------- | -----------
 currency | String | Currency,including **XBT,USDT**
 
+### RESPONSES
+Field | Description
+--------- | -------
+| address | Deposit address | 
+| memo | Address tag. If the returned value is null, it means that the requested token has no memo. If you are to transfer funds from another platform to KuCoin Futures and if the token to be transferred has memo(tag), you need to fill in the memo to ensure the transferred funds will be sent to the address you specified.  | 
+| chain | The chain name of currency | 
 
 ## Get Deposits List
 ```json
@@ -763,6 +826,18 @@ endAt | long | *[Optional]* End time (milisecond)
 status | String | *[Optional]* Status, including **PROCESSING, SUCCESS, and FAILURE**
 currency | String | *[Optional]* Currency, including **XBT,USDT**
 
+### RESPONSES
+Field | Description
+--------- | -------
+| currency | Currency | 
+| status | Status type: PROCESSING, WALLET_PROCESSING, SUCCESS, FAILURE | 
+| address | Deposit address | 
+| isInner | Inner transfer or not | 
+| amount | Deposit amount | 
+| fee | Fees for deposit | 
+| walletTxId | Wallet TXID | 
+| createdAt | Funds deposit time | 
+
 # Withdrawal
 ##  Get Withdrawal Limit
 
@@ -771,6 +846,7 @@ currency | String | *[Optional]* Currency, including **XBT,USDT**
     "code": "200000",
     "data": {
       "currency": "XBT",//Currency
+      "chainId": "bech32",// Chain identification
       "limitAmount": 2,//24h withdrawal limit
       "usedAmount": 0,//Withdrawal amount over the past 24h.
       "remainAmount": 2,//24h available withdrawal amount 
@@ -797,6 +873,21 @@ This endpoint requires the **General** permission.
 Param | Type  | Description
 --------- | ------- | -----------
 currency | String | Currency,  including **XBT,USDT**
+
+### RESPONSES
+Field | Description
+--------- | -------
+| currency | Currency | 
+| chainId | Chain identification | 
+| limitAmount | 24h withdrawal limit | 
+| remainAmount | 24h available withdrawal amount  | 
+| usedAmount | Withdrawal amount over the past 24h. | 
+| availableAmount | Available balance  | 
+| withdrawMinFee | Withdrawal fee charges | 
+| innerWithdrawMinFee | Inner withdrawal fee charges | 
+| withdrawMinSize | Min. withdrawal amount | 
+| isWithdrawEnabled | Available to withdrawal or not | 
+| precision | Precision of the withdrawal amount | 
 
 ## Withdraw Funds
 
@@ -829,6 +920,10 @@ remark | String | *[Optional]* Remarks
 chain |	String | *[Optional]* The chain name of currency, e.g. The available value for USDT are OMNI, ERC20, TRC20, default is ERC20. This only apply for multi-chain currency, and there is no need for single chain currency.
 memo | String | *[Optional]*  Address remark. If there’s no remark, it is empty. When you withdraw from other platforms to the KuCoin Futures, you need to fill in memo(tag). If you do not fill memo (tag), your deposit may not be available, please be cautious.
 
+### RESPONSES
+Field | Description
+--------- | -------
+| withdrawalId | Withdrawal ID. This ID can be used to cancel the withdrawal | 
 
 ## Get Withdrawal List
 ```json
@@ -874,6 +969,22 @@ startAt | long | *[optional]*  Start time (milisecond)
 endAt | long | *[optional]*  End time (milisecond)
 currency | String | *[optional]* Currency, including **XBT,USDT**
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+withdrawalId  | Withdrawal ID. This ID can be used to cancel the withdrawal
+currency  | Currency
+status  | Status
+address  | Withdrawal address
+memo  | Address remark.
+isInner  | Inner withdrawal or not
+amount  | Withdrawal amount
+fee  | Withdrawal fee charges
+walletTxId  | Wallet TXID
+createdAt  | Withdrawal time
+remark  | Withdrawal remarks
+reason  | Reason causing the failure
+
 ## Cancel Withdrawal
 Only withdrawal requests of **PROCESSING** status could be canceled.
 
@@ -906,7 +1017,7 @@ Once the transfer arrives your KuCoin-Main Account, the endpoint will respond an
 
 
 ### HTTP Request
-POST /api/v1/transfer-out [It's deprecated, please use POST /api/v2/transfer-out instead]
+POST /api/v1/transfer-out [It's deprecated, please use POST /api/v3/transfer-out instead]
 ### Example
 POST /api/v1/transfer-out
 ### API Permission
@@ -918,45 +1029,34 @@ Param | Type  | Description
 bizNo | String | A unique ID generated by the user, to ensure the operation is processed by the system only once. You are suggested to use UUID
 amount | Number | Amount to be transfered out
 
-
-## Get Transfer-Out Request Records
-
-```json
-  { 
-    "code": "200000",
-    "data": {
-      "currentPage": 1,
-      "pageSize": 50,
-      "totalNum": 6,
-      "totalPage": 1,
-      "items": [{
-        "applyId": "5cd53be30c19fc3754b60928", //Transfer-out request ID
-        "currency": "XBT", //Currency
-        "status": "SUCCESS", //Status  PROCESSING, SUCCESS, FAILURE
-        "amount": "0.01", //Transaction amount 
-        "reason": "", //Reason caused the failure
-        "offset": 31986850860000, //Offset
-        "createdAt": 1557769977000 //Request application time
-      }]
-    }   
-  }
-```
-The data of the first page will be queried by default.
 ## Transfer Funds to KuCoin-Main Account
 ```json
-  { 
-    "code": "200000",
-    "data": {
-      "applyId": "5bffb63303aa675e8bbe18f9" //Transfer-out request ID
-    }  
-  }
+{
+  "applyId": "620a0bbefeaa6a000110e833",//Transfer-out request ID
+  "bizNo": "620a0bbefeaa6a000110e832",//Business number
+  "payAccountType": "CONTRACT",//Pay account type
+  "payTag": "DEFAULT",//Pay account sub type
+  "remark": "",//User remark
+  "recAccountType": "MAIN",//Receive account type
+  "recTag": "DEFAULT",//Receive account sub type
+  "recRemark": "",//Receive account tx remark
+  "recSystem": "KUCOIN",//Receive system
+  "status": "PROCESSING",//Status
+  "currency": "USDT",//Currency
+  "amount": "0.001",//Transfer amout
+  "fee": "0",//Transfer fee
+  "sn": 889048787670001,//Serial number
+  "reason": "",//Fail Reason
+  "createdAt": 1644825534000,//Create time
+  "updatedAt": 1644825534000//Update time
+}
 ```
 The amount to be transferred will be deducted from the **KuCoin Futures Account**. Please ensure that you have sufficient funds in your KuCoin Futures Account, or the transfer will fail. 
 Once the transfer arrives your KuCoin-Main Account, the endpoint will respond and return the **applyId**. This ID could be used to cancel the transfer request. 
 
 
 ### HTTP Request
-POST /api/v2/transfer-out
+POST /api/v2/transfer-out [It is recommended to use POST /api/v3/transfer-out instead]
 ### Example
 POST /api/v2/transfer-out
 ### API Permission
@@ -968,27 +1068,139 @@ Param | Type  | Description
 amount | Number | Amount to be transfered out
 currency | String | Currency, including **XBT,USDT**
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+applyId  | Transfer-out request ID
+bizNo  | Business number
+payAccountType  | Pay account type
+payTag  | Pay account sub type
+remark  | User remark
+recAccountType  | Receive account type
+recTag  | Receive account sub type
+recRemark  | Receive account tx remark
+recSystem  | Receive system
+status  | Status:APPLY，PROCESSING，PENDING_APPROVAL，APPROVED，REJECTED，PENDING_CANCEL，CANCEL，SUCCESS
+currency  | Currency
+amount  | Transfer amout
+fee  | Transfer fee
+sn  | Serial number
+reason  | Fail Reason
+createdAt  | Create time
+updatedAt  | Update time
+
+## Transfer Funds to KuCoin-Main Account or KuCoin-TRADE Account
+```json
+{
+  "applyId": "620a0bbefeaa6a000110e833",//Transfer-out request ID
+  "bizNo": "620a0bbefeaa6a000110e832",//Business number
+  "payAccountType": "CONTRACT",//Pay account type
+  "payTag": "DEFAULT",//Pay account sub type
+  "remark": "",//User remark
+  "recAccountType": "MAIN",//Receive account type
+  "recTag": "DEFAULT",//Receive account sub type
+  "recRemark": "",//Receive account tx remark
+  "recSystem": "KUCOIN",//Receive system
+  "status": "PROCESSING",//Status
+  "currency": "USDT",//Currency
+  "amount": "0.001",//Transfer amout
+  "fee": "0",//Transfer fee
+  "sn": 889048787670001,//Serial number
+  "reason": "",//Fail Reason
+  "createdAt": 1644825534000,//Create time
+  "updatedAt": 1644825534000//Update time
+}
+```
+The amount to be transferred will be deducted from the **KuCoin Futures Account**. Please ensure that you have sufficient funds in your KuCoin Futures Account, or the transfer will fail. 
+Once the transfer arrives your KuCoin-Main Account, the endpoint will respond and return the **applyId**. This ID could be used to cancel the transfer request. 
+
+
+### HTTP Request
+POST /api/v3/transfer-out
+### Example
+POST /api/v3/transfer-out
+### API Permission
+This endpoint requires the **"Trade"** permission.
+
+### Parameters
+Param | Type  | Description
+--------- | ------- | -----------
+amount | Number | Amount to be transfered out
+currency | String | Currency, including **XBT,USDT**
+recAccountType | String | Receive account type, including **MAIN,TRADE**
+
+### RESPONSES
+Param  | Type
+--------- | -----------
+applyId  | Transfer-out request ID
+bizNo  | Business number
+payAccountType  | Pay account type
+payTag  | Pay account sub type
+remark  | User remark
+recAccountType  | Receive account type
+recTag  | Receive account sub type
+recRemark  | Receive account tx remark
+recSystem  | Receive system
+status  | Status:APPLY，PROCESSING，PENDING_APPROVAL，APPROVED，REJECTED，PENDING_CANCEL，CANCEL，SUCCESS
+currency  | Currency
+amount  | Transfer amout
+fee  | Transfer fee
+sn  | Serial number
+reason  | Fail Reason
+createdAt  | Create time
+updatedAt  | Update time
+
+## Transfer Funds to KuCoin-Futures Account
+```json
+{
+  "code": "200", //If the code is 200, it means the transfer is successful, otherwise it means failure.
+  "msg": "",
+  "retry": true,
+  "success": true
+}
+```
+
+The amount to be transferred will be deducted from the **payAccount**. Please ensure that you have sufficient funds in your payAccount Account, or the transfer will fail. 
+
+### HTTP Request
+POST /api/v1/transfer-in
+### Example
+POST /api/v1/transfer-in
+### API Permission
+This endpoint requires the **"Trade"** permission.
+
+### Parameters
+Param | Type  | Description
+--------- | ------- | -----------
+amount | Number | Amount to be transfered out
+currency | String | Currency, including **XBT,USDT**
+payAccountType | String | Payment account type, including **MAIN,TRADE**
+
+If the response code is 200, it means the transfer is successful, otherwise it means failure.
+
 ## Get Transfer-Out Request Records
 
 ```json
-  { 
-    "code": "200000",
-    "data": {
-      "currentPage": 1,
-      "pageSize": 50,
-      "totalNum": 6,
-      "totalPage": 1,
-      "items": [{
-        "applyId": "5cd53be30c19fc3754b60928", //Transfer-out request ID
-        "currency": "XBT", //Currency
-        "status": "SUCCESS", //Status  PROCESSING, SUCCESS, FAILURE
-        "amount": "0.01", //Transaction amount 
-        "reason": "", //Reason caused the failure
-        "offset": 31986850860000, //Offset
-        "createdAt": 1557769977000 //Request application time
-      }]
-    }   
-  }
+{
+  "currentPage": 1,
+  "pageSize": 50,
+  "totalNum": 1,
+  "totalPage": 1,
+  "items": [
+    {
+      "applyId": "620a0bbefeaa6a000110e833",//Transfer-out request ID
+      "currency": "USDT",//Currency
+      "recRemark": "",//Receive account tx remark
+      "recSystem": "KUCOIN",//Receive system
+      "status": "SUCCESS",//Status  PROCESSING, SUCCESS, FAILURE
+      "amount": "0.001",//Transaction amount 
+      "reason": "",//Reason caused the failure
+      "offset": 889048787670001,//Offset
+      "createdAt": 1644825534000,//Request application time
+      "remark": ""//User remark
+    }
+  ]
+}
 ```
 The data of the first page will be queried by default.
 
@@ -1008,6 +1220,20 @@ startAt | long | *[Optional]*  Start time (milisecond)
 endAt | long | *[Optional]* End time (milisecond)
 status | String | *[Optional]* Status **PROCESSING, SUCCESS, FAILURE**
 currency | String | Currency, including **XBT,USDT**
+
+### RESPONSES
+Param  | Type
+--------- | -----------
+applyId  | Transfer-out request ID
+currency  | Currency
+recRemark  | Receive account tx remark
+recSystem  | Receive system
+status  | Status  PROCESSING, SUCCESS, FAILURE
+amount  | Transaction amount 
+reason  | Reason caused the failure
+offset  | Offset
+createdAt  | Request application time
+remark  | User remark
 
 ## Cancel Transfer-Out Request
 
@@ -1108,6 +1334,11 @@ See **Advanced Description** for more details.
 | --------- | ------- | -----------
 | size | Integer | *[optional]*  amount of contract to buy or sell 
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+orderId  | Order ID. 
+
 ### Example
 POST /api/v1/orders
 
@@ -1199,9 +1430,8 @@ The price specified must be a multiple number of the contract tickSize, otherwis
 
 Price field is not required for market orders.
 
-### SIZE
-The size must be no less than the lotSize for the contract and no larger than the maxOrderQty. It should be a multiple number of lotSize, or the system will report an error when you place the order. Size indicates the amount of contract to buy or sell.
-Size is the number or lot size of the contract. Eg. the lot size of XBTUSDTM is 0.001 Bitcoin, the lot size of XBTUSDM is 1 USD.
+### Trade Amount
+The trade amount indicates the amount of contract to buy or sell, and contract uses the base currency or lot as the trading unit. The trade amount must be no less than 1 lot for the contract and no larger than the maxOrderQty. It should be a multiple number of the lot, or the system will report an error when you place the order. E.g. 1 lot of XBTUSDTM is 0.001 Bitcoin, while 1 lot of XBTUSDM is 1 USD.
 
 
 ### TIME IN FORCE
@@ -1289,6 +1519,11 @@ This endpoint requires the **Trade** permission.
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **40 times/3s**.
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+cancelledOrderIds  | cancelled OrderIds.
+
 ## Limit Order Mass Cancelation
 
 ```json
@@ -1328,6 +1563,11 @@ symbol | String | *[optional]* Cancel all limit orders for a specific contract o
 
 You can delete specific symbol using query parameters. If not specified, all the limit orders will be deleted.
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+cancelledOrderIds  | cancelled OrderIds.
+
 ## Stop Order Mass cancelation
 
 ```json
@@ -1362,6 +1602,10 @@ Param | Type | Description
 --------- | ------- | -----------
 symbol | String | *[optional]* Cancel all untriggered stop orders for a specific contract only
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+cancelledOrderIds  | cancelled OrderIds.
 
 ## Get Order List
 
@@ -1375,39 +1619,43 @@ symbol | String | *[optional]* Cancel all untriggered stop orders for a specific
       "totalPage": 10,
       "items": [
         {
-          "id": "5cdfc138b21023a909e5ad55", //Order ID
-          "symbol": "XBTUSDM",  //Ticker symbol of the contract
-          "type": "limit",   //Order type, market order or limit order
-          "side": "buy",  //Transaction side
-          "price": "3600",  //Order price
-          "size": 20000,  //Order quantity
-          "value": "56.1167227833",  //Order value
-          "filledValue": "0",  //Value of the executed orders
-          "filledSize": 0,  //Executed order quantity
-          "stp": "",  //Self trade prevention types
-          "stop": "",  //Stop order type (stop limit or stop market) 
-          "stopPriceType": "",  //Trigger price type of stop orders 
-          "stopTriggered": false,  //Mark to show whether the stop order is triggered
-          "stopPrice": null,  //Trigger price of stop orders
-          "timeInForce": "GTC",  //Time in force policy type 
-          "postOnly": false,  // Mark of post only
-          "hidden": false,  //Mark of the hidden order
-          "iceberg": false,  //Mark of the iceberg order 
-          "visibleSize": null,  //Visible size of the iceberg order
-          "leverage": "20",  //Leverage of the order
-          "forceHold": false,  //A mark to forcely hold the funds for an order 
-          "closeOrder": false, //A mark to close the position 
-          "reduceOnly": false,  //A mark to reduce the position size only
-          "clientOid": "5ce24c16b210233c36ee321d",  //Unique order id created by users to identify their orders  
-          "remark": null,  //Remark of the order 
-          "isActive": true,  //Mark of the active orders
-          "cancelExist": false,  //Mark of the canceled orders
-          "createdAt": 1558167872000,  //Time the order created
-          "settleCurrency": "XBT", //settlement currency
-          "status": "open", //order status: “open” or “done”
-          "updatedAt": 1558167872000, //last update time
-          "orderTime": 1558167872000000000 //order create time in nanosecond
-        }
+            "id": "5cdfc138b21023a909e5ad55",
+            "symbol": "XBTUSDM",
+            "type": "limit",
+            "side": "buy",
+            "price": "3600",
+            "size": 20000,
+            "value": "56.1167227833",
+            "dealValue": "56.1167227833",
+            "dealSize": 20000,
+            "stp": "",
+            "stop": "",
+            "stopPriceType": "",
+            "stopTriggered": true,
+            "stopPrice": null,
+            "timeInForce": "GTC",
+            "postOnly": false,
+            "hidden": false,
+            "iceberg": false,
+            "leverage": "20",
+            "forceHold": false,
+            "closeOrder": false,
+            "visibleSize": null,
+            "clientOid": "5ce24c16b210233c36ee321d",
+            "remark": null,
+            "tags": null,
+            "isActive": false,
+            "cancelExist": false,
+            "createdAt": 1558167872000,
+            "updatedAt": 1558167872000,
+            "endAt": 1558167872000,
+            "orderTime": 1558167872000000000,
+            "settleCurrency": "XBT",
+            "status": "done",
+            "filledValue": "56.1167227833",
+            "filledSize": 20000,
+            "reduceOnly": false
+          }
       ]
     }  
  }
@@ -1440,6 +1688,46 @@ type | String | *[optional]* **limit**, **market**, **limit_stop** or **market_s
 startAt | long | *[optional]* Start time (milisecond)
 endAt | long | *[optional]* End time (milisecond)
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+id  | Order ID
+symbol  | Symbol of the contract
+type  | Order type, market order or limit order
+side  | Transaction side
+price  | Order price
+size  | Order quantity
+value  | Order value
+dealValue  | Executed size of funds
+dealSize  | Executed quantity
+stp  | Self trade prevention types
+stop  | Stop order type (stop limit or stop market) 
+stopPriceType  | Trigger price type of stop orders
+stopTriggered  | Mark to show whether the stop order is triggered
+stopPrice  | Trigger price of stop orders
+timeInForce  | Time in force policy type
+postOnly  | Mark of post only
+hidden  | Mark of the hidden order
+iceberg  | Mark of the iceberg order
+leverage  | Leverage of the order
+forceHold  | A mark to forcely hold the funds for an order
+closeOrder  | A mark to close the position
+visibleSize  | Visible size of the iceberg order
+clientOid  | Unique order id created by users to identify their orders
+remark  | Remark of the order
+tags  | tag order source
+isActive  | Mark of the active orders
+cancelExist  | Mark of the canceled orders
+createdAt  | Time the order created
+updatedAt  | last update time
+endAt  | End time
+orderTime  | Order create time in nanosecond
+settleCurrency  | settlement currency
+status  | order status: “open” or “done”
+filledSize  | Value of the executed orders
+filledValue  | Executed order quantity
+reduceOnly  | A mark to reduce the position size only
+
 **This request is paginated.**
 
 #### Order Status and Settlement
@@ -1465,39 +1753,44 @@ If you need to get your recent trade history with low latency, you may query the
       "pageSize": 100,
       "totalNum": 1000,
       "totalPage": 10,
-      "items": [
+      "items":  [
         {
-            "id": "5cdfc138b21023a909e5ad55", //Order ID
-            "symbol": "XBTUSDM",  //Ticker symbol of the contract 
-            "type": "limit",   //Order type, market order or limit order
-            "side": "buy",  //Transaction side
-            "price": "3600",  //Order price
-            "size": 20000,  //Order quantity
-            "value": "56.1167227833",  //Order value
-            "filledValue": "0",  //Value of the executed orders
-            "filledSize": 0,  //Executed order quantity
-            "stp": "",  //Self trade prevention types
-            "stop": "",  //Stop order type (stop limit or stop market) 
-            "stopPriceType": "",  //Trigger price type of stop orders
-            "stopTriggered": false,  //Mark to show whether the stop order is triggered
-            "stopPrice": null,  //Trigger price of stop orders
-            "timeInForce": "GTC",  //Time in force policy type
-            "postOnly": false,  //Mark of post only
-            "hidden": false,  //Mark of the hidden order
-            "iceberg": false,  //Mark of the iceberg order
-            "visibleSize": null,  //Visible size of the iceberg order
-            "leverage": "20",  //Leverage of the order
-            "forceHold": false,  //A mark to forcely hold the funds for an order
-            "closeOrder": false, //A mark to close the position
-            "reduceOnly": false,  //A mark to reduce the position size only
-            "clientOid": "5ce24c16b210233c36ee321d",  //Unique order id created by users to identify their orders 
-            "remark": null,  //Remark of the order
-            "isActive": true,  //Mark of the active orders
-            "cancelExist": false,  //Mark of the canceled orders
-            "createdAt": 1558167872000,  //Time the order created
-            "settleCurrency": "XBT", //settlement currency
-            "status": "open", //order status: “open” or “done”
-            "updatedAt": 1558167872000 //last update time
+          "id": "622076e79f12700001f84138",
+          "symbol": "XBTUSDTM",
+          "type": "limit",
+          "side": "sell",
+          "price": "32000",
+          "size": 2,
+          "value": "0",
+          "dealValue": "0",
+          "dealSize": 0,
+          "stp": "",
+          "stop": "down",
+          "stopPriceType": "TP",
+          "stopTriggered": null,
+          "stopPrice": "3000",
+          "timeInForce": "GTC",
+          "postOnly": false,
+          "hidden": false,
+          "iceberg": false,
+          "leverage": "20",
+          "forceHold": false,
+          "closeOrder": false,
+          "visibleSize": null,
+          "clientOid": null,
+          "remark": null,
+          "tags": null,
+          "isActive": true,
+          "cancelExist": false,
+          "createdAt": 1646294759000,
+          "updatedAt": 1646294759000,
+          "endAt": null,
+          "orderTime": null,
+          "settleCurrency": "USDT",
+          "status": "open",
+          "filledValue": "0",
+          "filledSize": 0,
+          "reduceOnly": false
         }
       ]
     }
@@ -1527,6 +1820,46 @@ type | String | *[optional]* **limit**, **market**
 startAt | long | *[optional]* Start time (milisecond)
 endAt | long | *[optional]* End time (milisecond)
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+id  | Order ID
+symbol  | Symbol of the contract
+type  | Order type, market order or limit order
+side  | Transaction side
+price  | Order price
+size  | Order quantity
+value  | Order value
+dealValue  | Executed size of funds
+dealSize  | Executed quantity
+stp  | Self trade prevention types
+stop  | Stop order type (stop limit or stop market) 
+stopPriceType  | Trigger price type of stop orders
+stopTriggered  | Mark to show whether the stop order is triggered
+stopPrice  | Trigger price of stop orders
+timeInForce  | Time in force policy type
+postOnly  | Mark of post only
+hidden  | Mark of the hidden order
+iceberg  | Mark of the iceberg order
+leverage  | Leverage of the order
+forceHold  | A mark to forcely hold the funds for an order
+closeOrder  | A mark to close the position
+visibleSize  | Visible size of the iceberg order
+clientOid  | Unique order id created by users to identify their orders
+remark  | Remark of the order
+tags  | tag order source
+isActive  | Mark of the active orders
+cancelExist  | Mark of the canceled orders
+createdAt  | Time the order created
+updatedAt  | last update time
+endAt  | End time
+orderTime  | Order create time in nanosecond
+settleCurrency  | settlement currency
+status  | order status: “open” or “done”
+filledSize  | Value of the executed orders
+filledValue  | Executed order quantity
+reduceOnly  | A mark to reduce the position size only
+
 **This request is paginated.**
 
 <br/>
@@ -1544,14 +1877,14 @@ endAt | long | *[optional]* End time (milisecond)
     "data":[
        {
             "id": "5cdfc138b21023a909e5ad55", //Order ID
-            "symbol": "XBTUSDM",  //Ticker symbol of the contract
+            "symbol": "XBTUSDM",  //Symbol of the contract
             "type": "limit",   //Order type, market order or limit order
             "side": "buy",  //Transaction side
             "price": "3600",  //Order price
             "size": 20000,  //Order quantity
             "value": "56.1167227833",  //Order value
-            "filledValue": "56.1167227833",  //Value of the executed orders
-            "filledSize": 20000,  //Executed order quantity
+            "dealValue": "56.1167227833",  //Executed size of funds
+            "dealSize": 20000,//Executed quantity
             "stp": "",  //Self trade prevention types
             "stop": "",  //Stop order type (stop limit or stop market) 
             "stopPriceType": "",  //Trigger price type of stop orders
@@ -1561,20 +1894,24 @@ endAt | long | *[optional]* End time (milisecond)
             "postOnly": false,  //Mark of post only
             "hidden": false,  //Mark of the hidden order
             "iceberg": false,  //Mark of the iceberg order
-            "visibleSize": null,  // Visible size of the iceberg order
             "leverage": "20",  //Leverage of the order
             "forceHold": false,  //A mark to forcely hold the funds for an order
             "closeOrder": false, //A mark to close the position
-            "reduceOnly": false,  //A mark to reduce the position size only
+            "visibleSize": null,  // Visible size of the iceberg order
             "clientOid": "5ce24c16b210233c36ee321d",  //Unique order id created by users to identify their orders
             "remark": null,  //Remark of the order
+            "tags": null,//Tag order source
             "isActive": false,  //Mark of the active orders
             "cancelExist": false,  //Mark of the canceled orders
             "createdAt": 1558167872000,  //Time the order created
+            "updatedAt": 1558167872000, //last update time
+            "endAt": 1558167872000,//End time 
+            "orderTime": 1558167872000000000, //order create time in nanosecond
             "settleCurrency": "XBT", //settlement currency
             "status": "done", //order status: “open” or “done”
-            "updatedAt": 1558167872000, //last update time
-            "orderTime": 1558167872000000000 //order create time in nanosecond
+            "filledValue": "56.1167227833",  //Value of the executed orders
+            "filledSize": 20000,  //Executed order quantity
+            "reduceOnly": false  //A mark to reduce the position size only
           }
       ]
  }
@@ -1593,24 +1930,45 @@ GET /api/v1/recentDoneOrders
 ### API Permission
 This endpoint requires the **General** permission.
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### RESPONSES
+Param  | Type
+--------- | -----------
+id  | Order ID
+symbol  | Symbol of the contract
+type  | Order type, market order or limit order
+side  | Transaction side
+price  | Order price
+size  | Order quantity
+value  | Order value
+dealValue  | Executed size of funds
+dealSize  | Executed quantity
+stp  | Self trade prevention types
+stop  | Stop order type (stop limit or stop market) 
+stopPriceType  | Trigger price type of stop orders
+stopTriggered  | Mark to show whether the stop order is triggered
+stopPrice  | Trigger price of stop orders
+timeInForce  | Time in force policy type
+postOnly  | Mark of post only
+hidden  | Mark of the hidden order
+iceberg  | Mark of the iceberg order
+leverage  | Leverage of the order
+forceHold  | A mark to forcely hold the funds for an order
+closeOrder  | A mark to close the position
+visibleSize  | Visible size of the iceberg order
+clientOid  | Unique order id created by users to identify their orders
+remark  | Remark of the order
+tags  | tag order source
+isActive  | Mark of the active orders
+cancelExist  | Mark of the canceled orders
+createdAt  | Time the order created
+updatedAt  | last update time
+endAt  | End time
+orderTime  | Order create time in nanosecond
+settleCurrency  | settlement currency
+status  | order status: “open” or “done”
+filledSize  | Value of the executed orders
+filledValue  | Executed order quantity
+reduceOnly  | A mark to reduce the position size only
 
 ## Get Details of a Single Order
 
@@ -1618,39 +1976,43 @@ This endpoint requires the **General** permission.
   {
     "code": "200000",
     "data": {
-      "id": "5cdfc138b21023a909e5ad55", //Order ID
-      "symbol": "XBTUSDM",  //Ticker symbol of the contract
-      "type": "limit",   //Order type, market order or limit order
-      "side": "buy",  //Transaction side
-      "price": "3600",  //Order price 
-      "size": 20000,  //Order quantity
-      "value": "56.1167227833",  //Order value
-      "filledValue": "56.1167227833",  //Value of the executed orders
-      "filledSize": 20000,  //Executed order quantity
-      "stp": "",  //Self trade prevention types
-      "stop": "",  //Stop order type (stop limit or stop market)
-      "stopPriceType": "",  //Trigger price type of stop orders
-      "stopTriggered": true,  //Mark to show whether the stop order is triggered
-      "stopPrice": null,  //Trigger price of stop orders
-      "timeInForce": "GTC",  //Time in force policy types
-      "postOnly": false,  //Mark of post only
-      "hidden": false,  //Mark of the hidden order
-      "iceberg": false,  //Mark of the iceberg order
-      "visibleSize": null,  //Visible size of the iceberg order
-      "leverage": "20",  //Leverage of the order
-      "forceHold": false,  //A mark to forcely hold the funds for an order
-      "closeOrder": false, //A mark to close the position
-      "reduceOnly": false,  //A mark to reduce the position size only
-      "clientOid": "5ce24c16b210233c36ee321d",  //Unique order id created by users to identify their orders
-      "remark": null,  //Remarks of the order
-      "isActive": false,  //Mark of the active orders
-      "cancelExist": false,  //Mark of the canceled orders
-      "createdAt": 1558167872000,  //Time the order created
-      "settleCurrency": "XBT", //settlement currency
-      "status": "done", //order status: “open” or “done”
-      "updatedAt": 1558167872000, //last update time
-      "orderTime": 1558167872000000000 //order create time in nanosecond
-    }
+            "id": "5cdfc138b21023a909e5ad55", //Order ID
+            "symbol": "XBTUSDM",  //Symbol of the contract
+            "type": "limit",   //Order type, market order or limit order
+            "side": "buy",  //Transaction side
+            "price": "3600",  //Order price
+            "size": 20000,  //Order quantity
+            "value": "56.1167227833",  //Order value
+            "dealValue": "56.1167227833",  //Executed size of funds
+            "dealSize": 20000,//Executed quantity
+            "stp": "",  //Self trade prevention types
+            "stop": "",  //Stop order type (stop limit or stop market) 
+            "stopPriceType": "",  //Trigger price type of stop orders
+            "stopTriggered": true,  //Mark to show whether the stop order is triggered
+            "stopPrice": null,  //Trigger price of stop orders
+            "timeInForce": "GTC",  //Time in force policy type
+            "postOnly": false,  //Mark of post only
+            "hidden": false,  //Mark of the hidden order
+            "iceberg": false,  //Mark of the iceberg order
+            "leverage": "20",  //Leverage of the order
+            "forceHold": false,  //A mark to forcely hold the funds for an order
+            "closeOrder": false, //A mark to close the position
+            "visibleSize": null,  // Visible size of the iceberg order
+            "clientOid": "5ce24c16b210233c36ee321d",  //Unique order id created by users to identify their orders
+            "remark": null,  //Remark of the order
+            "tags": null,//Tag order source
+            "isActive": false,  //Mark of the active orders
+            "cancelExist": false,  //Mark of the canceled orders
+            "createdAt": 1558167872000,  //Time the order created
+            "updatedAt": 1558167872000, //last update time
+            "endAt": 1558167872000,//End time 
+            "orderTime": 1558167872000000000, //order create time in nanosecond
+            "settleCurrency": "XBT", //settlement currency
+            "status": "done", //order status: “open” or “done”
+            "filledValue": "56.1167227833",  //Value of the executed orders
+            "filledSize": 20000,  //Executed order quantity
+            "reduceOnly": false  //A mark to reduce the position size only
+          }
 }
 ```
 
@@ -1666,24 +2028,45 @@ GET /api/v1/orders/byClientOid?clientOid=eresc138b21023a909e5ad59 (get order by 
 ### API Permission
 This endpoint requires the **General** permission.
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### RESPONSES
+Param  | Type
+--------- | -----------
+id  | Order ID
+symbol  | Symbol of the contract
+type  | Order type, market order or limit order
+side  | Transaction side
+price  | Order price
+size  | Order quantity
+value  | Order value
+dealValue  | Executed size of funds
+dealSize  | Executed quantity
+stp  | Self trade prevention types
+stop  | Stop order type (stop limit or stop market) 
+stopPriceType  | Trigger price type of stop orders
+stopTriggered  | Mark to show whether the stop order is triggered
+stopPrice  | Trigger price of stop orders
+timeInForce  | Time in force policy type
+postOnly  | Mark of post only
+hidden  | Mark of the hidden order
+iceberg  | Mark of the iceberg order
+leverage  | Leverage of the order
+forceHold  | A mark to forcely hold the funds for an order
+closeOrder  | A mark to close the position
+visibleSize  | Visible size of the iceberg order
+clientOid  | Unique order id created by users to identify their orders
+remark  | Remark of the order
+tags  | tag order source
+isActive  | Mark of the active orders
+cancelExist  | Mark of the canceled orders
+createdAt  | Time the order created
+updatedAt  | last update time
+endAt  | End time
+orderTime  | Order create time in nanosecond
+settleCurrency  | settlement currency
+status  | order status: “open” or “done”
+filledSize  | Value of the executed orders
+filledValue  | Executed order quantity
+reduceOnly  | A mark to reduce the position size only
 
 # Fills
 
@@ -1699,11 +2082,12 @@ This endpoint requires the **General** permission.
       "totalPage":251915,
       "items":[
           {
-            "symbol": "XBTUSDM",  //Ticker symbol of the contract
+            "symbol": "XBTUSDM",  //Symbol of the contract
             "tradeId": "5ce24c1f0c19fc3c58edc47c",  //Trade ID
             "orderId": "5ce24c16b210233c36ee321d",  // Order ID 
             "side": "sell",  //Transaction side
             "liquidity": "taker",  //Liquidity- taker or maker 
+            "forceTaker": true, //Whether to force processing as a taker
             "price": "8302",  //Filled price  
             "size": 10,  //Filled amount
             "value": "0.001204529",  //Order value
@@ -1749,6 +2133,29 @@ type | String |*[optional]* **limit**, **market**, **limit_stop** or **market_st
 startAt | long |*[optional]* Start time (milisecond)
 endAt | long |*[optional]* End time (milisecond)
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+symbol  |  Symbol of the contract
+tradeId  |  Trade ID
+orderId  |  Order ID
+side  |  Transaction side
+liquidity  |  Liquidity- taker or maker
+forceTaker  |  Whether to force processing as a taker
+price  |  Filled price
+size  |  Filled amount
+value  |  Order value
+feeRate  |  Floating fees
+fixFee  |  Fixed fees(Deprecated field, no actual use of the value field)
+feeCurrency  |  Charging currency
+stop  |  A mark to the stop order type
+fee  |  Transaction fee
+orderType  |  Order type
+tradeType  |  Trade type (trade, liquidation, ADL or settlement)
+createdAt  |  Time the order created
+settleCurrency  |  Transaction fee
+tradeTime  |  trade time in nanosecond
+
 **This request uses pagination.**
 
 **Data Time Range**
@@ -1774,11 +2181,12 @@ Fills are returned sorted by descending fill time.
     "code": "200000",
     "data":[
      {
-         "symbol": "XBTUSDM",  //Ticker symbol of the contract
+         "symbol": "XBTUSDM",  //Symbol of the contract
          "tradeId": "5ce24c1f0c19fc3c58edc47c",  //Trade ID
          "orderId": "5ce24c16b210233c36ee321d",  //Order ID
          "side": "sell",  //Transaction side
          "liquidity": "taker",  // Liquidity-taker or maker
+         "forceTaker": true, //Whether to force processing as a taker
          "price": "8302",  //Filled price
          "size": 10,  //Filled amount
          "value": "0.001204529",  //Order value
@@ -1811,6 +2219,29 @@ This endpoint requires the **General** permission.
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **9 times/3s**.
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+symbol  |  Symbol of the contract
+tradeId  |  Trade ID
+orderId  |  Order ID
+side  |  Transaction side
+liquidity  |  Liquidity- taker or maker
+forceTaker  |  Whether to force processing as a taker
+price  |  Filled price
+size  |  Filled amount
+value  |  Order value
+feeRate  |  Floating fees
+fixFee  |  Fixed fees(Deprecated field, no actual use of the value field)
+feeCurrency  |  Charging currency
+stop  |  A mark to the stop order type
+fee  |  Transaction fee
+orderType  |  Order type
+tradeType  |  Trade type (trade, liquidation, ADL or settlement)
+createdAt  |  Time the order created
+settleCurrency  |  Transaction fee
+tradeTime  |  trade time in nanosecond
+
 ## Active Order Value Calculation
 
 ```json
@@ -1841,55 +2272,62 @@ Param | Type | Description
 --------- | ------- | -----------
 symbol |String| Symbol of the contract
 
+### RESPONSES
+Param  | Type
+--------- | -----------
+openOrderBuySize  | Total number of the unexecuted buy orders 
+openOrderSellSize  | Total number of the unexecuted sell orders
+openOrderBuyCost  | Value of all the unexecuted buy orders
+openOrderSellCost  | Value of all the unexecuted sell orders
+settleCurrency  | settlement currency
 
 # Positions
 
 ## Get Position Details
 
 ```json
-  {
-    'code': '200000',
-    'data': {
-    'id': '5e81a7827911f40008e80715',                //Position ID
-    'symbol': 'XBTUSDTM',                            //Symbol
-    'autoDeposit': False, 													 //Auto deposit margin or not
-    'maintMarginReq': 0.005, 												 //Maintenance margin requirement
-    'riskLimit': 2000000, 													 //Risk limit 
-    'realLeverage': 5.0, 														 //Leverage o the order
-    'crossMode': False, 														 //Cross mode or not
-    'delevPercentage': 0.35, 												 //ADL ranking percentile
-    'openingTimestamp': 1623832410892, 							 //Open time
-    'currentTimestamp': 1623832488929, 							 //Current timestamp
-    'currentQty': 1, 																 //Current postion quantity
-    'currentCost': 40.008, 													 //Current postion value
-    'currentComm': 0.0240048, 											 //Current commission
-    'unrealisedCost': 40.008, 											 //Unrealised value
-    'realisedGrossCost': 0.0, 											 //Accumulated realised gross profit value
-    'realisedCost': 0.0240048, 											 //Current realised position value
-    'isOpen': True, 																 //Opened position or not
-    'markPrice': 40014.93, 													 //Mark price
-    'markValue': 40.01493, 													 //Mark value
-    'posCost': 40.008, 															 //Position value
-    'posCross': 0.0, 																 //added margin
-    'posInit': 8.0016, 															 //Leverage margin
-    'posComm': 0.02880576, 													 //Bankruptcy cost
-    'posLoss': 0.0, 													 			 //Funding fees paid out
-    'posMargin': 8.03040576, 												 //Position margin
-    'posMaint': 0.23284656, 												 //Maintenance margin
-    'maintMargin': 8.03733576, 											 //Position margin
-    'realisedGrossPnl': 0.0, 												 //Accumulated realised gross profit value
-    'realisedPnl': -0.0240048, 											 //Realised profit and loss
-    'unrealisedPnl': 0.00693, 											 //Unrealised profit and loss
-    'unrealisedPnlPcnt': 0.0002, 										 //Profit-loss ratio of the position
-    'unrealisedRoePcnt': 0.0009, 										 //Rate of return on investment
-    'avgEntryPrice': 40008.0, 											 //Average entry price
-    'liquidationPrice': 32211.0, 										 //Liquidation price
-    'bankruptPrice': 32006.0, 											 //Bankruptcy price
-    'settleCurrency': 'USDT', 											 //Currency used to clear and settle the trades
-    'maintainMargin': 0.25,  											   //Maintenance margin rate
-    'riskLimitLevel': 1  											       //Risk Limit Level
-  }
-
+{
+    "code": "200000",
+    "data": {
+    "id": "5e81a7827911f40008e80715",                //Position ID
+    "symbol": "XBTUSDTM",                            //Symbol
+    "autoDeposit": False, 													 //Auto deposit margin or not
+    "maintMarginReq": 0.005, 												 //Maintenance margin requirement
+    "riskLimit": 2000000, 													 //Risk limit 
+    "realLeverage": 5.0, 														 //Leverage o the order
+    "crossMode": False, 														 //Cross mode or not
+    "delevPercentage": 0.35, 												 //ADL ranking percentile
+    "openingTimestamp": 1623832410892, 							 //Open time
+    "currentTimestamp": 1623832488929, 							 //Current timestamp
+    "currentQty": 1, 																 //Current postion quantity
+    "currentCost": 40.008, 													 //Current postion value
+    "currentComm": 0.0240048, 											 //Current commission
+    "unrealisedCost": 40.008, 											 //Unrealised value
+    "realisedGrossCost": 0.0, 											 //Accumulated realised gross profit value
+    "realisedCost": 0.0240048, 											 //Current realised position value
+    "isOpen": True, 																 //Opened position or not
+    "markPrice": 40014.93, 													 //Mark price
+    "markValue": 40.01493, 													 //Mark value
+    "posCost": 40.008, 															 //Position value
+    "posCross": 0.0, 																 //added margin
+    "posInit": 8.0016, 															 //Leverage margin
+    "posComm": 0.02880576, 													 //Bankruptcy cost
+    "posLoss": 0.0, 													 			 //Funding fees paid out
+    "posMargin": 8.03040576, 												 //Position margin
+    "posMaint": 0.23284656, 												 //Maintenance margin
+    "maintMargin": 8.03733576, 											 //Position margin
+    "realisedGrossPnl": 0.0, 												 //Accumulated realised gross profit value
+    "realisedPnl": -0.0240048, 											 //Realised profit and loss
+    "unrealisedPnl": 0.00693, 											 //Unrealised profit and loss
+    "unrealisedPnlPcnt": 0.0002, 										 //Profit-loss ratio of the position
+    "unrealisedRoePcnt": 0.0009, 										 //Rate of return on investment
+    "avgEntryPrice": 40008.0, 											 //Average entry price
+    "liquidationPrice": 32211.0, 										 //Liquidation price
+    "bankruptPrice": 32006.0, 											 //Bankruptcy price
+    "settleCurrency": "USDT", 											 //Currency used to clear and settle the trades
+    "maintainMargin": 0.25,  											   //Maintenance margin rate
+    "riskLimitLevel": 1  											       //Risk Limit Level
+}
 ```
 
 Get the position details of a specified position.
@@ -1910,58 +2348,93 @@ This endpoint requires the **General** permission.
 | ------ | ------ | ----------- |
 | symbol | String | Symbol of the contract   |
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### RESPONSES
+Param  | Type
+--------- | -----------
+id  | Position ID
+symbol  | Symbol
+autoDeposit  | Auto deposit margin or not
+maintMarginReq  | Maintenance margin requirement
+riskLimit  | Risk limit
+realLeverage  | Leverage o the order
+crossMode  | Cross mode or not
+delevPercentage  | ADL ranking percentile
+openingTimestamp  | Open time
+currentTimestamp  | Current timestamp
+currentQty  | Current postion quantity
+currentCost  | Current postion value
+currentComm  | Current commission
+unrealisedCost  | Unrealised value
+realisedGrossCost  | Accumulated realised gross profit value
+realisedCost  | Current realised position value
+isOpen  | Opened position or not
+markPrice  | Mark price
+markValue  | Mark value
+posCost  | Position value
+posCross  | added margin
+posInit  | Leverage margin
+posComm  | Bankruptcy cost
+posLoss  | Funding fees paid out
+posMargin  | Bankruptcy cost
+posMaint  | Maintenance margin
+maintMargin  | Position margin
+realisedGrossPnl  | Accumulated realised gross profit value
+realisedPnl  | Realised profit and loss
+unrealisedPnl  | Unrealised profit and loss
+unrealisedPnlPcnt  | Profit-loss ratio of the position
+unrealisedRoePcnt  | Rate of return on investment
+avgEntryPrice  | Average entry price
+liquidationPrice  | Liquidation price
+bankruptPrice  | Bankruptcy price
+settleCurrency  | Currency used to clear and settle the trades
+maintainMargin  | Maintenance margin rate
+riskLimitLevel  | Risk Limit Level
 
 ## Get Position List                   
 
 ```json
-   {
-    'code': '200000',
-    'data': {
-    'id': '5e81a7827911f40008e80715',                //Position ID
-    'symbol': 'XBTUSDTM',                            //Symbol
-    'autoDeposit': False, 													 //Auto deposit margin or not
-    'maintMarginReq': 0.005, 												 //Maintenance margin requirement
-    'riskLimit': 2000000, 													 //Risk limit 
-    'realLeverage': 5.0, 														 //Leverage o the order
-    'crossMode': False, 														 //Cross mode or not
-    'delevPercentage': 0.35, 												 //ADL ranking percentile
-    'openingTimestamp': 1623832410892, 							 //Open time
-    'currentTimestamp': 1623832488929, 							 //Current timestamp
-    'currentQty': 1, 																 //Current postion quantity
-    'currentCost': 40.008, 													 //Current postion value
-    'currentComm': 0.0240048, 											 //Current commission
-    'unrealisedCost': 40.008, 											 //Unrealised value
-    'realisedGrossCost': 0.0, 											 //Accumulated realised gross profit value
-    'realisedCost': 0.0240048, 											 //Current realised position value
-    'isOpen': True, 																 //Opened position or not
-    'markPrice': 40014.93, 													 //Mark price
-    'markValue': 40.01493, 													 //Mark value
-    'posCost': 40.008, 															 //Position value
-    'posCross': 0.0, 																 //added margin
-    'posInit': 8.0016, 															 //Leverage margin
-    'posComm': 0.02880576, 													 //Bankruptcy cost
-    'posLoss': 0.0, 													 			 //Funding fees paid out
-    'posMargin': 8.03040576, 												 //Position margin
-    'posMaint': 0.23284656, 												 //Maintenance margin
-    'maintMargin': 8.03733576, 											 //Position margin
-    'realisedGrossPnl': 0.0, 												 //Accumulated realised gross profit value
-    'realisedPnl': -0.0240048, 											 //Realised profit and loss
-    'unrealisedPnl': 0.00693, 											 //Unrealised profit and loss
-    'unrealisedPnlPcnt': 0.0002, 										 //Profit-loss ratio of the position
-    'unrealisedRoePcnt': 0.0009, 										 //Rate of return on investment
-    'avgEntryPrice': 40008.0, 											 //Average entry price
-    'liquidationPrice': 32211.0, 										 //Liquidation price
-    'bankruptPrice': 32006.0, 											 //Bankruptcy price
-    'settleCurrency': 'USDT', 											 //Currency used to clear and settle the trades
-  }
+{
+    "code": "200000",
+    "data": {
+    "id": "5e81a7827911f40008e80715",                //Position ID
+    "symbol": "XBTUSDTM",                            //Symbol
+    "autoDeposit": False, 													 //Auto deposit margin or not
+    "maintMarginReq": 0.005, 												 //Maintenance margin requirement
+    "riskLimit": 2000000, 													 //Risk limit 
+    "realLeverage": 5.0, 														 //Leverage o the order
+    "crossMode": False, 														 //Cross mode or not
+    "delevPercentage": 0.35, 												 //ADL ranking percentile
+    "openingTimestamp": 1623832410892, 							 //Open time
+    "currentTimestamp": 1623832488929, 							 //Current timestamp
+    "currentQty": 1, 																 //Current postion quantity
+    "currentCost": 40.008, 													 //Current postion value
+    "currentComm": 0.0240048, 											 //Current commission
+    "unrealisedCost": 40.008, 											 //Unrealised value
+    "realisedGrossCost": 0.0, 											 //Accumulated realised gross profit value
+    "realisedCost": 0.0240048, 											 //Current realised position value
+    "isOpen": True, 																 //Opened position or not
+    "markPrice": 40014.93, 													 //Mark price
+    "markValue": 40.01493, 													 //Mark value
+    "posCost": 40.008, 															 //Position value
+    "posCross": 0.0, 																 //added margin
+    "posInit": 8.0016, 															 //Leverage margin
+    "posComm": 0.02880576, 													 //Bankruptcy cost
+    "posLoss": 0.0, 													 			 //Funding fees paid out
+    "posMargin": 8.03040576, 												 //Position margin
+    "posMaint": 0.23284656, 												 //Maintenance margin
+    "maintMargin": 8.03733576, 											 //Position margin
+    "realisedGrossPnl": 0.0, 												 //Accumulated realised gross profit value
+    "realisedPnl": -0.0240048, 											 //Realised profit and loss
+    "unrealisedPnl": 0.00693, 											 //Unrealised profit and loss
+    "unrealisedPnlPcnt": 0.0002, 										 //Profit-loss ratio of the position
+    "unrealisedRoePcnt": 0.0009, 										 //Rate of return on investment
+    "avgEntryPrice": 40008.0, 											 //Average entry price
+    "liquidationPrice": 32211.0, 										 //Liquidation price
+    "bankruptPrice": 32006.0, 											 //Bankruptcy price
+    "settleCurrency": "USDT", 											 //Currency used to clear and settle the trades
+    "isInverse": False,  											       //Reverse contract or not
+    "maintainMargin": 0.005  											 //Maintenance margin requirement
+}
 ```
 
 Get the position details of a specified position.
@@ -1978,28 +2451,55 @@ This endpoint requires the **General** permission.
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **9 times/3s**.
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### RESPONSES
+Field | Description
+--------- | -------
+id  | Position ID
+symbol  | Symbol
+autoDeposit  | Auto deposit margin or not
+maintMarginReq  | Maintenance margin requirement
+riskLimit  | Risk limit
+realLeverage  | Leverage o the order
+crossMode  | Cross mode or not
+delevPercentage  | ADL ranking percentile
+openingTimestamp  | Open time
+currentTimestamp  | Current timestamp
+currentQty  | Current postion quantity
+currentCost  | Current postion value
+currentComm  | Current commission
+unrealisedCost  | Unrealised value
+realisedGrossCost  | Accumulated realised gross profit value
+realisedCost  | Current realised position value
+isOpen  | Opened position or not
+markPrice  | Mark price
+markValue  | Mark value
+posCost  | Position value
+posCross  | added margin
+posInit  | Leverage margin
+posComm  | Bankruptcy cost
+posLoss  | Funding fees paid out
+posMargin  | Position margin
+posMaint  | Maintenance margin
+maintMargin  | Position margin
+realisedGrossPnl  | Accumulated realised gross profit value
+realisedPnl  | Realised profit and loss
+unrealisedPnl  | Unrealised profit and loss
+unrealisedPnlPcnt  | Profit-loss ratio of the position
+unrealisedRoePcnt  | Rate of return on investment
+avgEntryPrice  | Average entry price
+liquidationPrice  | Liquidation price
+bankruptPrice  | Bankruptcy price
+settleCurrency  | Currency used to clear and settle the trades
+isInverse  | Reverse contract or not
+maintainMargin  | Maintenance margin requirement
 
 ## Enable/Disable of Auto-Deposit Margin
+```json
+{
+  "code": "200000",
+  "data": false
+}
+```
 
 ### HTTP Request
 POST /api/v1/position/margin/auto-deposit-status
@@ -2019,6 +2519,46 @@ This endpoint requires the **General** permission.
 
 
 ## Add Margin Manually 
+```json
+{
+  "id": "6200c9b83aecfb000152ddcd",
+  "symbol": "XBTUSDTM",
+  "autoDeposit": false,
+  "maintMarginReq": 0.005,
+  "riskLimit": 500000,
+  "realLeverage": 18.72,
+  "crossMode": false,
+  "delevPercentage": 0.66,
+  "openingTimestamp": 1646287090131,
+  "currentTimestamp": 1646295055021,
+  "currentQty": 1,
+  "currentCost": 43.388,
+  "currentComm": 0.0260328,
+  "unrealisedCost": 43.388,
+  "realisedGrossCost": 0.0,
+  "realisedCost": 0.0260328,
+  "isOpen": true,
+  "markPrice": 43536.65,
+  "markValue": 43.53665,
+  "posCost": 43.388,
+  "posCross": 2.4985e-05,
+  "posInit": 2.1694,
+  "posComm": 0.02733446,
+  "posLoss": 0.0,
+  "posMargin": 2.19675944,
+  "posMaint": 0.24861326,
+  "maintMargin": 2.34540944,
+  "realisedGrossPnl": 0.0,
+  "realisedPnl": -0.0260328,
+  "unrealisedPnl": 0.14865,
+  "unrealisedPnlPcnt": 0.0034,
+  "unrealisedRoePcnt": 0.0685,
+  "avgEntryPrice": 43388.0,
+  "liquidationPrice": 41440.0,
+  "bankruptPrice": 41218.0,
+  "settleCurrency": "USDT"
+}
+```
 
 ### HTTP Request
 POST /api/v1/position/margin/deposit-margin
@@ -2126,6 +2666,11 @@ This endpoint requires the **Trade** permission.
 symbol | String | Contract symbol
 level | Integer | level
 
+### RESPONSES
+Field | Description
+--------- | -------
+data | To adjust the level will cancel the open order, the response can only indicate whether the submit of the adjustment request is successful or not.
+
 # Funding Fees
 ## Get Funding History
 
@@ -2195,6 +2740,19 @@ This API is restricted for each account, the request rate limit is **9 times/3s*
 | forward   | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default |
 | maxCount  | int     | *[optional]* Max record count. The default record count is 10                          |
 
+### RESPONSES
+Field | Description
+--------- | -------
+id | id
+symbol | Symbol of the contract
+timePoint | Time point (milisecond) 
+fundingRate | Funding rate
+markPrice | Mark price
+positionQty | Position size 
+positionCost | Position value at settlement period
+funding | Settled funding fees. A positive number means that the user received the funding fee, and vice versa.
+settleCurrency | settlement currency
+hasMore | Whether there are more pages
 
 # Market Data
 Signature is not required for this part.
@@ -2204,48 +2762,70 @@ Signature is not required for this part.
 ## Get Open Contract List
 
 ```json
-  {
-    "code": "200000",
-    "data": {
-      "baseCurrency": "XBT",  //Base currency
-      "fairMethod": "FundingRate", //Fair price marking method
-      "fundingBaseSymbol": ".XBTINT8H",  //Ticker symbol of the based currency
-      "fundingQuoteSymbol": ".USDINT8H", //Ticker symbol of the quote currency
-      "fundingRateSymbol": ".XBTUSDMFPI8H",  //Funding rate symbol
-      "indexSymbol": ".KXBT",    //Index symbol
-      "initialMargin": 0.01, //Initial margin requirement
-      "isDeleverage": true,   //Enabled ADL or not
-      "isInverse": true,  //Reverse contract or not
-      "isQuanto": false,   //Whether quanto or not
-      "lotSize": 1,   //Minimum lot size
-      "maintainMargin": 0.005,    //Maintenance margin requirement
-      "makerFeeRate": -0.00025,  //Maker fees
-      "makerFixFee": -0.0000000200,   //Fixed maker fees
-      "markMethod": "FairPrice", //Marking method
-      "maxOrderQty": 1000000,   //Maximum order quantity
-      "maxPrice": 1000000.0000000000,  //Maximum order price   
-      "maxRiskLimit": 200,  //Maximum risk limit (unit: XBT)
-      "minRiskLimit": 200,  //Minimum risk limit (unit: XBT)
-      "multiplier": -1,    //Contract multiplier
-      "quoteCurrency": "USD",  //Quote currency
-      "riskStep": 100,  //Risk limit increment value (unit: XBT)
-      "rootSymbol": "XBT", //Contract group
-      "status": "Open", //Contract status
-      "symbol": "XBTUSDM", //Ticker symbol of the contract
-      "takerFeeRate": 0.0005,  //Taker fees
-      "takerFixFee": 0.0000000600,   //Fixed taker fees
-      "tickSize": 1,  //Minimum price changes
-      "type": "FFWCSX",  //Type of the contract
-      "maxLeverage": 100,   //maximum leverage 
-      "volumeOf24h": 14848115, //volume of 24 hours
-      "turnoverOf24h": 1590.20278373, //turnover of 24 hours
-      "openInterest": "10621721",  //open interest
-      "lowPrice": 19445, //24H Low
-      "highPrice": 23862, //24H High
-      "priceChgPct": 1000, //24H Change%
-      "priceChg": 0.1646 //24H Change      
-    }
-  }
+[{
+  "symbol": "XBTUSDTM",
+  "rootSymbol": "USDT",
+  "type": "FFWCSX",
+  "firstOpenDate": 1585555200000,
+  "expireDate": null,
+  "settleDate": null,
+  "baseCurrency": "XBT",
+  "quoteCurrency": "USDT",
+  "settleCurrency": "USDT",
+  "maxOrderQty": 1000000,
+  "maxPrice": 1000000.0,
+  "lotSize": 1,
+  "tickSize": 1.0,
+  "indexPriceTickSize": 0.01,
+  "multiplier": 0.001,
+  "initialMargin": 0.01,
+  "maintainMargin": 0.005,
+  "maxRiskLimit": 2000000,
+  "minRiskLimit": 2000000,
+  "riskStep": 1000000,
+  "makerFeeRate": 0.0002,
+  "takerFeeRate": 0.0006,
+  "takerFixFee": 0.0,
+  "makerFixFee": 0.0,
+  "settlementFee": null,
+  "isDeleverage": true,
+  "isQuanto": true,
+  "isInverse": false,
+  "markMethod": "FairPrice",
+  "fairMethod": "FundingRate",
+  "fundingBaseSymbol": ".XBTINT8H",
+  "fundingQuoteSymbol": ".USDTINT8H",
+  "fundingRateSymbol": ".XBTUSDTMFPI8H",
+  "indexSymbol": ".KXBTUSDT",
+  "settlementSymbol": "",
+  "status": "Open",
+  "fundingFeeRate": 0.0001,
+  "predictedFundingFeeRate": 0.0001,
+  "openInterest": "5191275",
+  "turnoverOf24h": 2361994501.712677,
+  "volumeOf24h": 56067.116,
+  "markPrice": 44514.03,
+  "indexPrice": 44510.78,
+  "lastTradePrice": 44493.0,
+  "nextFundingRateTime": 21031525,
+  "maxLeverage": 100,
+  "sourceExchanges": [
+    "huobi",
+    "Okex",
+    "Binance",
+    "Kucoin",
+    "Poloniex",
+    "Hitbtc"
+  ],
+  "premiumsSymbol1M": ".XBTUSDTMPI",
+  "premiumsSymbol8H": ".XBTUSDTMPI8H",
+  "fundingBaseSymbol1M": ".XBTINT",
+  "fundingQuoteSymbol1M": ".USDTINT",
+  "lowPrice": 38040,
+  "highPrice": 44948,
+  "priceChgPct": 0.1702,
+  "priceChg": 6476
+}]
 ```
 
 Submit request to get the info of all open contracts.
@@ -2259,73 +2839,132 @@ GET /api/v1/contracts/active
 ### PARAMETERS
 N/A
 
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Contract status
+rootSymbol | Contract group
+type | Type of the contract
+firstOpenDate | First Open Date
+expireDate | Expiration date. Null means it will never expire
+settleDate | Settlement date. Null indicates that automatic settlement is not supported
+baseCurrency | Base currency
+quoteCurrency | Quote currency
+settleCurrency | Currency used to clear and settle the trades
+maxOrderQty | Maximum order quantity
+maxPrice | Maximum order price
+lotSize | Minimum lot size
+tickSize | Minimum price changes
+indexPriceTickSize | Index price of tick size
+multiplier | Contract multiplier
+initialMargin | Initial margin requirement
+maintainMargin | Maintenance margin requirement
+maxRiskLimit | Maximum risk limit (unit: XBT)
+minRiskLimit | Minimum risk limit (unit: XBT)
+riskStep | Risk limit increment value (unit: XBT)
+makerFeeRate | Maker fees
+takerFeeRate | Taker fees
+takerFixFee | Fixed taker fees(Deprecated field, no actual use of the value field)
+makerFixFee | Fixed maker fees(Deprecated field, no actual use of the value field)
+settlementFee | settlement fee
+isDeleverage | Enabled ADL or not
+isQuanto | Whether quanto or not(Deprecated field, no actual use of the value field)
+isInverse | Reverse contract or not
+markMethod | Marking method
+fairMethod | Fair price marking method
+fundingBaseSymbol | Ticker symbol of the based currency
+fundingQuoteSymbol | Ticker symbol of the quote currency
+fundingRateSymbol | Funding rate symbol
+indexSymbol | Index symbol
+settlementSymbol | Settlement Symbol
+status | Contract status
+fundingFeeRate | Funding fee rate
+predictedFundingFeeRate | Predicted funding fee rate
+openInterest | open interest
+turnoverOf24h | turnover of 24 hours
+volumeOf24h | volume of 24 hours
+markPrice | Mark price
+indexPrice | Index price
+lastTradePrice | last trade price
+nextFundingRateTime | next funding rate time
+maxLeverage | maximum leverage
+sourceExchanges | The contract index source exchange
+premiumsSymbol1M | Premium index symbol (1 minute)
+premiumsSymbol8H | Premium index symbol (8 hours)
+fundingBaseSymbol1M | Base currency interest rate symbol (1 minute)
+fundingQuoteSymbol1M | Quote currency interest rate symbol (1 minute)
+lowPrice | 24H Low
+highPrice | 24H High
+priceChgPct | 24H Change%
+priceChg | 24H Change
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-## Get Order Info. of the Contract
+## Get Order Info of the Contract
 
 ```json
-  {
-    "code": "200000",
-    "data": {
-      "baseCurrency": "XBT",  //Base currency
-      "fairMethod": "FundingRate", //Fair price marking method
-      "fundingBaseSymbol": ".XBTINT8H",  //Ticker symbol of the based currency
-      "fundingQuoteSymbol": ".USDINT8H", //Ticker symbol of the quote currency
-      "fundingRateSymbol": ".XBTUSDMFPI8H",  //Funding rate symbol
-      "indexSymbol": ".KXBT",    //Index symbol
-      "initialMargin": 0.01, //Initial margin requirement
-      "isDeleverage": true,   //Enabled ADL or not
-      "isInverse": true,  //Reverse contract or not
-      "isQuanto": false,   //Whether quanto or not
-      "lotSize": 1,   //Minimum lot size
-      "maintainMargin": 0.005,    //Maintenance margin requirement
-      "makerFeeRate": -0.00025,  //Maker fees
-      "makerFixFee": -0.0000000200,   //Fixed maker fees
-      "markMethod": "FairPrice", //Marking method
-      "maxOrderQty": 1000000,   //Maximum order quantity
-      "maxPrice": 1000000.0000000000,  //Maximum order price   
-      "maxRiskLimit": 200,  //Maximum risk limit (unit: XBT)
-      "minRiskLimit": 200,  //Minimum risk limit (unit: XBT)
-      "multiplier": -1,    //Contract multiplier
-      "quoteCurrency": "USD",  //Quote currency
-      "riskStep": 100,  //Risk limit increment value (unit: XBT)
-      "rootSymbol": "XBT", //Contract group
-      "status": "Open", //Contract status
-      "symbol": "XBTUSDM", //Ticker symbol of the contract
-      "takerFeeRate": 0.0005,  //Taker fees
-      "takerFixFee": 0.0000000600,   //Fixed taker fees
-      "tickSize": 1,  //Minimum price changes
-      "type": "FFWCSX",    //Type of the contract
-      "maxLeverage": 100,   //maximum leverage 
-      "lowPrice": 19445, //24H Low
-      "highPrice": 23862, //24H High
-      "priceChgPct": 1000, //24H Change%
-      "priceChg": 0.1646 //24H Change  
-    }
-  }
+{
+  "symbol": "DASHUSDTM",
+  "rootSymbol": "USDT",
+  "type": "FFWCSX",
+  "firstOpenDate": 1610697600000,
+  "expireDate": null,
+  "settleDate": null,
+  "baseCurrency": "DASH",
+  "quoteCurrency": "USDT",
+  "settleCurrency": "USDT",
+  "maxOrderQty": 1000000,
+  "maxPrice": 1000000.0,
+  "lotSize": 1,
+  "tickSize": 0.01,
+  "indexPriceTickSize": 0.01,
+  "multiplier": 0.01,
+  "initialMargin": 0.05,
+  "maintainMargin": 0.025,
+  "maxRiskLimit": 100000,
+  "minRiskLimit": 100000,
+  "riskStep": 50000,
+  "makerFeeRate": 0.0002,
+  "takerFeeRate": 0.0006,
+  "takerFixFee": 0.0,
+  "makerFixFee": 0.0,
+  "settlementFee": null,
+  "isDeleverage": true,
+  "isQuanto": false,
+  "isInverse": false,
+  "markMethod": "FairPrice",
+  "fairMethod": "FundingRate",
+  "fundingBaseSymbol": ".DASHINT8H",
+  "fundingQuoteSymbol": ".USDTINT8H",
+  "fundingRateSymbol": ".DASHUSDTMFPI8H",
+  "indexSymbol": ".KDASHUSDT",
+  "settlementSymbol": "",
+  "status": "Open",
+  "fundingFeeRate": 0.0001,
+  "predictedFundingFeeRate": 0.0001,
+  "openInterest": "2487402",
+  "turnoverOf24h": 3166644.36115288,
+  "volumeOf24h": 32299.4,
+  "markPrice": 101.6,
+  "indexPrice": 101.59,
+  "lastTradePrice": 101.54,
+  "nextFundingRateTime": 22646889,
+  "maxLeverage": 20,
+  "sourceExchanges": [
+    "huobi",
+    "Okex",
+    "Binance",
+    "Kucoin",
+    "Poloniex",
+    "Hitbtc"
+  ],
+  "premiumsSymbol1M": ".DASHUSDTMPI",
+  "premiumsSymbol8H": ".DASHUSDTMPI8H",
+  "fundingBaseSymbol1M": ".DASHINT",
+  "fundingQuoteSymbol1M": ".USDTINT",
+  "lowPrice": 88.88,
+  "highPrice": 102.21,
+  "priceChgPct": 0.1401,
+  "priceChg": 12.48
+}
 ```
 
 Submit request to get info of the specified contract.
@@ -2341,28 +2980,64 @@ Param | Type | Description
 --------- | ------- | -----------
 symbol | String | **Path Parameter**. Symbol of the contract
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Contract status
+rootSymbol | Contract group
+type | Type of the contract
+firstOpenDate | First Open Date
+expireDate | Expiration date. Null means it will never expire
+settleDate | Settlement date. Null indicates that automatic settlement is not supported
+baseCurrency | Base currency
+quoteCurrency | Quote currency
+settleCurrency | Currency used to clear and settle the trades
+maxOrderQty | Maximum order quantity
+maxPrice | Maximum order price
+lotSize | Minimum lot size
+tickSize | Minimum price changes
+indexPriceTickSize | Index price of tick size
+multiplier | Contract multiplier
+initialMargin | Initial margin requirement
+maintainMargin | Maintenance margin requirement
+maxRiskLimit | Maximum risk limit (unit: XBT)
+minRiskLimit | Minimum risk limit (unit: XBT)
+riskStep | Risk limit increment value (unit: XBT)
+makerFeeRate | Maker fees
+takerFeeRate | Taker fees
+takerFixFee | Fixed taker fees(Deprecated field, no actual use of the value field)
+makerFixFee | Fixed maker fees(Deprecated field, no actual use of the value field)
+settlementFee | settlement fee
+isDeleverage | Enabled ADL or not
+isQuanto | Whether quanto or not(Deprecated field, no actual use of the value field)
+isInverse | Reverse contract or not
+markMethod | Marking method
+fairMethod | Fair price marking method
+fundingBaseSymbol | Ticker symbol of the based currency
+fundingQuoteSymbol | Ticker symbol of the quote currency
+fundingRateSymbol | Funding rate symbol
+indexSymbol | Index symbol
+settlementSymbol | Settlement Symbol
+status | Contract status
+fundingFeeRate | Funding fee rate
+predictedFundingFeeRate | Predicted funding fee rate
+openInterest | open interest
+turnoverOf24h | turnover of 24 hours
+volumeOf24h | volume of 24 hours
+markPrice | Mark price
+indexPrice | Index price
+lastTradePrice | last trade price
+nextFundingRateTime | next funding rate time
+maxLeverage | maximum leverage
+sourceExchanges | The contract index source exchange
+premiumsSymbol1M | Premium index symbol (1 minute)
+premiumsSymbol8H | Premium index symbol (8 hours)
+fundingBaseSymbol1M | Base currency interest rate symbol (1 minute)
+fundingQuoteSymbol1M | Quote currency interest rate symbol (1 minute)
+lowPrice | 24H Low
+highPrice | 24H High
+priceChgPct | 24H Change%
+priceChg | 24H Change
 
 # Get Ticker
 
@@ -2378,9 +3053,9 @@ symbol | String | **Path Parameter**. Symbol of the contract
       "size": 10,						//Filled quantity
       "price": "7000.0",				//Filled price
       "bestBidSize": 20,				//Best bid size
-      "bestBidPrice": "7000.0",		//Best bid
+      "bestBidPrice": "7000.0",		//Best bid price
       "bestAskSize": 30,				//Best ask size
-      "bestAskPrice": "7001.0",		//Best ask
+      "bestAskPrice": "7001.0",		//Best ask price
       "tradeId": "5cbd7377a6ffab0c7ba98b26",  //Transaction ID
       "ts": 1550653727731			   //Filled time - nanosecond
     }
@@ -2400,6 +3075,21 @@ GET /api/v1/ticker?symbol=XBTUSDM
 Param | Type | Description
 --------- | ------- | -----------
 symbol | String | Symbol of the contract
+
+### RESPONSES
+Field | Description
+--------- | -------
+sequence | Sequence number
+symbol | Symbol
+side | Side of liquidity taker
+size | Filled quantity
+price | Filled price
+bestBidSize | Best bid size
+bestBidPrice | Best bid price
+bestAskSize | Best ask size
+bestAskPrice | Best ask price
+tradeId | Transaction ID
+ts | Filled time - nanosecond
 
 # Order Book
 ## Get Full Order Book - Level 2
@@ -2449,6 +3139,15 @@ This API is restricted for each account, the request rate limit is **30 times/3s
 | ------ | ------ | ----------- |
 | symbol | String | Symbol of the contract |
 
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Symbol
+sequence | Ticker sequence number
+asks | asks. [Price, quantity]
+bids | bids. [Price, quantity]
+ts | timestamp
+
 ## Get Part Order Book - Level 2
 
 ```json
@@ -2496,7 +3195,16 @@ GET /api/v1/level2/depth100?symbol=XBTUSDM
 | ------ | ------ | ----------- |
 | symbol | String | Symbol of the contract |
 
-## Level 2 Pulling Messages
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Symbol
+sequence | Ticker sequence number
+asks | asks. [Price, quantity]
+bids | bids. [Price, quantity]
+ts | timestamp
+
+## Level 2 Pulling Messages(deprecated)
 
 ```json
   {
@@ -2549,7 +3257,8 @@ GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200
 			"makerOrderId": "5cbd7377a6ffab0c7ba98b28", //Maker order ID
 			"price": "7000.0",                          //Filled price
 			"size": 1,                                //Filled quantity
-			"side": "buy",                              //Side-taker    			"ts": 1545904567062140823                   //Filled time - nanosecond
+			"side": "buy",                              //Side-taker
+			"ts": 1545904567062140823                   //Filled time - nanosecond
 		}
   }
 ```
@@ -2566,6 +3275,18 @@ GET /api/v1/trade/history?symbol=XBTUSDM
 | ------ | ------ | ----------- |
 | symbol | String | Symbol of the contract   |
 
+### RESPONSES
+Field | Description
+--------- | -------
+sequence | Sequence number
+tradeId | Transaction ID
+takerOrderId | Taker order ID
+makerOrderId | Maker order ID
+price | Filled price
+size | Filled quantity
+side | Side
+ts | Filled time - nanosecond
+
 ### Description
 **SIDE**
 The trade side indicates the taker order side. A taker order is the order that was matched with orders opened on the order book.
@@ -2579,7 +3300,7 @@ The trade side indicates the taker order side. A taker order is the order that w
     "dataList": [
       {
         "symbol": ".XBTINT",                 //Symbol of the Bitcoin Lending Rate  
-        "granularity": 60000,                //粒Granularity (milisecond)
+        "granularity": 60000,                //Granularity (milisecond)
         "timePoint": 1557996300000,          //Time point (milisecond)
         "value": 0.0003                      //Interest rate value
       },
@@ -2620,6 +3341,14 @@ GET /api/v1/interest/query?symbol=.XBTINT
 | forward   | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default|
 | maxCount  | int     | *[optional]* Max record count. The default record count is 10    |
 
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Symbol of the Bitcoin Lending Rate
+granularity | Granularity (milisecond)
+timePoint | Time point (milisecond)
+value | Interest rate value
+hasMore | Whether there are more pages
 
 ## Get Index List 
 
@@ -2685,16 +3414,18 @@ GET /api/v1/index/query
 | forward   | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default |
 | maxCount  | int     | *[optional]* Max record count. The default record count is 10               |
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Symbol of Bitcoin spot
+granularity | Granularity (milisecond)
+timePoint | Time point (milisecond)
+value | Index Value
+decomposionList | Component List
+exchange | Exchange
+price | Last traded price
+weight | Weight
+hasMore | Whether there are more pages
 
 ## Get Current Mark Price
 
@@ -2723,7 +3454,14 @@ GET /api/v1/mark-price/XBTUSDM/current
 | ------ | ------  | ----------- |
 | symbol | String | **Path Parameter**. Symbol of the contract  |
 
-
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Symbol
+granularity | Granularity (milisecond)
+timePoint | Time point (milisecond)
+value | Mark price
+indexPrice | Index price
 
 ## Get Premium Index
 
@@ -2775,6 +3513,15 @@ GET /api/v1/premium/query?symbol=XBTUSDM
 | forward   | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default |
 | maxCount  | int     | *[optional]* Max record count. The default record count is 10                      |
 
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Premium index symbol
+granularity | Granularity (milisecond)
+timePoint | Time point (milisecond)
+value | Premium index
+hasMore | Whether there are more pages
+
 
 ## Get Current Funding Rate
 
@@ -2802,6 +3549,14 @@ GET /api/v1/funding-rate/XBTUSDM/current
 | ------ | ------ | -------------- |
 | symbol | String | **Path Parameter**. Symbol of the contract. |
 
+### RESPONSES
+Field | Description
+--------- | -------
+symbol | Funding Rate Symbol
+granularity | Granularity (milisecond)
+timePoint | Time point (milisecond)
+value | Funding rate
+predictedValue | Predicted funding rate
 
 # Time
 
@@ -2820,6 +3575,10 @@ Get the API server time. This is the Unix timestamp.
 ### HTTP Request
 GET /api/v1/timestamp
 
+### RESPONSES
+Field | Description
+--------- | -------
+data | API server time. Unix timestamp.
 
 # Service Status
 
@@ -2841,6 +3600,11 @@ Get the service status.
 ### HTTP Request
 GET /api/v1/status
 
+### RESPONSES
+Field | Description
+--------- | -------
+status | service status. open, close, cancelonly
+msg | remark for operation
 
 
 # K Chart
