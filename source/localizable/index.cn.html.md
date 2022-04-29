@@ -8,9 +8,14 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
  -  REST API 包含三个类别：**用户（私有）、交易（私有）、市场数据（公共）**
  -  Websocket包含两类：**公共频道和私人频道**
 
+<aside class="notice">合约API文档已升级，最新地址请参考：<code>https://docs.kucoin.com/futures/new</code> </aside>
+
 ## 更新预告
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
+
+#### 2022.04.30
+* 合约API文档已升级，最新地址请参考：<code>https://docs.kucoin.com/futures/new</code>
 
 #### 2022.03.24
 * 废弃了[GET /api/v1/level2/message/query](#level-2-3)接口
