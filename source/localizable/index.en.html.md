@@ -7,7 +7,7 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
  -  The REST API part contains three sections: **User (private) , Trade (private)** and **Market Data (public).**
  -  The Websocket Feed part contains two sections: **Public Channels** and **Private Channels**. 
 
-<aside class="notice">The Futures API documentation has been upgraded, please read and use the new documentation: <code>https://docs.kucoin.com/futures/new</code></aside>
+<aside class="notice">KuCoin Futures API document has been upgraded, you can read the latest document content by referring to the following link: <code>https://docs.kucoin.com/futures/new</code>. Currently, the related interface of the new document is not open for use. The launch time will be announced later. If you have any questions, please use email to contact <code>newapi@kucoin.plus</code></aside>
 
 ## Upcoming Changes
 
