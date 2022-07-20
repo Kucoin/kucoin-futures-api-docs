@@ -15,6 +15,9 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
+#### 2022.07.21
+* 废弃`POST /api/v1/withdrawals`接口
+
 #### 2022.04.30
 * 合约API文档已升级，最新地址请参考：<code>https://docs.kucoin.com/futures/new/cn</code>
 
@@ -918,7 +921,7 @@ currency | String | 币种（**XBT或USDT**）
 | isWithdrawEnabled | 是否可以提现 | 
 | precision | 提现金额精度 | 
 
-## 发起提现
+## 发起提现(废弃)
 
 ```json
   {
@@ -928,6 +931,8 @@ currency | String | 币种（**XBT或USDT**）
     }
   }
 ```
+
+<aside class="notice">该接口已废弃，请您先从合约账户内部划转资产到您的储蓄账户，再从储蓄账户进行提现</aside>
 
 ### HTTP请求
 POST /api/v1/withdrawals
