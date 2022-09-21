@@ -15,7 +15,7 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
-#### 2022.09.21
+#### 2022.09.22
 
 * 新增子账号相关接口: `GET /api/v1/user-info`、`POST /api/v1/sub/user`、`GET /api/v1/sub/api-key`、`POST /api/v1/sub/api-key`、`POST /api/v1/sub/api-key/update`、`DELETE /api/v1/sub/api-key`
 

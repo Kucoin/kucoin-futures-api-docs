@@ -13,7 +13,7 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
-#### 2022.09.21
+#### 2022.09.22
 
 - Add the following interfaces related to sub-account: `GET /api/v1/user-info`、`POST /api/v1/sub/user`、`GET /api/v1/sub/api-key`、`POST /api/v1/sub/api-key`、`POST /api/v1/sub/api-key/update`、`DELETE /api/v1/sub/api-key`
 
