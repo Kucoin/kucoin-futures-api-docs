@@ -7,17 +7,21 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
  -  The REST API part contains three sections: **User (private) , Trade (private)** and **Market Data (public).**
  -  The Websocket Feed part contains two sections: **Public Channels** and **Private Channels**. 
 
-<aside class="notice">KuCoin Futures API document has been upgraded, you can read the latest document content by referring to the following link: <code>https://docs.kucoin.com/futures/new</code>. Currently, the related interface of the new document is not open for use. The launch time will be announced later. If you have any questions, please use email to contact <code>newapi@kucoin.plus</code></aside>
+<!-- <aside class="notice">KuCoin Futures API document has been upgraded, you can read the latest document content by referring to the following link: <code>https://docs.kucoin.com/futures/new</code>. Currently, the related interface of the new document is not open for use. The launch time will be announced later. If you have any questions, please use email to contact <code>newapi@kucoin.plus</code></aside> -->
 
 ## Upcoming Changes
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+#### 2022.09.21
+
+- Add the following interfaces related to sub-account: `GET /api/v1/user-info`、`POST /api/v1/sub/user`、`GET /api/v1/sub/api-key`、`POST /api/v1/sub/api-key`、`POST /api/v1/sub/api-key/update`、`DELETE /api/v1/sub/api-key`
+
 #### 2022.07.21
 * Deprecate `POST /api/v1/withdrawals` endpoint
 
-#### 2022.04.30
-* The Futures API documentation has been upgraded, please read and use the new documentation: <code>https://docs.kucoin.com/futures/new</code>
+<!-- #### 2022.04.30
+* The Futures API documentation has been upgraded, please read and use the new documentation: <code>https://docs.kucoin.com/futures/new</code> -->
 
 #### 2022.03.16
 * Deprecate [GET /api/v1/level2/message/query](#level-2-pulling-messages-deprecated) endpoint
@@ -657,10 +661,9 @@ Signature is required for this part.
   }
 ```
 ### HTTP Request
-GET /api/v1/account-overview
-
+`GET /api/v1/account-overview`
 ### Example
-GET /api/v1/account-overview?currency=XBT
+`GET /api/v1/account-overview?currency=XBT`
 ### Parameters
 Param | Type | Description
 --------- | ------- | -----------
@@ -685,7 +688,6 @@ This endpoint requires the **General** permission.
 This API is restricted for each account, the request rate limit is **30 times/3s**.
 
 ## Get Transaction History
-
 ```json
   {
     "code": "200000",
@@ -721,10 +723,10 @@ If there are open positions, the status of the first page returned will be **Pen
 
 
 ### HTTP Request
-GET /api/v1/transaction-history
+`GET /api/v1/transaction-history`
 
 ### Example
-GET /api/v1/transaction-history?offset=1&forward=true&maxCount=50
+`GET /api/v1/transaction-history?offset=1&forward=true&maxCount=50`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -755,6 +757,240 @@ Field | Description
 | remark | Ticker symbol of the contract |
 | offset | Offset |
 | currency | Currency |
+
+## Get Account Summary Information
+```json
+{
+    "code": "200000",
+    "data": {
+        "level": 7,
+        "subQuantity": 1,
+        "maxSubQuantity": 100
+    }
+}
+```
+This endpoint can be used to obtain account summary information.
+
+### HTTP REQUEST
+`GET /api/v1/user-info`
+
+### Example
+`GET /api/v1/user-info`
+
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+
+### PARAMETERS
+`N/A`
+
+### RESPONSES
+Field | Description
+--------- | -------
+level | User level
+subQuantity | Number of sub-accounts
+maxSubQuantity| Max number of sub-accounts
+
+## Create Sub-Account
+```json
+{
+    "code": "200000",
+    "data": {
+        "uid": 9969082973,
+        "subName": "AAAAAAAA0007",
+        "remarks": "remark"
+    }
+}
+```
+This endpoint can be used to create sub-accounts.
+
+### HTTP REQUEST
+`POST /api/v1/sub/user`
+
+### Example
+`POST /api/v1/sub/user`
+
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+
+### PARAMETERS
+Param | Type | Mandatory | Description
+--------- | ------- | ------- | -------
+password | String | Yes | Password(7-24 characters, must contain letters and numbers, cannot only contain numbers or include special characters)
+remarks | String | No | Remarks(1~24 characters)
+subName | String | Yes | Sub-account name(must contain 7-32 characters, at least one number and one letter. Cannot contain any spaces.)
+
+### RESPONSES
+Field | Description
+--------- | -------
+remarks | Remarks
+subName | Sub-account name
+uid | Sub-account UID
+
+## Get Sub-Account API List
+```json
+{
+    "code": "200000",
+    "data": [
+        {
+            "subName": "AAAAAAAAAAAAA0022",
+            "remark": "hytest01-01",
+            "apiKey": "63032453e75087000182982b",
+            "permission": "General",
+            "ipWhitelist": "",
+            "createdAt": 1661150291000
+        }
+    ]
+}
+```
+This endpoint can be used to obtain a list of APIs pertaining to a sub-account.
+
+### HTTP REQUEST
+`GET /api/v1/sub/api-key`
+
+### Example
+`GET /api/v1/sub/api-key`
+
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+
+### PARAMETERS
+Param | Type | Mandatory | Description
+--------- | ------- | ------- | -------
+apiKey | String | No | API-Key.
+subName | String | Yes | Sub-account name.
+
+### RESPONSES
+Field | Description
+--------- | -------
+apiKey | API-Key
+createdAt | Time of the event
+ipWhitelist | IP whitelist
+permission | Permissions
+remark | Remarks
+subName | Sub-account name
+
+
+## Create APIs for Sub-Account
+```json
+{
+    "code": "200000",
+    "data": {
+        "subName": "AAAAAAAAAA0007",
+        "remark": "remark",
+        "apiKey": "630325e0e750870001829864",
+        "apiSecret": "110f31fc-61c5-4baf-a29f-3f19a62bbf5d",
+        "passphrase": "passphrase",
+        "permission": "General",
+        "ipWhitelist": "",
+        "createdAt": 1661150688000
+    }
+}
+```
+This endpoint can be used to create APIs for sub-accounts.
+
+### HTTP REQUEST
+`POST /api/v1/sub/api-key`
+
+### Example
+`POST /api/v1/sub/api-key`
+
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+
+### PARAMETERS
+Param | Type | Mandatory | Description
+--------- | ------- | ------- | -------
+ipWhitelist | String | No | IP whitelist(You may add up to 20 IPs. Use a halfwidth comma to each IP)
+passphrase | String | Yes | Password(Must contain 7-32 characters. Cannot contain any spaces.)
+permission | String | No | Permissions(Only "General" and "Trade" permissions can be set, such as "General, Trade". The default is "General")
+remark | String | Yes | Remarks(1~24 characters)
+subName | String | Yes | Sub-account name, create sub account name of API Key.
+
+### RESPONSES
+Field | Description
+--------- | -------
+apiKey | API-Key
+createdAt | Time of the event
+ipWhitelist | IP whitelist
+permission | Permissions
+remark | Remarks
+subName  | Sub-account name
+apiSecret | API secret
+passphrase | Password
+
+## Modify Sub-Account APIs
+```json
+{
+    "code": "200000",
+    "data": {
+        "subName": "AAAAAAAAAA0007",
+        "apiKey": "630329b4e7508700018298c5",
+        "permission": "General",
+        "ipWhitelist": "127.0.0.1",
+    }
+}
+```
+This endpoint can be used to modify sub-account APIs.
+
+### HTTP REQUEST
+`POST /api/v1/sub/api-key/update`
+
+### Example
+`POST /api/v1/sub/api-key/update`
+
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+
+### PARAMETERS
+Param | Type | Mandatory | Description
+--------- | ------- | ------- | -------
+apiKey | String | Yes | API-Key(Sub-account APIKey)
+ipWhitelist | String | No | IP whitelist(you may add up to 20 IPs. Use a halfwidth comma to each IP.If modified, the IP will be reset.)
+passphrase | String | Yes | Password of API key
+permission | String | No | Permission list.If modified, permissions will be reset.
+subName | String | Yes | Sub-account name
+
+### RESPONSES
+Field | Description
+--------- | -------
+apiKey | API-Key
+ipWhitelist | IP whitelist
+permission | Permissions
+subName | Sub-account name
+
+## Delete Sub-Account APIs
+```json
+{
+ "code": "200000",
+ "data": {
+   "subName": "AAAAAAAAAA0007",
+   "apiKey": "630325e0e750870001829864"
+ }
+}
+```
+This endpoint can be used to delete sub-account APIs.
+
+### HTTP REQUEST
+`DELETE /api/v1/sub/api-key`
+
+### Example
+`DELETE /api/v1/sub/api-key`
+
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+
+### PARAMETERS
+Param | Type | Mandatory | Description
+--------- | ------- | ------- | -------
+apiKey | String | Yes | API-Key(API key to be deleted)
+passphrase | String | Yes | Password(Password of the API key)
+subName | String | Yes | Sub-account name(The sub-account name corresponding to the API key)
+
+### RESPONSES
+Field | Description
+--------- | -------
+apiKey | API-Key
+subName | Sub-account name
 
 # Deposit
 ## Get Deposit Address
