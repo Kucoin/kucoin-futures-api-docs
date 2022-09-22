@@ -15,7 +15,7 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 #### 2022.09.22
 
-- Add the following interfaces related to sub-account: `GET /api/v1/user-info`、`POST /api/v1/sub/user`、`GET /api/v1/sub/api-key`、`POST /api/v1/sub/api-key`、`POST /api/v1/sub/api-key/update`、`DELETE /api/v1/sub/api-key`
+- Add the following interfaces related to sub-account: `POST /api/v1/sub/api-key`
 
 #### 2022.07.21
 * Deprecate `POST /api/v1/withdrawals` endpoint
@@ -758,119 +758,7 @@ Field | Description
 | offset | Offset |
 | currency | Currency |
 
-## Get Account Summary Information
-```json
-{
-    "code": "200000",
-    "data": {
-        "level": 7,
-        "subQuantity": 1,
-        "maxSubQuantity": 100
-    }
-}
-```
-This endpoint can be used to obtain account summary information.
-
-### HTTP REQUEST
-`GET /api/v1/user-info`
-
-### Example
-`GET /api/v1/user-info`
-
-### API KEY PERMISSIONS
-This endpoint requires the `General` permission.
-
-### PARAMETERS
-`N/A`
-
-### RESPONSES
-Field | Description
---------- | -------
-level | User level
-subQuantity | Number of sub-accounts
-maxSubQuantity| Max number of sub-accounts
-
-## Create Sub-Account
-```json
-{
-    "code": "200000",
-    "data": {
-        "uid": 9969082973,
-        "subName": "AAAAAAAA0007",
-        "remarks": "remark"
-    }
-}
-```
-This endpoint can be used to create sub-accounts.
-
-### HTTP REQUEST
-`POST /api/v1/sub/user`
-
-### Example
-`POST /api/v1/sub/user`
-
-### API KEY PERMISSIONS
-This endpoint requires the `General` permission.
-
-### PARAMETERS
-Param | Type | Mandatory | Description
---------- | ------- | ------- | -------
-password | String | Yes | Password(7-24 characters, must contain letters and numbers, cannot only contain numbers or include special characters)
-remarks | String | No | Remarks(1~24 characters)
-subName | String | Yes | Sub-account name(must contain 7-32 characters, at least one number and one letter. Cannot contain any spaces.)
-
-### RESPONSES
-Field | Description
---------- | -------
-remarks | Remarks
-subName | Sub-account name
-uid | Sub-account UID
-
-## Get Sub-Account API List
-```json
-{
-    "code": "200000",
-    "data": [
-        {
-            "subName": "AAAAAAAAAAAAA0022",
-            "remark": "hytest01-01",
-            "apiKey": "63032453e75087000182982b",
-            "permission": "General",
-            "ipWhitelist": "",
-            "createdAt": 1661150291000
-        }
-    ]
-}
-```
-This endpoint can be used to obtain a list of APIs pertaining to a sub-account.
-
-### HTTP REQUEST
-`GET /api/v1/sub/api-key`
-
-### Example
-`GET /api/v1/sub/api-key`
-
-### API KEY PERMISSIONS
-This endpoint requires the `General` permission.
-
-### PARAMETERS
-Param | Type | Mandatory | Description
---------- | ------- | ------- | -------
-apiKey | String | No | API-Key.
-subName | String | Yes | Sub-account name.
-
-### RESPONSES
-Field | Description
---------- | -------
-apiKey | API-Key
-createdAt | Time of the event
-ipWhitelist | IP whitelist
-permission | Permissions
-remark | Remarks
-subName | Sub-account name
-
-
-## Create APIs for Sub-Account
+## Create Futures APIs for Sub-Account
 ```json
 {
     "code": "200000",
@@ -886,7 +774,7 @@ subName | Sub-account name
     }
 }
 ```
-This endpoint can be used to create APIs for sub-accounts.
+This endpoint can be used to create Futures APIs for sub-accounts.
 
 ### HTTP REQUEST
 `POST /api/v1/sub/api-key`
@@ -917,80 +805,6 @@ remark | Remarks
 subName  | Sub-account name
 apiSecret | API secret
 passphrase | Password
-
-## Modify Sub-Account APIs
-```json
-{
-    "code": "200000",
-    "data": {
-        "subName": "AAAAAAAAAA0007",
-        "apiKey": "630329b4e7508700018298c5",
-        "permission": "General",
-        "ipWhitelist": "127.0.0.1",
-    }
-}
-```
-This endpoint can be used to modify sub-account APIs.
-
-### HTTP REQUEST
-`POST /api/v1/sub/api-key/update`
-
-### Example
-`POST /api/v1/sub/api-key/update`
-
-### API KEY PERMISSIONS
-This endpoint requires the `General` permission.
-
-### PARAMETERS
-Param | Type | Mandatory | Description
---------- | ------- | ------- | -------
-apiKey | String | Yes | API-Key(Sub-account APIKey)
-ipWhitelist | String | No | IP whitelist(you may add up to 20 IPs. Use a halfwidth comma to each IP.If modified, the IP will be reset.)
-passphrase | String | Yes | Password of API key
-permission | String | No | Permission list.If modified, permissions will be reset.
-subName | String | Yes | Sub-account name
-
-### RESPONSES
-Field | Description
---------- | -------
-apiKey | API-Key
-ipWhitelist | IP whitelist
-permission | Permissions
-subName | Sub-account name
-
-## Delete Sub-Account APIs
-```json
-{
- "code": "200000",
- "data": {
-   "subName": "AAAAAAAAAA0007",
-   "apiKey": "630325e0e750870001829864"
- }
-}
-```
-This endpoint can be used to delete sub-account APIs.
-
-### HTTP REQUEST
-`DELETE /api/v1/sub/api-key`
-
-### Example
-`DELETE /api/v1/sub/api-key`
-
-### API KEY PERMISSIONS
-This endpoint requires the `General` permission.
-
-### PARAMETERS
-Param | Type | Mandatory | Description
---------- | ------- | ------- | -------
-apiKey | String | Yes | API-Key(API key to be deleted)
-passphrase | String | Yes | Password(Password of the API key)
-subName | String | Yes | Sub-account name(The sub-account name corresponding to the API key)
-
-### RESPONSES
-Field | Description
---------- | -------
-apiKey | API-Key
-subName | Sub-account name
 
 # Deposit
 ## Get Deposit Address
