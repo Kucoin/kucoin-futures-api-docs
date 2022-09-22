@@ -9,17 +9,21 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
  -  Websocket包含两类：**公共频道和私人频道**
 
 
-<aside class="notice">合约API文档现已升级，您可以阅读参考以下链接阅读最新文档内容: <code>https://docs.kucoin.com/futures/new/cn</code>，目前新文档相关接口暂未开放使用，上线时间另行通知，如有任何疑问请邮箱联系<code>newapi@kucoin.plus</code></aside>
+<!-- <aside class="notice">合约API文档现已升级，您可以阅读参考以下链接阅读最新文档内容: <code>https://docs.kucoin.com/futures/new/cn</code>，目前新文档相关接口暂未开放使用，上线时间另行通知，如有任何疑问请邮箱联系<code>newapi@kucoin.plus</code></aside> -->
 
 ## 更新预告
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
+#### 2022.09.22
+
+* 新增子账号相关接口: `GET /api/v1/user-info`、`POST /api/v1/sub/user`、`GET /api/v1/sub/api-key`、`POST /api/v1/sub/api-key`、`POST /api/v1/sub/api-key/update`、`DELETE /api/v1/sub/api-key`
+
 #### 2022.07.21
 * 废弃`POST /api/v1/withdrawals`接口
 
-#### 2022.04.30
-* 合约API文档已升级，最新地址请参考：<code>https://docs.kucoin.com/futures/new/cn</code>
+<!-- #### 2022.04.30
+* 合约API文档已升级，最新地址请参考：<code>https://docs.kucoin.com/futures/new/cn</code> -->
 
 #### 2022.03.24
 * 废弃了[GET /api/v1/level2/message/query](#level-2-3)接口
@@ -682,10 +686,10 @@ KC-API-SIGN = 7QP/oM0ykidMdrfNEUmng8eZjg/ZvPafjIqmxiVfYu4=
   }
 ```
 ### HTTP请求
-GET /api/v1/account-overview
+`GET /api/v1/account-overview`
 
 ### 请求示例
-GET /api/v1/account-overview?currency=XBT
+`GET /api/v1/account-overview?currency=XBT`
 
 ### 参数
 参数 | 数据类型 | 含义
@@ -746,10 +750,10 @@ currency | String | [可选] 币种 **XBT或USDT,默认XBT**
 当存在未平仓合约时，第一页返回数据包含的未平仓合约记录状态为**Pending**，是当前8小时结算周期内的已实现盈亏。翻页使用当前页返回的最小**offset**，作为请求**offset**参数值传入，实现翻页。
 
 ### HTTP请求
-GET /api/v1/transaction-history
+`GET /api/v1/transaction-history`
 
 ### 请求示例
-GET /api/v1/transaction-history?offset=1&forward=true&maxCount=50
+`GET /api/v1/transaction-history?offset=1&forward=true&maxCount=50`
 
 ### API权限
 该接口需要**通用权限**
@@ -780,6 +784,239 @@ forward | boolean | [可选] 是否前向查询，**true**或者**false**，默�
 | remark | 合约 | 
 | offset | 起始偏移量，一般使用上个请求最后一条返回结果的唯一属性，默认返回第一页 | 
 | currnecy | 币种 | 
+
+## 获取账号概要信息
+```json
+{
+    "code": "200000",
+    "data": {
+        "level": 7,
+        "subQuantity": 1,
+        "maxSubQuantity": 100
+    }
+}
+```
+这个接口用以获取账号概要信息
+
+### HTTP请求
+`GET /api/v1/user-info`
+
+### 请求示例
+`GET /api/v1/user-info`
+
+### API权限
+此接口需要`通用权限`。
+
+### 请求参数
+`无`
+
+### 返回值
+字段 | 含义
+--------- | -------
+level | 用户等级
+subQuantity | 子账号数量
+maxSubQuantity| 子账号数量上限
+
+## 创建子账号
+```json
+{
+    "code": "200000",
+    "data": {
+        "uid": 9969082973,
+        "subName": "AAAAAAAAAA0007",
+        "remarks": "remark"
+    }
+}
+```
+这个接口用以创建子账号。
+
+### HTTP请求
+`POST /api/v1/sub/user`
+
+### 请求示例
+`POST /api/v1/sub/user`
+
+### API权限
+此接口需要`通用权限`。
+
+### 请求参数
+请求参数 | 类型 | 是否必须 |  含义
+--------- | ------- | ------- | -------
+password | String | 是 | 密码(7～24位字符，数字或字母，不允许纯数字或@等特殊字符)
+remarks | String | 否 | 备注(1～24位字符)
+subName | String | 是 | 子账户名(7～32位字符，必须包含字母和数字，不支持空格)
+
+### 返回值
+字段 | 含义
+--------- | -------
+remarks | 备注
+subName | 子账户名
+uid | 子账户UID
+
+## 获取子账号API列表
+```json
+{
+    "code": "200000",
+    "data": [
+        {
+            "subName": "AAAAAAAAAAAAA0022",
+            "remark": "hytest01-01",
+            "apiKey": "63032453e75087000182982b",
+            "permission": "General",
+            "ipWhitelist": "",
+            "createdAt": 1661150291000
+        }
+    ]
+}
+```
+这个接口用以获取子账号API列表
+
+### HTTP请求
+`GET /api/v1/sub/api-key`
+
+### 请求示例
+`GET /api/v1/sub/api-key`
+
+### API权限
+此接口需要`通用权限`。
+
+### 请求参数
+请求参数 | 类型 | 是否必须 |  含义
+--------- | ------- | ------- | -------
+apiKey | String | 否 | API-Key
+subName | String | 是 | 子账号名
+
+### 返回值
+字段 | 含义
+--------- | -------
+apiKey | API-Key
+createdAt | 创建时间
+ipWhitelist | IP白名单
+permission | 权限列表
+remark | 备注
+subName | 子账号名
+
+## 创建子账号API
+```json
+{
+    "code": "200000",
+    "data": {
+        "subName": "AAAAAAAAAA0007",
+        "remark": "remark",
+        "apiKey": "630325e0e750870001829864",
+        "apiSecret": "110f31fc-61c5-4baf-a29f-3f19a62bbf5d",
+        "passphrase": "passphrase",
+        "permission": "General",
+        "ipWhitelist": "",
+        "createdAt": 1661150688000
+    }
+}
+```
+这个接口用以创建子账号API
+
+### HTTP请求
+`POST /api/v1/sub/api-key`
+
+### 请求示例
+`POST /api/v1/sub/api-key`
+
+### API权限
+此接口需要`通用权限`。
+
+### 请求参数
+请求参数 | 类型 | 是否必须 |  含义
+--------- | ------- | ------- | -------
+ipWhitelist | String | 否 | IP白名单(每个IP用半角逗号隔开，最多添加20个)
+passphrase | String | 是 | 密码(7～32位字符，不可输入空格)
+permission | String | 否 | 权限列表(只能设置General、Trade权限，如："General,Trade”。默认为General)
+remark | String | 是 | 备注(1～24位字符)
+subName | String | 是 | 子账号名, 创建api key的子账号名称
+
+### 返回值
+字段 | 含义
+--------- | -------
+apiKey | API-Key
+createdAt | 创建时间
+ipWhitelist | IP白名单
+permission | 权限列表
+remark | 备注
+subName | 子账号名
+apiSecret | 秘钥
+passphrase | 密码
+
+## 修改子账号API
+```json
+{
+    "code": "200000",
+    "data": {
+        "subName": "AAAAAAAAAA0007",
+        "apiKey": "630329b4e7508700018298c5",
+        "permission": "General",
+        "ipWhitelist": "127.0.0.1",
+    }
+}
+```
+这个接口用以修改子账号API
+
+### HTTP请求
+`POST /api/v1/sub/api-key/update`
+
+### 请求示例
+`POST /api/v1/sub/api-key/update`
+
+### API权限
+此接口需要`通用权限`。
+
+### 请求参数
+请求参数 | 类型 | 是否必须 |  含义
+--------- | ------- | ------- | -------
+apiKey | String | 是 | API-Key(需要修改的API Key)
+ipWhitelist | String | 否 | IP白名单(每个IP用半角逗号隔开，最多添加20个。如果修改，ip将会重置)
+passphrase | String | 是 |  密码(API Key 密码)
+permission | String |  否 |  权限列表(只能设置General、Trade权限，默认为General。如果修改，权限将会重置)
+subName | String |  是 | 子账号名(API Key对应子账号名)
+
+### 返回值
+字段 | 含义
+--------- | -------
+apiKey | API-Key
+ipWhitelist | IP白名单
+permission | 权限列表
+subName | 子账号名
+
+## 删除子账号API
+```json
+{
+ "code": "200000",
+ "data": {
+   "subName": "AAAAAAAAAA0007",
+   "apiKey": "630325e0e750870001829864"
+ }
+}
+```
+这个接口用以创建子账号API
+
+### HTTP请求
+`DELETE /api/v1/sub/api-key`
+
+### 请求示例
+`DELETE /api/v1/sub/api-key`
+
+### API权限
+此接口需要`通用权限`。
+
+### 请求参数
+请求参数 | 类型 | 是否必须 |  含义
+--------- | ------- | ------- | -------
+apiKey | String | 是 | API-Key(要删除的api key)
+passphrase | String | 是 | 密码(api key的密码)
+subName | String | 是 | 子账号名(api key对应子账号名)
+
+### 返回值
+字段 | 含义
+--------- | -------
+apiKey | API-Key
+subName | 子账号名 
 
 # 充值
 ## 获取充币地址
