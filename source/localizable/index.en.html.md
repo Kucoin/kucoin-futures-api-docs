@@ -13,6 +13,10 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+#### 2022.10.18
+
+- Add the following interfaces related to sub-account: `GET /api/v1/sub/api-key`,`POST /api/v1/sub/api-key/update`,`DELETE /api/v1/sub/api-key`
+
 #### 2022.09.22
 
 - Add the following interfaces related to sub-account: `POST /api/v1/sub/api-key`
@@ -758,6 +762,44 @@ Field | Description
 | offset | Offset |
 | currency | Currency |
 
+## Get Sub-Account Futures API List
+```json
+{
+    "code": "200000",
+    "data": [
+        {
+            "subName": "AAAAAAAAAAAAA0022",
+            "remark": "hytest01-01",
+            "apiKey": "63032453e75087000182982b",
+            "permission": "General",
+            "ipWhitelist": "",
+            "createdAt": 1661150291000
+        }
+    ]
+}
+```
+This endpoint can be used to obtain a list of Futures APIs pertaining to a sub-account.
+### HTTP REQUEST
+`GET /api/v1/sub/api-key`
+### Example
+`GET /api/v1/sub/api-key`
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+### PARAMETERS
+Param | Type | Mandatory | Description
+--------- | ------- | ------- | -------
+apiKey | String | No | API-Key.
+subName | String | Yes | Sub-account name.
+### RESPONSES
+Field | Description
+--------- | -------
+apiKey | API-Key
+createdAt | Time of the event
+ipWhitelist | IP whitelist
+permission | Permissions
+remark | Remarks
+subName | Sub-account name
+
 ## Create Futures APIs for Sub-Account
 ```json
 {
@@ -775,16 +817,12 @@ Field | Description
 }
 ```
 This endpoint can be used to create Futures APIs for sub-accounts.
-
 ### HTTP REQUEST
 `POST /api/v1/sub/api-key`
-
 ### Example
 `POST /api/v1/sub/api-key`
-
 ### API KEY PERMISSIONS
 This endpoint requires the `General` permission.
-
 ### PARAMETERS
 Param | Type | Mandatory | Description
 --------- | ------- | ------- | -------
@@ -793,7 +831,6 @@ passphrase | String | Yes | Password(Must contain 7-32 characters. Cannot contai
 permission | String | No | Permissions(Only "General" and "Trade" permissions can be set, such as "General, Trade". The default is "General")
 remark | String | Yes | Remarks(1~24 characters)
 subName | String | Yes | Sub-account name, create sub account name of API Key.
-
 ### RESPONSES
 Field | Description
 --------- | -------
@@ -805,6 +842,72 @@ remark | Remarks
 subName  | Sub-account name
 apiSecret | API secret
 passphrase | Password
+
+## Modify Sub-Account Futures APIs
+```json
+{
+    "code": "200000",
+    "data": {
+        "subName": "AAAAAAAAAA0007",
+        "apiKey": "630329b4e7508700018298c5",
+        "permission": "General",
+        "ipWhitelist": "127.0.0.1"
+    }
+}
+```
+This endpoint can be used to modify sub-account Futures APIs.
+### HTTP REQUEST
+`POST /api/v1/sub/api-key/update`
+### Example
+`POST /api/v1/sub/api-key/update`
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+### PARAMETERS
+Param | Type | Mandatory | Description
+--------- | ------- | ------- | -------
+apiKey | String | Yes | API-Key(Sub-account APIKey)
+ipWhitelist | String | No | IP whitelist(you may add up to 20 IPs. Use a halfwidth comma to each IP.If modified, the IP will be reset.)
+passphrase | String | Yes | Password of API key
+permission | String | No | Permission list.If modified, permissions 
+will be reset.
+subName | String | Yes | Sub-account name
+### RESPONSES
+Field | Description
+--------- | -------
+apiKey | API-Key
+ipWhitelist | IP whitelist
+permission | Permissions
+subName | Sub-account name
+
+## Delete Sub-Account Futures APIs
+```json
+{
+    "code": "200000",
+    "data": {
+        "subName": "AAAAAAAAAA0007",
+        "apiKey": "630325e0e750870001829864"
+    }
+}
+```
+This endpoint can be used to delete sub-account Futures APIs.
+### HTTP REQUEST
+`DELETE /api/v1/sub/api-key`
+### Example
+`DELETE /api/v1/sub/api-key`
+### API KEY PERMISSIONS
+This endpoint requires the `General` permission.
+### PARAMETERS
+Param | Type | Mandatory | Description
+--------- | ------- | ------- | -------
+apiKey | String | Yes | API-Key(API key to be deleted)
+passphrase | String | Yes | Password(Password of the API key)
+subName | String | Yes | Sub-account name(The sub-account name 
+corresponding to the API key)
+### RESPONSES
+Field | Description
+--------- | -------
+apiKey | API-Key
+subName | Sub-account name
 
 # Deposit
 ## Get Deposit Address
