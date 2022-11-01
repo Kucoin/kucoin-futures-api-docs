@@ -13,6 +13,10 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+#### 2022.11.01
+
+* Deprecate `DELETE /api/v1/withdrawals/{withdrawalId}` interface
+
 #### 2022.10.18
 
 - Add the following interfaces related to sub-account: `GET /api/v1/sub/api-key`,`POST /api/v1/sub/api-key/update`,`DELETE /api/v1/sub/api-key`
@@ -1021,10 +1025,10 @@ Field | Description
 ```
 
 ### HTTP Request
-GET /api/v1/withdrawals/quotas
+`GET /api/v1/withdrawals/quotas`
 
 ### Example
-GET /api/v1/withdrawals/quotas?currency=XBT
+`GET /api/v1/withdrawals/quotas?currency=XBT`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -1063,10 +1067,10 @@ Field | Description
 <aside class="notice">The endpoint was deprecated, please transfer assets from the FUTURES account to the MAIN account first, and then withdraw from the MAIN account</aside>
 
 ### HTTP Request
-POST /api/v1/withdrawals
+`POST /api/v1/withdrawals`
 
 ### Example
-POST /api/v1/withdrawals
+`POST /api/v1/withdrawals`
 
 ### API Permission
 This endpoint requires the **Withdrawal** permission.
@@ -1115,10 +1119,10 @@ Field | Description
 ```
 
 ### HTTP Request
-GET /api/v1/withdrawal-list
+`GET /api/v1/withdrawal-list`
 
 ### Example
-GET /api/v1/withdrawal-list?currentPage=1&pageSize=50&status=PROCESSING
+`GET /api/v1/withdrawal-list?currentPage=1&pageSize=50&status=PROCESSING`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -1147,23 +1151,6 @@ createdAt  | Withdrawal time
 remark  | Withdrawal remarks
 reason  | Reason causing the failure
 
-## Cancel Withdrawal
-Only withdrawal requests of **PROCESSING** status could be canceled.
-
-### HTTP Request
-DELETE /api/v1/withdrawals/{withdrawalId}
-
-### HTTP Request
-DELETE /api/v1/withdrawals/5cda659603aa67131f305f7e
-
-### API Permission
-This endpoint requires the **Withdrawal** permission
-
-### Parameters
-Param | Type  | Description
---------- | ------- | -----------
-withdrawalId | String | **Path Parameter**. Withdrawal ID, which is returned after requesting to withdraw funds. 
-
 # Transfer
 ## Transfer Funds to KuCoin-Main Account
 ```json
@@ -1179,9 +1166,9 @@ Once the transfer arrives your KuCoin-Main Account, the endpoint will respond an
 
 
 ### HTTP Request
-POST /api/v1/transfer-out [It's deprecated, please use POST /api/v3/transfer-out instead]
+`POST /api/v1/transfer-out` [It's deprecated, please use POST /api/v3/transfer-out instead]
 ### Example
-POST /api/v1/transfer-out
+`POST /api/v1/transfer-out`
 ### API Permission
 This endpoint requires the **Withdrawal** permission.
 
@@ -1218,9 +1205,9 @@ Once the transfer arrives your KuCoin-Main Account, the endpoint will respond an
 
 
 ### HTTP Request
-POST /api/v2/transfer-out [It is recommended to use POST /api/v3/transfer-out instead]
+`POST /api/v2/transfer-out` [It is recommended to use POST /api/v3/transfer-out instead]
 ### Example
-POST /api/v2/transfer-out
+`POST /api/v2/transfer-out`
 ### API Permission
 This endpoint requires the **"Trade"** permission.
 
@@ -1278,9 +1265,9 @@ Once the transfer arrives your KuCoin-Main Account, the endpoint will respond an
 
 
 ### HTTP Request
-POST /api/v3/transfer-out
+`POST /api/v3/transfer-out`
 ### Example
-POST /api/v3/transfer-out
+`POST /api/v3/transfer-out`
 ### API Permission
 This endpoint requires the **"Trade"** permission.
 
@@ -1325,9 +1312,9 @@ updatedAt  | Update time
 The amount to be transferred will be deducted from the **payAccount**. Please ensure that you have sufficient funds in your payAccount Account, or the transfer will fail. 
 
 ### HTTP Request
-POST /api/v1/transfer-in
+`POST /api/v1/transfer-in`
 ### Example
-POST /api/v1/transfer-in
+`POST /api/v1/transfer-in`
 ### API Permission
 This endpoint requires the **"Trade"** permission.
 
@@ -1367,10 +1354,10 @@ If the response code is 200, it means the transfer is successful, otherwise it m
 The data of the first page will be queried by default.
 
 ### HTTP Request
-GET /api/v1/transfer-list
+`GET /api/v1/transfer-list`
 
 ### Example
-GET /api/v1/transfer-list?currentPage=1&pageSize=50&status=PROCESSING
+`GET /api/v1/transfer-list?currentPage=1&pageSize=50&status=PROCESSING`
 
 ###API Permission
 This endpoint requires the **General** permission.
@@ -1408,10 +1395,10 @@ remark  | User remark
 The transfer-out request could only be canceled under the “PROCESSING” status.
 
 ### HTTP Request
-DELETE /api/v1/cancel/transfer-out
+`DELETE /api/v1/cancel/transfer-out`
 
 ### Example
-DELETE /api/v1/cancel/transfer-out?applyId=5cd53be30c19fc3754b60928
+`DELETE /api/v1/cancel/transfer-out?applyId=5cd53be30c19fc3754b60928`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -1450,7 +1437,7 @@ The maximum limit orders for a single contract is **100** per account, and the m
 
 
 ### HTTP Request
-POST /api/v1/orders
+`POST /api/v1/orders`
 
 ### API Permission
 This endpoint requires the **Trade** permission
@@ -1502,7 +1489,7 @@ Param  | Type
 orderId  | Order ID. 
 
 ### Example
-POST /api/v1/orders
+`POST /api/v1/orders`
 
 ```json
   {
@@ -1670,10 +1657,10 @@ The **order id** is the server-assigned order id，not the specified clientOid.
 If the order can not be canceled (already filled or previously canceled, etc), then an error response will indicate the reason in the **message** field.
 
 ### HTTP Request
-DELETE /api/v1/orders/{order-id}
+`DELETE /api/v1/orders/{order-id}`
 
 ### Example
-DELETE /api/v1/orders/5cdfc120b21023a909e5ad52
+`DELETE /api/v1/orders/5cdfc120b21023a909e5ad52`
 
 ### API Permission ###
 This endpoint requires the **Trade** permission.
@@ -1706,10 +1693,9 @@ cancelledOrderIds  | cancelled OrderIds.
 Cancel all open orders (excluding stop orders). The response is a list of orderIDs of the canceled orders.
 
 ### HTTP Request
-DELETE /api/v1/orders
-
+`DELETE /api/v1/orders`
 ### Example
-DELETE /api/v1/orders?symbol=XBTUSDM
+`DELETE /api/v1/orders?symbol=XBTUSDM`
 
 ### API Permission
 This endpoint requires the **Trade** permission.
@@ -1748,10 +1734,10 @@ Cancel all untriggered stop orders. The response is a list of orderIDs of the ca
 
 
 ### HTTP Request
-DELETE /api/v1/stopOrders
+`DELETE /api/v1/stopOrders`
 
 ### Example
-DELETE /api/v1/stopOrders?symbol=XBTUSDM
+`DELETE /api/v1/stopOrders?symbol=XBTUSDM`
 
 
 ### API Permission
@@ -1826,10 +1812,10 @@ cancelledOrderIds  | cancelled OrderIds.
 List your current orders.
 
 ### HTTP Request
-GET /api/v1/orders
+`GET /api/v1/orders`
 
 ### Example
-GET /api/v1/orders?status=active  
+`GET /api/v1/orders?status=active`
 Submit the request to get all the active orders.
 
 ### API Permission
@@ -1961,10 +1947,10 @@ If you need to get your recent trade history with low latency, you may query the
 Get the un-triggered stop orders list.
 
 ### HTTP Request
-GET /api/v1/stopOrders
+`GET /api/v1/stopOrders`
 
 ### Example
-GET /api/v1/stopOrders?symbol=XBTUSDM
+`GET /api/v1/stopOrders?symbol=XBTUSDM`
 
 Query this endpoint to get the untriggered stop orders of the position in XBTUSDM.
 
@@ -2084,10 +2070,10 @@ Get a list of recent 1000 orders in the last 24 hours.
 If you need to get your recent traded order history with low latency, you may query this endpoint.
 
 ### HTTP Request
-GET /api/v1/recentDoneOrders
+`GET /api/v1/recentDoneOrders`
 
 ### Example
-GET /api/v1/recentDoneOrders
+`GET /api/v1/recentDoneOrders`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2181,11 +2167,11 @@ reduceOnly  | A mark to reduce the position size only
 Get a single order by order id (including a stop order).
 
 ### HTTP Request
-GET /api/v1/orders/{order-id}?clientOid={client-order-id}
+`GET /api/v1/orders/{order-id}?clientOid={client-order-id}`
 
 ### Example
-GET /api/v1/orders/5cdfc138b21023a909e5ad55 (get order by orderId), </br>
-GET /api/v1/orders/byClientOid?clientOid=eresc138b21023a909e5ad59 (get order by clientOid)
+`GET /api/v1/orders/5cdfc138b21023a909e5ad55` (get order by orderId), </br>
+`GET /api/v1/orders/byClientOid?clientOid=eresc138b21023a909e5ad59` (get order by clientOid)
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2272,10 +2258,10 @@ reduceOnly  | A mark to reduce the position size only
 Get a list of recent fills.
 
 ### HTTP Request
-GET /api/v1/fills
+`GET /api/v1/fills`
 
 ### Example
-GET /api/v1/fills
+`GET /api/v1/fills`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2370,10 +2356,10 @@ Fills are returned sorted by descending fill time.
 Get a list of recent 1000 fills in the last 24 hours. If you need to get your recent traded order history with low latency, you may query this endpoint.
 
 ### HTTP Request
-GET /api/v1/recentFills
+`GET /api/v1/recentFills`
 
 ### Example
-GET /api/v1/recentFills
+`GET /api/v1/recentFills`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2421,10 +2407,10 @@ tradeTime  |  trade time in nanosecond
 You can query this endpoint to get the the total number and value of the all your active orders.
 
 ### HTTP Request
-GET /api/v1/openOrderStatistics
+`GET /api/v1/openOrderStatistics`
 
 ### Example
-GET /api/v1/openOrderStatistics?symbol=XBTUSDM
+`GET /api/v1/openOrderStatistics?symbol=XBTUSDM`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2495,11 +2481,10 @@ settleCurrency  | settlement currency
 Get the position details of a specified position.
 
 ### HTTP Request
-GET /api/v1/position
-
+`GET /api/v1/position`
 
 ### Example
-GET /api/v1/position?symbol=XBTUSDM
+`GET /api/v1/position?symbol=XBTUSDM`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2602,10 +2587,10 @@ riskLimitLevel  | Risk Limit Level
 Get the position details of a specified position.
 
 ### HTTP Request
-GET /api/v1/positions
+`GET /api/v1/positions`
 
 ### Example
-GET /api/v1/positions
+`GET /api/v1/positions`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2664,10 +2649,10 @@ maintainMargin  | Maintenance margin requirement
 ```
 
 ### HTTP Request
-POST /api/v1/position/margin/auto-deposit-status
+`POST /api/v1/position/margin/auto-deposit-status`
 
 ### Example
-POST /api/v1/position/margin/auto-deposit-status
+`POST /api/v1/position/margin/auto-deposit-status`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2723,10 +2708,10 @@ This endpoint requires the **General** permission.
 ```
 
 ### HTTP Request
-POST /api/v1/position/margin/deposit-margin
+`POST /api/v1/position/margin/deposit-margin`
 
 ### Example
-POST /api/v1/position/margin/deposit-margin
+`POST /api/v1/position/margin/deposit-margin`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2771,10 +2756,10 @@ This endpoint requires the **General** permission.
 This interface can be used to obtain information about risk limit level of a specific contract
 
 ### HTTP Request
-GET /api/v1/contracts/risk-limit/{symbol}
+`GET /api/v1/contracts/risk-limit/{symbol}`
 
 ### Example
-GET /v1/contracts/risk-limit/ADAUSDTM
+`GET /api/v1/contracts/risk-limit/ADAUSDTM`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2814,10 +2799,10 @@ maintainMargin | Maintenance margin rate
 This interface is for the adjustment of the risk limit level. To adjust the level will cancel the open order, the response can only indicate whether the submit of the adjustment request is successful or not. The result of the adjustment can be achieved by WebSocket information: [Adjustment Result](###Risk limit level adjustment result)
 
 ### HTTP Request
-POST /api/v1/position/risk-limit-level/change
+`POST /api/v1/position/risk-limit-level/change`
 
 ### Example
-POST /v1/position/risk-limit-level/change
+`POST /api/v1/position/risk-limit-level/change`
 
 ### API Permission
 This endpoint requires the **Trade** permission.
@@ -2879,10 +2864,10 @@ data | To adjust the level will cancel the open order, the response can only ind
 Submit request to get the funding history.
 
 ### HTTP Request
-GET /api/v1/funding-history
+`GET /api/v1/funding-history`
 
 ### Example
-GET /api/v1/funding-history?symbol=XBTUSDM
+`GET /api/v1/funding-history?symbol=XBTUSDM`
 
 ### API Permission
 This endpoint requires the **General** permission.
@@ -2993,13 +2978,13 @@ Signature is not required for this part.
 Submit request to get the info of all open contracts.
 
 ### HTTP Request
-GET /api/v1/contracts/active
+`GET /api/v1/contracts/active`
 
 ### Example
-GET /api/v1/contracts/active
+`GET /api/v1/contracts/active`
 
 ### PARAMETERS
-N/A
+`N/A`
 
 ### RESPONSES
 Field | Description
@@ -3132,10 +3117,10 @@ priceChg | 24H Change
 Submit request to get info of the specified contract.
 
 ### HTTP Request
-GET /api/v1/contracts/{symbol}
+`GET /api/v1/contracts/{symbol}`
 
 ### Example
-GET /api/v1/contracts/XBTUSDM
+`GET /api/v1/contracts/XBTUSDM`
 
 ### PARAMETERS
 Param | Type | Description
@@ -3228,10 +3213,10 @@ The real-time ticker includes the last traded price, the last traded size, trans
 
 
 ### HTTP Request
-GET /api/v1/ticker
+`GET /api/v1/ticker`
 
 ### Example
-GET /api/v1/ticker?symbol=XBTUSDM
+`GET /api/v1/ticker?symbol=XBTUSDM`
 
 ### PARAMETERS
 Param | Type | Description
@@ -3288,10 +3273,10 @@ To maintain up-to-date Order Book, please use [Websocket](#level-2-market-data) 
 In the returned data, the sell side is sorted low to high by price and the buy side is sorted high to low by price. 
 
 ### HTTP Request
-GET /api/v1/level2/snapshot
+`GET /api/v1/level2/snapshot`
 
 ### Example
-GET /api/v1/level2/snapshot?symbol=XBTUSDM
+`GET /api/v1/level2/snapshot?symbol=XBTUSDM`
 
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **30 times/3s**.
@@ -3344,13 +3329,11 @@ To maintain up-to-date Order Book, please use [Websocket](#level-2-market-data) 
 In the returned data, the sell side is sorted low to high by price and the buy side is sorted high to low by price. 
 
 ### HTTP Request
-GET /api/v1/level2/depth20
-
-GET /api/v1/level2/depth100
+`GET /api/v1/level2/depth20`<br/>
+`GET /api/v1/level2/depth100`
 
 ### Example
-GET /api/v1/level2/depth100?symbol=XBTUSDM
-
+`GET /api/v1/level2/depth100?symbol=XBTUSDM`
 
 ### Parameters
 | Param  | Type   | Description |
@@ -3391,10 +3374,10 @@ If the messages pushed by Websocket is not continuous, you can submit the follow
 Level 2 message pulling method: Take price as the key value and overwrite the local order quantity with the quantity in messages. If the quantity of a certain price in the pushed message is 0, please delete the corresponding data of that price.
 
 ### HTTP Request
-GET /api/v1/level2/message/query
+`GET /api/v1/level2/message/query`
 
 ### Example
-GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200
+`GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200`
 
 ### Parameters
 | Param  | Type   | Description |
@@ -3427,10 +3410,10 @@ GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200
 List the last 100 trades for a symbol.
 
 ### HTTP Request
-GET /api/v1/trade/history
+`GET /api/v1/trade/history`
 
 ### Example
-GET /api/v1/trade/history?symbol=XBTUSDM
+`GET /api/v1/trade/history?symbol=XBTUSDM`
 
 ### Parameters
 | Param  | Type   | Description |
@@ -3486,10 +3469,10 @@ The trade side indicates the taker order side. A taker order is the order that w
 Check interest rate list.
 
 ### HTTP Request
-GET /api/v1/interest/query
+`GET /api/v1/interest/query`
 
 ### Example
-GET /api/v1/interest/query?symbol=.XBTINT
+`GET /api/v1/interest/query?symbol=.XBTINT`
 
 ### PARAMETERS
 
@@ -3563,7 +3546,7 @@ hasMore | Whether there are more pages
 Check index list
 
 ### HTTP Request
-GET /api/v1/index/query
+`GET /api/v1/index/query`
 
 ### PARAMETERS
 | Param     | Type    | Description                                                  |
@@ -3604,10 +3587,10 @@ hasMore | Whether there are more pages
 Check the current mark price.
 
 ### HTTP Request
-GET /api/v1/mark-price/{symbol}/current
+`GET /api/v1/mark-price/{symbol}/current`
 
 ### Example
-GET /api/v1/mark-price/XBTUSDM/current
+`GET /api/v1/mark-price/XBTUSDM/current`
 
 
 ### PARAMETERS
@@ -3656,12 +3639,10 @@ indexPrice | Index price
 Submit request to get premium index.
 
 ### HTTP Request
-GET /api/v1/premium/query
-
+`GET /api/v1/premium/query`
 
 ### Example
-GET /api/v1/premium/query?symbol=XBTUSDM
-
+`GET /api/v1/premium/query?symbol=XBTUSDM`
 
 ### PARAMETERS
 
@@ -3699,10 +3680,10 @@ hasMore | Whether there are more pages
 Submit request to check the current mark price.
 
 ### HTTP Request
-GET /api/v1/funding-rate/{symbol}/current
+`GET /api/v1/funding-rate/{symbol}/current`
 
 ### Example
-GET /api/v1/funding-rate/XBTUSDM/current
+`GET /api/v1/funding-rate/XBTUSDM/current`
 
 
 ### PARAMETERS
@@ -3735,7 +3716,7 @@ predictedValue | Predicted funding rate
 Get the API server time. This is the Unix timestamp.
 
 ### HTTP Request
-GET /api/v1/timestamp
+`GET /api/v1/timestamp`
 
 ### RESPONSES
 Field | Description
@@ -3760,7 +3741,7 @@ data | API server time. Unix timestamp.
 Get the service status.
 
 ### HTTP Request
-GET /api/v1/status
+`GET /api/v1/status`
 
 ### RESPONSES
 Field | Description
@@ -3774,10 +3755,10 @@ msg | remark for operation
 ## Get K Line Data of Contract
 
 ### HTTP Request
-GET /api/v1/kline/query
+`GET /api/v1/kline/query`
 
 ### Example
-GET/api/v1/kline/query?symbol=.KXBT&granularity=480&from=1535302400000&to=1559174400000
+`GET/api/v1/kline/query?symbol=.KXBT&granularity=480&from=1535302400000&to=1559174400000`
 
 ### Parameters
 | Param     | Type    | Description                                                  |
@@ -3854,7 +3835,7 @@ You need to apply for one of the two tokens below to create a websocket connecti
 If you only use public channels (e.g. all public market data), please make request as follows to obtain the server list and temporary public token:
 
 #### HTTP Request
-POST /api/v1/bullet-public
+`POST /api/v1/bullet-public`
 
 ### Private Channels (Authentication request required):
 
@@ -3880,7 +3861,7 @@ For private channels and messages (e.g. account balance notice), please make req
 
 
 #### HTTP Request
-POST /api/v1/bullet-private
+`POST /api/v1/bullet-private`
 
 
 ### Response
@@ -4045,7 +4026,7 @@ The sequence field exists in order book, trade history and snapshot messages by 
   }
 ```
 
-Topic: **/contractMarket/tickerV2:{symbol}**
+Topic:`/contractMarket/tickerV2:{symbol}`
 
 ```json
   {
@@ -4065,22 +4046,7 @@ Subscribe this topic to get the realtime push of BBO changes.
 After subscription, when there are changes in the order book, the system will push the real-time ticker symbol information to you. 
 It is recommended to use the new topic for timely information. 
 
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 ## Get Real-Time Symbol Ticker
 
@@ -4092,7 +4058,7 @@ It is recommended to use the new topic for timely information.
     "response": true                              
   }
 ```
-Topic: **/contractMarket/ticker:{symbol}**
+Topic: `/contractMarket/ticker:{symbol}`
 
 ```json
   {
@@ -4117,22 +4083,9 @@ Subscribe this topic to get the realtime push of BBO changes.
 
 The ticker channel provides real-time price updates whenever a match happens. If multiple orders are matched at the same time, only the last matching event will be pushed.
 
-It is not recommended to use this topic any more. For real-time ticker information, please subscribe /contractMarket/tickerV2:{symbol}.
+It is not recommended to use this topic any more. For real-time ticker information, please subscribe `/contractMarket/tickerV2:{symbol}`.
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 ## Level 2 Market Data
 
@@ -4145,7 +4098,7 @@ It is not recommended to use this topic any more. For real-time ticker informati
   }
 ```
 
-Topic:**/contractMarket/level2:{symbol}**
+Topic:`/contractMarket/level2:{symbol}`
 
 Subscribe this topic to get Level 2 order book data.
 
@@ -4249,7 +4202,6 @@ Now your order book is up-to-date and the final data is as following:
 | 3988.48 | 10  | Buy 4 |
 
 ## Execution data 
-
 ```json
   {
     "id": 1545910660741,                          
@@ -4258,10 +4210,6 @@ Now your order book is up-to-date and the final data is as following:
     "response": true                              
   }
 ```
-Topic: **/contractMarket/execution:{symbol}**
-
-For each order executed, the system will send you the match messages in the format as following.
-
 ```json
  {
    "topic": "/contractMarket/execution:XBTUSDM",
@@ -4280,13 +4228,15 @@ For each order executed, the system will send you the match messages in the form
     }
  }
 ```
+Topic:`/contractMarket/execution:{symbol}`
 
+For each order executed, the system will send you the match messages in the format as following.
+
+
+<aside class="spacer8"></aside>
 
 
 ## Message channel for the 5 best ask/bid full data of Level 2
-
-Topic: **/contractMarket/level2Depth5:{symbol}**
-
 ```json
 {
    "type": "message",
@@ -4311,24 +4261,17 @@ Topic: **/contractMarket/level2Depth5:{symbol}**
          "ts": 1590634672060667000
     }
  }
-
 ```
+Topic:`/contractMarket/level2Depth5:{symbol}`
+
 Returned for every 100 milliseconds at most.
 
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 
 ## Message channel for the 50 best ask/bid full data of Level 2
 
-Topic: **/contractMarket/level2Depth50:{symbol}**
+Topic:`/contractMarket/level2Depth50:{symbol}`
 
 ```json
 {
@@ -4357,11 +4300,10 @@ Topic: **/contractMarket/level2Depth50:{symbol}**
 ```
 Returned for every 100 milliseconds at most.
 
-
-
+<aside class="spacer4"></aside>
+<aside class="spacer4"></aside>
 
 ## Contract Market Data 
-
 ```json
   //Contract Market Data 
   {
@@ -4372,18 +4314,11 @@ Returned for every 100 milliseconds at most.
   }
 ```
 
-Topic: **/contract/instrument:{symbol}**
+Topic:`/contract/instrument:{symbol}`
 
 Subscribe this topic to get the market data of the contract.
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### Mark Price & Index Price
 
@@ -4401,14 +4336,7 @@ Subscribe this topic to get the market data of the contract.
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### Funding Rate
 
@@ -4425,19 +4353,9 @@ Subscribe this topic to get the market data of the contract.
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ## System Annoucements
-Subscribe this topic to get the system announcements.
-topic:  **/contract/announcement**
-
 ```json
   //System Annoucements
   { 
@@ -4447,7 +4365,11 @@ topic:  **/contract/announcement**
     "response": true                              
   }
 ```
+Topic:`/contract/announcement`
 
+Subscribe this topic to get the system announcements.
+
+<aside class="spacer4"></aside>
 
 
 ### Start Funding Fee Settlement
@@ -4466,14 +4388,7 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### End Funding Fee Settlement
 
@@ -4492,19 +4407,10 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer2"></aside>
+<aside class="spacer4"></aside>
 
 ## Transaction Statistics Timer Event
-The transaction statistics will be pushed to users every 5 seconds.
-Topic: **/contractMarket/snapshot:{symbol}**
-
 ```json
 //Transaction Statistics Timer Event
   { 
@@ -4519,31 +4425,11 @@ Topic: **/contractMarket/snapshot:{symbol}**
     }  
   }
 ```
+Topic:`/contractMarket/snapshot:{symbol}`
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+The transaction statistics will be pushed to users every 5 seconds.
+
+<aside class="spacer4"></aside>
 
 # Private Channels
 
@@ -4577,51 +4463,21 @@ Topic: **/contractMarket/snapshot:{symbol}**
    }
 }
 ```
-**Order Status**
-“match”: when taker order executes with orders in the order book, the taker order status is “match”;
-“open”: the order is in the order book;
-“done”: the order is fully executed successfully;
+Topic:`/contractMarket/tradeOrders:{symbol}`
 
-**Message Type**
-“open”: when the order enters into the order book;
-“match”: when the order has been executed;
-“filled”: when the order has been executed and its status was changed into DONE;
-“canceled”: when the order has been cancelled and its status was changed into DONE;
- “update”: when the order has been updated; 
+* `status` Order Status Descriptions
+    - “match”: when taker order executes with orders in the order book, the taker order status is “match”;
+    - “open”: the order is in the order book;
+    - “done”: the order is fully executed successfully;
+<br/>
+* `type` Message Type Descriptions:
+    - “open”: when the order enters into the order book;
+    - “match”: when the order has been executed;
+    - “filled”: when the order has been executed and its status was changed into DONE;
+    - “canceled”: when the order has been cancelled and its status was changed into DONE;
+    - “update”: when the order has been updated;
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 ## Trade Orders 
 ```json
@@ -4653,56 +4509,24 @@ Topic: **/contractMarket/snapshot:{symbol}**
    }
 }
 ```
-**Order Status**
-“match”: when taker order executes with orders in the order book, the taker order status is “match”;
-“open”: the order is in the order book;
-“done”: the order is fully executed successfully;
+Topic:`/contractMarket/tradeOrders`
 
-**Message Type**
-“open”: when the order enters into the order book;
-“match”: when the order has been executed;
-“filled”: when the order has been executed and its status was changed into DONE;
-“canceled”: when the order has been cancelled and its status was changed into DONE;
- “update”: when the order has been updated; 
+* `status` Order Status Descriptions
+    - “match”: when taker order executes with orders in the order book, the taker order status is “match”;
+    - “open”: the order is in the order book;
+    - “done”: the order is fully executed successfully;
+<br/>
+* `type` Message Type Descriptions:
+    - “open”: when the order enters into the order book;
+    - “match”: when the order has been executed;
+    - “filled”: when the order has been executed and its status was changed into DONE;
+    - “canceled”: when the order has been cancelled and its status was changed into DONE;
+    - “update”: when the order has been updated;
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 
 ## Stop Order Lifecycle Event
-Topic: **/contractMarket/advancedOrders**
-
 ```json
   {
        "userId": "5cd3f1a7b7ebc19ae9558591", // Deprecated, will detele later 
@@ -4726,30 +4550,13 @@ Topic: **/contractMarket/advancedOrders**
        }
   }
 ```
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+Topic:`/contractMarket/advancedOrders`
+
+<aside class="spacer8"></aside>
 
 ## Account Balance Events
 
-Topic: **/contractAccount/wallet**
+Topic:`/contractAccount/wallet`
 
 ### Order Margin Event
 
@@ -4767,18 +4574,7 @@ Topic: **/contractAccount/wallet**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### Available Balance Event
 
@@ -4797,18 +4593,7 @@ Topic: **/contractAccount/wallet**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### Withdrawal Amount & Transfer-Out Amount Event
 
@@ -4826,20 +4611,13 @@ Topic: **/contractAccount/wallet**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
+<aside class="spacer2"></aside>
 
 ## Position Change Events
-Topic: **/contract/position:{symbol}**
+Topic: `/contract/position:{symbol}`
 
 ### Position Changes Caused Operations
-
 ```json
   //Position Changes Caused Operations
   { 
@@ -4888,57 +4666,17 @@ Topic: **/contract/position:{symbol}**
       }
   }
 ```
-**changeReason**
-“marginChange”: margin change;
-“positionChange”: position change;
-“liquidation”: liquidation;
-“autoAppendMarginStatusChange”: auto-deposit-status change;
-“adl”: adl;
+* `changeReason` Descriptions:
+    - “marginChange”: margin change;
+    - “positionChange”: position change;
+    - “liquidation”: liquidation;
+    - “autoAppendMarginStatusChange”: auto-deposit-status change;
+    - “adl”: adl;
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+
+<aside class="spacer8"></aside>
+<aside class="spacer4"></aside>
+<aside class="spacer2"></aside>
 
 ### Position Changes Caused by Mark Price
 
@@ -4963,28 +4701,7 @@ Topic: **/contract/position:{symbol}**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
+<aside class="spacer8"></aside>
 
 ### Funding Settlement
 ```json
@@ -5005,20 +4722,7 @@ Topic: **/contract/position:{symbol}**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 ### Adjustment Result of Risk Limit Level
 
@@ -5035,22 +4739,10 @@ Topic: **/contract/position:{symbol}**
   }
 } 
 ``` 
-There are two failure reasons: </br>
-1. the value of the holding position exceeds the limit amount of the risk limit level;</br>
-2. insufficient balance to increase the margin. 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+* `msg` failure reasons: </br>
+  - 1. the value of the holding position exceeds the limit amount of the risk limit level;
+  - 2. insufficient balance to increase the margin. 
+
+<aside class="spacer2"></aside>
 # Sign Up for KuCoin
 <a href="https://www.kucoin.com">Sign Up for KuCoin</a>
