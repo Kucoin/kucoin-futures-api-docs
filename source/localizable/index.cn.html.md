@@ -15,6 +15,10 @@ KuCoin Futures API分为两部分：**REST API 和 Websocket 实时数据流**
 
 **为了进一步提升API安全性，KuCoin已经升级到了V2版本的API-KEY，验签逻辑也发生了一些变化，建议到[API管理页面](https://futures.kucoin.com/api)添加并更换到新的API-KEY。KuCoin将继续支持使用老的API-KEY到2021年05月01日。请查看“消息签名”，了解更多详情**
 
+#### 2022.11.01
+
+* 废弃`DELETE /api/v1/withdrawals/{withdrawalId}`取消提现接口
+
 #### 2022.10.18
 
 * 新增子账号相关接口: `GET /api/v1/sub/api-key`、`POST /api/v1/sub/api-key/update`、`DELETE /api/v1/sub/api-key`
@@ -950,10 +954,10 @@ subName | ⼦账号名
 ```
 
 ### HTTP请求
-GET /api/v1/deposit-address
+`GET /api/v1/deposit-address`
 
 ### 请求示例
-GET /api/v1/deposit-address?currency=XBT
+`GET /api/v1/deposit-address?currency=XBT`
 
 ### API权限
 该接口需要**通用权限**
@@ -996,10 +1000,10 @@ currency | String | 币种（**XBT 或USDT**）
 默认返回最新第一页数据
 
 ### HTTP请求
-GET /api/v1/deposit-list
+`GET /api/v1/deposit-list`
 
 ### 请求示例
-GET /api/v1/deposit-list?currentPage=1&pageSize=50&status=PROCESSING?currency=XBT
+`GET /api/v1/deposit-list?currentPage=1&pageSize=50&status=PROCESSING?currency=XBT`
 
 ### API权限
 该接口需要**通用权限**
@@ -1047,10 +1051,10 @@ currency | String | [可选]  币种 **XBT,USDT**
 ```
 
 ### HTTP请求
-GET /api/v1/withdrawals/quotas
+`GET /api/v1/withdrawals/quotas`
 
 ### 请求示例
-GET /api/v1/withdrawals/quotas?currency=XBT
+`GET /api/v1/withdrawals/quotas?currency=XBT`
 
 ### API权限
 该接口需要**通用权限**
@@ -1089,10 +1093,10 @@ currency | String | 币种（**XBT或USDT**）
 <aside class="notice">该接口已废弃，请您先从合约账户内部划转资产到您的储蓄账户，再从储蓄账户进行提现</aside>
 
 ### HTTP请求
-POST /api/v1/withdrawals
+`POST /api/v1/withdrawals`
 
 ### 请求示例
-POST /api/v1/withdrawals
+`POST /api/v1/withdrawals`
 
 ### API权限
 该接口需要**转出权限**
@@ -1143,10 +1147,10 @@ withdrawalId  | 提现id，可以用于后续取消提现
 
 
 ### HTTP请求
-GET /api/v1/withdrawal-list
+`GET /api/v1/withdrawal-list`
 
 ### 请求示例
-GET /api/v1/withdrawal-list?currentPage=1&pageSize=50&status=PROCESSING
+`GET /api/v1/withdrawal-list?currentPage=1&pageSize=50&status=PROCESSING`
 
 ### API权限
 该接口需要**通用权限**
@@ -1154,7 +1158,7 @@ GET /api/v1/withdrawal-list?currentPage=1&pageSize=50&status=PROCESSING
 ### 参数
 参数 | 数据类型 | 含义
 --------- | ------- | -----------
-status | String | [可选] 状态. **PROCESSING, WALLET_PROCESSING, SUCCESS, FAILURE**
+status | String | [可选] 状态. `PROCESSING`, `WALLET_PROCESSING`, `SUCCESS`, `FAILURE`
 startAt | long | [可选] 开始时间（毫秒）
 endAt | long | [可选]  截止时间（毫秒） 
 currency | String | [可选]  币种 **XBT,USDT**
@@ -1175,23 +1179,6 @@ createdAt  | 提现时间
 remark  | 提现备注
 reason  | 失败原因
 
-## 取消提现
-只有在**PROCESSING**状态时才可能取消提现。
-
-### HTTP请求
-DELETE /api/v1/withdrawals/{withdrawalId}
-
-### HTTP请求
-DELETE /api/v1/withdrawals/5cda659603aa67131f305f7e
-
-### API权限
-该接口需要**转出权限** 
-
-### 参数
-参数 | 数据类型 | 含义
---------- | ------- | -----------
-withdrawalId | String | 路径参数，发起提现返回**withdrawalId**
-
 # 划转
 ## 转出到KuCoin储蓄账户
 ```json
@@ -1205,9 +1192,9 @@ withdrawalId | String | 路径参数，发起提现返回**withdrawalId**
  转出金额将从KuCoin Futures账户扣除，转出前请确保KuCoin Futures账户可用余额充足。接口响应表示转出成功后，系统将返回applyId。此ID可用于取消转出申请。
 
 ### HTTP请求
-POST /api/v1/transfer-out （已废弃，请使用 POST /api/v3/transfer-out）
+`POST /api/v1/transfer-out`（已废弃，请使用 POST /api/v3/transfer-out）
 ### 请求示例
-POST /api/v1/transfer-out
+`POST /api/v1/transfer-out`
 ### API权限
 该接口需要**提现权限**
 
@@ -1243,9 +1230,9 @@ amount | Number | 转出金额
  转出金额将从KuCoin Futures账户扣除，转出前请确保KuCoin Futures账户可用余额充足。接口响应表示转出成功后，系统将返回applyId。此ID可用于取消转出申请。
 
 ### HTTP请求
-POST /api/v2/transfer-out （推荐使用 POST /api/v3/transfer-out）
+`POST /api/v2/transfer-out` （推荐使用 POST /api/v3/transfer-out）
 ### 请求示例
-POST /api/v2/transfer-out
+`POST /api/v2/transfer-out`
 ### API权限
 该接口需要**交易权限**
 
@@ -1301,9 +1288,9 @@ updatedAt  | 更新时间
  转出金额将从KuCoin Futures账户扣除，转出前请确保KuCoin Futures账户可用余额充足。接口响应表示转出成功后，系统将返回applyId。此ID可用于取消转出申请。
 
 ### HTTP请求
-POST /api/v3/transfer-out
+`POST /api/v3/transfer-out`
 ### 请求示例
-POST /api/v3/transfer-out
+`POST /api/v3/transfer-out`
 ### API权限
 该接口需要**交易权限**
 
@@ -1347,9 +1334,9 @@ updatedAt  | 更新时间
 从KuCoin付款账户(目前支持MAIN-储蓄账户、TRADE-币币账户)转入金额到合约账户，转出前请确保付款账户可用余额充足。
 
 ### HTTP请求
-POST /api/v1/transfer-in
+`POST /api/v1/transfer-in`
 ### 请求示例
-POST /api/v1/transfer-in
+`POST /api/v1/transfer-in`
 ### API权限
 该接口需要**交易权限**
 
@@ -1385,12 +1372,12 @@ payAccountType | String | 付款账户，只能是*MAIN*-储蓄账户、*TRADE*-
 ```
 默认查询第一页数据
 ### HTTP请求
-GET /api/v1/transfer-list
+`GET /api/v1/transfer-list`
 
 ### 请求示例
-GET /api/v1/transfer-list?currentPage=1&pageSize=50&status=PROCESSING?currency=XBT
+`GET /api/v1/transfer-list?currentPage=1&pageSize=50&status=PROCESSING?currency=XBT`
 
-###API权限
+### API权限
 该接口需要**通用权限**
 
 ### 参数
@@ -1426,10 +1413,10 @@ remark  | 用户备注
 
 只能在**PROCESSING**状态时可取消转出请求。
 ### HTTP请求
-DELETE /api/v1/cancel/transfer-out
+`DELETE /api/v1/cancel/transfer-out`
 
 ### 请求示例
-DELETE /api/v1/cancel/transfer-out?applyId=5cd53be30c19fc3754b60928
+`DELETE /api/v1/cancel/transfer-out?applyId=5cd53be30c19fc3754b60928`
 
 ### API权限
 该接口需要**通用权限**
@@ -1471,7 +1458,7 @@ applyId | String | 转出申请ID(发起转出返回)
 
 ### HTTP 请求
 
-POST /api/v1/orders
+`POST /api/v1/orders`
 
 ### API权限
 该接口需获取**交易权限**。
@@ -1526,7 +1513,7 @@ POST /api/v1/orders
 orderId  | 订单id
 
 ### 示例
-POST /api/v1/orders
+`POST /api/v1/orders`
 
 ```json
   {
@@ -1727,10 +1714,10 @@ ClientOid字段是客户端创建的唯一的ID（推荐使用UUID），只能�
 
 
 ### HTTP 请求
-DELETE /api/v1/orders/{order-id}
+`DELETE /api/v1/orders/{order-id}`
 
 ### 示例
-DELETE /api/v1/orders/5cdfc120b21023a909e5ad52
+`DELETE /api/v1/orders/5cdfc120b21023a909e5ad52`
 
 ### API权限 ###
 该接口需获取**交易权限**。
@@ -1764,10 +1751,10 @@ cancelledOrderIds  | 取消的订单ID
 
 
 ### HTTP请求
-DELETE /api/v1/orders
+`DELETE /api/v1/orders`
 
 ### 示例
-DELETE /api/v1/orders?symbol=XBTUSDM
+`DELETE /api/v1/orders?symbol=XBTUSDM`
 
 ### API权限
 该接口需获取**交易权限**。
@@ -1807,10 +1794,10 @@ cancelledOrderIds  | 取消的订单ID
 
 
 ### HTTP请求
-DELETE /api/v1/stopOrders
+`DELETE /api/v1/stopOrders`
 
 ### 示例
-DELETE /api/v1/stopOrders?symbol=XBTUSDM
+`DELETE /api/v1/stopOrders?symbol=XBTUSDM`
 
 
 ### API权限
@@ -1886,10 +1873,10 @@ cancelledOrderIds  | 取消的订单ID
 结果返回当前所有委托。
 
 ### HTTP请求
-GET /api/v1/orders
+`GET /api/v1/orders`
 
 ### 示例
-GET /api/v1/orders?status=active  
+`GET /api/v1/orders?status=active`
 获取所有活动订单  
 
 ### API权限
@@ -2025,10 +2012,10 @@ reduceOnly | 只减仓标记
 您可通过该接口查询未触发止损订单列表。已经触发的止损订单通过一般订单接口查询。
 
 ### HTTP请求
-GET /api/v1/stopOrders
+`GET /api/v1/stopOrders`
 
 ### 示例
-GET /api/v1/stopOrders?symbol=XBTUSDM
+`GET /api/v1/stopOrders?symbol=XBTUSDM`
 发送该请求可获取XBTUSDM合约的未触发止损订单
 
 ### API权限
@@ -2141,10 +2128,10 @@ reduceOnly | 只减仓标记
 如果需要低延时获取自己的最近成交历史订单, 请使用此接口。 使用此接口可获取过去24小时内最近完成的1000笔订单。
 
 ### HTTP请求
-GET /api/v1/recentDoneOrders
+`GET /api/v1/recentDoneOrders`
 
 ### 示例
-GET /api/v1/recentDoneOrders
+`GET /api/v1/recentDoneOrders`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -2238,11 +2225,11 @@ reduceOnly | 只减仓标记
 
 
 ### HTTP请求
-GET /api/v1/orders/{order-id}?clientOid={client-order-id}
+`GET /api/v1/orders/{order-id}?clientOid={client-order-id}`
 
 ### 示例
-GET /api/v1/orders/5cdfc138b21023a909e5ad55 (通过 orderId 获取订单信息), </br>
-GET /api/v1/orders/byClientOid?clientOid=eresc138b21023a909e5ad59 (通过用户传入的订单 id查询订单信息)
+`GET /api/v1/orders/5cdfc138b21023a909e5ad55` (通过 orderId 获取订单信息), </br>
+`GET /api/v1/orders/byClientOid?clientOid=eresc138b21023a909e5ad59` (通过用户传入的订单id查询订单信息)
 
 
 ### API权限
@@ -2330,10 +2317,10 @@ reduceOnly | 只减仓标记
 您可通过此接口获取最近成交的订单列表。
 
 ### HTTP请求
-GET /api/v1/fills
+`GET /api/v1/fills`
 
 ### 示例
-GET /api/v1/fills
+`GET /api/v1/fills`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -2428,10 +2415,10 @@ KuCoin Futures平台上的订单分为两种类型：**Taker** 和 **Maker**。T
 使用此接口可获取过去24小时内最近完成的1000笔订单。
 
 ### HTTP请求
-GET /api/v1/recentFills
+`GET /api/v1/recentFills`
 
 ### 示例
-GET /api/v1/recentFills
+`GET /api/v1/recentFills`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -2480,10 +2467,10 @@ tradeTime  | 交易时间纳秒
 此接口可用于统计用户所有活动订单的数量和价值信息
 
 ### HTTP请求
-GET /api/v1/openOrderStatistics
+`GET /api/v1/openOrderStatistics`
 
 ### 示例
-GET /api/v1/openOrderStatistics
+`GET /api/v1/openOrderStatistics`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -2553,10 +2540,10 @@ settleCurrency  | 结算币种
 
 ### HTTP请求
 
-GET /api/v1/position
+`GET /api/v1/position`
 
 ### 示例
-GET /api/v1/position?symbol=XBTUSDM
+`GET /api/v1/position?symbol=XBTUSDM`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -2657,10 +2644,10 @@ riskLimitLevel  | 当前风险限额等级
 使用该请求，可获取用户所有的仓位列表。
 
 ### HTTP请求
-GET /api/v1/positions
+`GET /api/v1/positions`
 
 ### 示例
-GET /api/v1/positions
+`GET /api/v1/positions`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -2718,10 +2705,10 @@ maintainMargin  | 维持保证金率
 }
 ```
 ### HTTP请求
-POST /api/v1/position/margin/auto-deposit-status
+`POST /api/v1/position/margin/auto-deposit-status`
 
 ### 示例
-POST /api/v1/position/margin/auto-deposit-status
+`POST /api/v1/position/margin/auto-deposit-status`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -2774,10 +2761,10 @@ POST /api/v1/position/margin/auto-deposit-status
 }
 ```
 ### HTTP请求
-POST /api/v1/position/margin/deposit-margin
+`POST /api/v1/position/margin/deposit-margin`
 
 ### 示例
-POST /api/v1/position/margin/deposit-margin
+`POST /api/v1/position/margin/deposit-margin`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -2862,10 +2849,10 @@ settleCurrency  | 结算币种
 使用此接口可获取指定合约的阶梯风险限额等级信息
 
 ### HTTP请求
-GET /api/v1/contracts/risk-limit/{symbol}
+`GET /api/v1/contracts/risk-limit/{symbol}`
 
 ### 示例 Example
-GET /v1/contracts/risk-limit/ADAUSDTM
+`GET /api/v1/contracts/risk-limit/ADAUSDTM`
 
 ### API权限
 该接口需要**通用权限**
@@ -2906,10 +2893,10 @@ maintainMargin | 维持保证金率
 该接口用于修改用户风险限额等级，修改会撤销用户当前挂单，返回结果仅代表修改申请提交是否成功。修改是否成功需要监听ws消息:[风险限额调整结果](#f9c6e147de)
 
 ### HTTP请求
-POST /api/v1/position/risk-limit-level/change
+`POST /api/v1/position/risk-limit-level/change`
 
 ### 示例
-POST /v1/position/risk-limit-level/change
+`POST /api/v1/position/risk-limit-level/change`
 
 ### API权限
 该接口需要**交易权限**
@@ -2974,7 +2961,7 @@ data | 修改会撤销用户当前挂单，返回结果仅代表修改申请提�
 查询资金费用历史
 
 ### HTTP请求
-GET /api/v1/funding-history
+`GET /api/v1/funding-history`
 
 ### API权限
 该接口需获取**通用权限**。
@@ -3085,10 +3072,10 @@ hasMore | 是否还有下一页
 获取所有开放的合约信息
 
 ### HTTP请求
-GET /api/v1/contracts/active
+`GET /api/v1/contracts/active`
 
 ### 示例
-GET /api/v1/contracts/active
+`GET /api/v1/contracts/active`
 
 ### 参数
 无
@@ -3224,10 +3211,10 @@ priceChg | 24 小时涨跌价格
 
 
 ### HTTP请求
-GET /api/v1/contracts/{symbol}
+`GET /api/v1/contracts/{symbol}`
 
 ### 示例
-GET /api/v1/contracts/XBTUSDM
+`GET /api/v1/contracts/XBTUSDM`
 
 ### 参数
 参数 | 数据类型 | 含义
@@ -3320,10 +3307,10 @@ priceChg | 24 小时涨跌价格
 
 
 ### HTTP请求
-GET /api/v1/ticker
+`GET /api/v1/ticker`
 
 ### 示例
-GET /api/v1/ticker?symbol=XBTUSDM
+`GET /api/v1/ticker?symbol=XBTUSDM`
 
 ### 参数
 参数 | 数据类型 | 含义
@@ -3376,10 +3363,10 @@ Level 2 买卖盘上的买单和卖单均按照价格汇总，每个价格下仅
 返回值中，卖盘数据是按照价格从低到高排序的，买盘数据是按照价格从高到低排序的。
 
 ### HTTP请求
-GET /api/v1/level2/snapshot
+`GET /api/v1/level2/snapshot`
 
 ### 示例
-GET /api/v1/level2/snapshot?symbol=XBTUSDM
+`GET /api/v1/level2/snapshot?symbol=XBTUSDM`
 
 ### 频率限制
 此接口针对每个账号请求频率限制为**30次/3s**
@@ -3423,11 +3410,10 @@ ts | 时间戳
 
 此接口，只会返回部分的买卖盘数据，level2_20是指返回买卖方各20条数据，level_100 是指返回买卖方各100条数据。推荐您使用这个接口，因为响应速度更快，流量消耗小。
 ### HTTP请求
-GET /api/v1/level2/depth20
-
-GET /api/v1/level2/depth100
+`GET /api/v1/level2/depth20`<br/>
+`GET /api/v1/level2/depth100`
 ### 示例
-GET /api/v1/level2/depth100?symbol=XBTUSDM
+`GET /api/v1/level2/depth100?symbol=XBTUSDM`
 
 ### 参数
 | 参数  | 数据类型   | 含义 |
@@ -3466,10 +3452,10 @@ ts | 时间戳
 Level 2拉取消息使用方法：以价格为键值，用消息中的数量覆盖本地的数量。当数量为0时，删除该数量在本地记录中对应的价格。
 
 ### HTTP请求
-GET /api/v1/level2/message/query
+`GET /api/v1/level2/message/query`
 
 ### 示例
-GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200
+`GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200`
 
 ### 参数
 | 参数  | 数据类型   | 含义 |
@@ -3502,10 +3488,10 @@ GET /api/v1/level2/message/query?symbol=XBTUSDM&start=100&end=200
 使用该接口可获取指定合约的最近一百条交易记录
 
 ### HTTP请求
-GET /api/v1/trade/history
+`GET /api/v1/trade/history`
 
 ### 示例
-GET /api/v1/trade/history?symbol=XBTUSDM
+`GET /api/v1/trade/history?symbol=XBTUSDM`
 
 ### 参数
 | 参数  | 数据类型   | 含义 |
@@ -3565,10 +3551,10 @@ Taker订单的成交方向。Taker订单指立刻与买卖盘上的已有订单�
 查询利率列表
 
 ### HTTP请求
-GET /api/v1/interest/query
+`GET /api/v1/interest/query`
 
 ### 示例
-GET /api/v1/interest/query?symbol=.XBTINT
+`GET /api/v1/interest/query?symbol=.XBTINT`
 
 ### 参数
 
@@ -3643,7 +3629,7 @@ hasMore | 是否还有下一页
 查询指数列表
 
 ### HTTP请求
-GET /api/v1/index/query
+`GET /api/v1/index/query`
 
 ### 参数
 | 参数     | 数据类型    | 含义                                                  |
@@ -3684,10 +3670,10 @@ hasMore | 是否还有下一页
 查询当前标记价格
 
 ### HTTP请求
-GET /api/v1/mark-price/{symbol}/current
+`GET /api/v1/mark-price/{symbol}/current`
 
 ### 示例
-GET /api/v1/mark-price/XBTUSDM/current
+`GET /api/v1/mark-price/XBTUSDM/current`
 
 ### 参数
 
@@ -3735,7 +3721,7 @@ indexPrice | 指数价格
 查询溢价指数
 
 ### HTTP请求
-GET /api/v1/premium/query
+`GET /api/v1/premium/query`
 
 ### 参数
 
@@ -3772,10 +3758,10 @@ predictedValue | 预测资金费率
 查询当前资金费率
 
 ### HTTP请求
-GET /api/v1/funding-rate/{symbol}/current
+`GET /api/v1/funding-rate/{symbol}/current`
 
 ### 示例
-GET /api/v1/funding-rate/XBTUSDM/current
+`GET /api/v1/funding-rate/XBTUSDM/current`
 
 
 ### 参数
@@ -3807,7 +3793,7 @@ predictedValue | 预测资金费率
 获取API服务器时间。这是Unix时间戳。
 
 ### HTTP请求
-GET /api/v1/timestamp
+`GET /api/v1/timestamp`
 
 ### 返回值
 字段 | 含义
@@ -3834,7 +3820,7 @@ data | 服务器时间, Unix时间戳。
 
 
 ### HTTP Request
-GET /api/v1/status
+`GET /api/v1/status`
 
 ### 返回值
 字段 | 含义
@@ -3847,10 +3833,10 @@ msg | 备注
 ## 获取合约K线数据
 
 ### HTTP请求
-GET /api/v1/kline/query
+`GET /api/v1/kline/query`
 
 ### 示例
-GET /api/v1/kline/query?symbol=.KXBT&granularity=480&from=1535302400000&to=1559174400000
+`GET /api/v1/kline/query?symbol=.KXBT&granularity=480&from=1535302400000&to=1559174400000`
 
 ### 参数
 | 参数     | 数据类型    | 含义                                                  |
@@ -3929,7 +3915,7 @@ REST API的使用受到了访问频率的限制，因此推荐您使用Websocket
 如果您只订阅公共频道的数据，请按照以下方式请求获取服务器列表和临时公共令牌。
 
 #### HTTP请求
-POST /api/v1/bullet-public
+`POST /api/v1/bullet-public`
 
 ### 私有频道（需要验证签名）
 
@@ -3955,7 +3941,7 @@ POST /api/v1/bullet-public
 
 
 #### HTTP 请求
-POST /api/v1/bullet-private
+`POST /api/v1/bullet-private`
 
 
 ### 返回值
@@ -4148,7 +4134,7 @@ ID用于标识请求和ack的唯一字符串。
   }
 ```
 
-Topic: **/contractMarket/tickerV2:{symbol}**
+Topic:`/contractMarket/tickerV2:{symbol}`
 
 ```json
   {
@@ -4168,21 +4154,7 @@ Topic: **/contractMarket/tickerV2:{symbol}**
 
 每当买卖盘有变化时，推送实时ticker。v2版本推送更具有实时性，推荐接入该版本。
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 ## 交易实时行情 ticker
 
@@ -4195,7 +4167,7 @@ Topic: **/contractMarket/tickerV2:{symbol}**
   }
 ```
 
-Topic: **/contractMarket/ticker:{symbol}**
+Topic: `/contractMarket/ticker:{symbol}`
 
 ```json
   {
@@ -4220,23 +4192,9 @@ Topic: **/contractMarket/ticker:{symbol}**
 
 每完成一笔撮合，该渠道就会实时推送一次价格。如果有多个订单在同一时间被撮合，仅推送最近一笔完成撮合的订单事件。
 
-该推送已不推荐使用，获取实时的ticker，请订阅 /contractMarket/tickerV2:{symbol}。
+该推送已不推荐使用，获取实时的ticker，请订阅 `/contractMarket/tickerV2:{symbol}`。
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 ## Level 2 市场行情
 
@@ -4249,7 +4207,7 @@ Topic: **/contractMarket/ticker:{symbol}**
   }
 ```
 
-Topic：**/contractMarket/level2:{symbol}**
+Topic：`/contractMarket/level2:{symbol}`
 
 订阅此topic，获取Level 2买卖盘数据。
 
@@ -4353,7 +4311,6 @@ Sequence：**16**
 | 3988.48 | 10  | 买4  |
 
 ## 成交记录 
-
 ```json
   {
     "id": 1545910660741,                          
@@ -4362,10 +4319,6 @@ Sequence：**16**
     "response": true                              
   }
 ```
-Topic: **/contractMarket/execution:{symbol}**
-
-每撮合一笔订单，系统就会按照如下格式向您推送消息：
-
 ```json
  {
    "topic": "/contractMarket/execution:XBTUSDM",
@@ -4384,13 +4337,15 @@ Topic: **/contractMarket/execution:{symbol}**
     }
  }
 ```
+Topic:`/contractMarket/execution:{symbol}`
+
+每撮合一笔订单，系统就会按照如下格式向您推送消息：
+
+<aside class="spacer8"></aside>
 
 
 
 ## level2的5档全量数据推送频道 
-
-Topic: **/contractMarket/level2Depth5:{symbol}**
-
 ```json
 {
    "type": "message",
@@ -4417,38 +4372,14 @@ Topic: **/contractMarket/level2Depth5:{symbol}**
  }
 
 ```
+Topic: `/contractMarket/level2Depth5:{symbol}`
+
 推送频率为最多100ms一次。
 
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
+<aside class="spacer8"></aside>
 
 
 ## level2的50档全量数据推送频道
-
-Topic: **/contractMarket/level2Depth50:{symbol}**
-
 ```json
 {
    "type": "message",
@@ -4472,35 +4403,16 @@ Topic: **/contractMarket/level2Depth50:{symbol}**
         "ts": 1590634672060667000
     }
 }
-
 ```
+Topic:`/contractMarket/level2Depth50:{symbol}`
 推送频率为最多100ms一次。
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
-
+<aside class="spacer8"></aside>
 
 
 ## 产品行情数据
-Topic： **/contract/instrument:{symbol}**
+Topic:`/contract/instrument:{symbol}`
+
 订阅此topic，可获取指定合约产品的行情数据。
 
 ```json
@@ -4512,19 +4424,7 @@ Topic： **/contract/instrument:{symbol}**
     "response": true                              
   }
 ```
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### 标记价格、指数价格
 
@@ -4541,14 +4441,8 @@ Topic： **/contract/instrument:{symbol}**
     }
   }
 ```
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+
+<aside class="spacer4"></aside>
 
 ### 资金费率
 
@@ -4565,20 +4459,11 @@ Topic： **/contract/instrument:{symbol}**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ## 系统公告
-topic:  **/contract/announcement**
+Topic:`/contract/announcement`
+
 订阅此topic，可获取系统公告的推送。
 
 ```json
@@ -4591,14 +4476,7 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### 资金费用结算开始
 
@@ -4616,19 +4494,7 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### 资金费用结算结束
 
@@ -4647,22 +4513,11 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer2"></aside>
+<aside class="spacer4"></aside>
 
 ## 交易统计定时触发事件
-每 5 秒定时触发交易统计信息推送。
+
 
 ```json
   //交易统计定时触发事件
@@ -4678,19 +4533,11 @@ topic:  **/contract/announcement**
     }  
   }
 ```
+Topic:`/contractMarket/snapshot:{symbol}`
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+每 5 秒定时触发交易统计信息推送。
+
+<aside class="spacer4"></aside>
 
 
 
@@ -4726,46 +4573,21 @@ topic:  **/contract/announcement**
    }
 }
 ```
-**订单状态** 
-   "match": 订单为taker时与买卖盘中订单成交，此时该taker订单状态为match；
-   "open": 订单存在于买卖盘中；  
-   "done": 订单完成；
+Topic:`/contractMarket/tradeOrders:{symbol}`
 
-**消息类型**
-   "open": 订单进入买卖盘时发出的消息；  
-   "match": 订单成交时发出的消息；
-   "filled": 订单因成交后状态变为DONE时发出的消息；
-   "canceled": 订单因被取消后状态变为DONE时发出的消息；
-   "update": 订单因被修改发出的消息；
+* `status`订单状态说明:
+    - "match": 订单为taker时与买卖盘中订单成交，此时该taker订单状态为match；
+    - "open": 订单存在于买卖盘中；
+    - "done": 订单完成；
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+* `type`消息类型说明:
+  - "open": 订单进入买卖盘时发出的消息；
+  - "match": 订单成交时发出的消息；
+  - "filled": 订单因成交后状态变为DONE时发出的消息；
+  - "canceled": 订单因被取消后状态变为DONE时发出的消息；
+  - "update": 订单因被修改发出的消息；
+
+<aside class="spacer4"></aside>
 
 ## 订单私有消息
 ```json
@@ -4797,50 +4619,24 @@ topic:  **/contract/announcement**
    }
 }
 ```
-**订单状态** 
-   "match": 订单为taker时与买卖盘中订单成交，此时该taker订单状态为match；
-   "open": 订单存在于买卖盘中；  
-   "done": 订单完成；
+Topic:`/contractMarket/tradeOrders`
 
-**消息类型**
-   "open": 订单进入买卖盘时发出的消息；  
-   "match": 订单成交时发出的消息；
-   "filled": 订单因成交后状态变为DONE时发出的消息；
-   "canceled": 订单因被取消后状态变为DONE时发出的消息；
-   "update": 订单因被修改发出的消息；
+* `status`订单状态说明
+    - "match": 订单为taker时与买卖盘中订单成交，此时该taker订单状态为match；
+    - "open": 订单存在于买卖盘中；
+    - "done": 订单完成；
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+* `type`消息类型说明
+  - "open": 订单进入买卖盘时发出的消息；
+  - "match": 订单成交时发出的消息；
+  - "filled": 订单因成交后状态变为DONE时发出的消息；
+  - "canceled": 订单因被取消后状态变为DONE时发出的消息；
+  - "update": 订单因被修改发出的消息；
+
+<aside class="spacer4"></aside>
 
 
 ## 止损单生命周期监听事件
-
 ```json
   {
        "userId": "5cd3f1a7b7ebc19ae9558591", // 不推荐使用, 后续版本将删除
@@ -4864,33 +4660,15 @@ topic:  **/contract/announcement**
        }
   }
 ```
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+Topic:`/contractMarket/advancedOrders`
+
+<aside class="spacer8"></aside>
 
 ## 账户资金发生变化
-### 委托保证金变更事件
 
+Topic:`/contractAccount/wallet`
+
+### 委托保证金变更事件
 ```json
   //委托保证金变更事件
   { 
@@ -4905,18 +4683,7 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### 可用余额变更事件
 
@@ -4935,18 +4702,7 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
 
 ### 提现转出冻结变更事件
 
@@ -4964,22 +4720,14 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer4"></aside>
+<aside class="spacer2"></aside>
 
 ## 仓位变化
-### 仓位操作引起的仓位变化
 
+Topic: `/contract/position:{symbol}`
+
+### 仓位操作引起的仓位变化
 ```json
   //仓位操作引起的仓位变化
   { 
@@ -5028,61 +4776,18 @@ topic:  **/contract/announcement**
       }
   }
 ```
-**changeReason**
-“marginChange”: 仓位保证金变化;
-“positionChange”: 仓位变化;
-“liquidation”: 强平;
-“autoAppendMarginStatusChange”: 修改是否自动追加保证金;
-“adl”: 自动减仓;
+* `changeReason`说明
+    - “marginChange”: 仓位保证金变化;
+    - “positionChange”: 仓位变化;
+    - “liquidation”: 强平;
+    - “autoAppendMarginStatusChange”: 修改是否自动追加保证金;
+    - “adl”: 自动减仓;
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
+<aside class="spacer4"></aside>
+<aside class="spacer2"></aside>
 
 ### 标记价格变化引起的仓位变化
-
 ```json
  //标记价格变化引起的仓位变化
   { 
@@ -5104,27 +4809,7 @@ topic:  **/contract/announcement**
   }
 ```
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer8"></aside>
 
 
 ### 资金费用结算
@@ -5146,20 +4831,8 @@ topic:  **/contract/announcement**
     }
   }
 ```
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+
+<aside class="spacer8"></aside>
 
 ### 风险限额调整结果
 
@@ -5176,21 +4849,11 @@ topic:  **/contract/announcement**
   }
 } 
 ``` 
-失败原因有两种情况：1.持仓价值大于风险限额等级额度; 2.余额不足，保证金追加失败。
+* `msg`失败原因有两种情况：
+    - 1.持仓价值大于风险限额等级额度;
+    - 2.余额不足，保证金追加失败。
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<aside class="spacer2"></aside>
+
 # 登录 KuCoin
 <a href="https://www.kucoin.com">登录 KuCoin</a>
