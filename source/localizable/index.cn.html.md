@@ -1474,7 +1474,7 @@ applyId | String | 轉出申請ID(發起轉出返回)
 | side      | String | **buy** 或 **sell**    |
 | symbol    | String | 有效合約代碼。如：XBTUSDM                  |
 | type      | String | [可選] 訂單類型，包括**limit**或**market**,默認limit。|
-| leverage  | String | 下單槓杆倍數
+| leverage  | String | 下單槓桿倍數
 | remark    | String | [可選] 下單備註，字符長度不能超過100 個字符（UTF-8）。|
 | stop      | String | [可選] 觸發價格的兩種類型。下跌至某個價格（**down**），或上漲至某個價格（**up**）。設置後，就必須設置**stopPrice**和**stopPriceType** 參數。 |
 | stopPriceType  | String | [可選] 止損單觸發價類型，包括**TP**、**IP**和**MP**， 只要設置**stop**參數，就必須設置此屬性。|
@@ -2294,7 +2294,7 @@ reduceOnly | 只減倉標記
             "orderId": "5ce24c16b210233c36ee321d",  //訂單編號
             "side": "sell",  //買賣方向
             "liquidity": "taker",  //流動性類型 taker or maker
-            "forceTaker": true, //是否強制作爲taker處理
+            "forceTaker": true, //是否強製作爲taker處理
             "price": "8302",  //成交價格
             "size": 10,  //成交數量
             "value": "0.001204529",  //成交價值
@@ -2348,7 +2348,7 @@ tradeId  | 交易編號
 orderId  | 訂單編號
 side  | 買賣方向
 liquidity  | 流動性類型 taker or maker
-forceTaker  | 是否強制作爲taker處理
+forceTaker  | 是否強製作爲taker處理
 price  | 成交價格
 size  | 成交數量
 value  | 成交價值
@@ -2376,7 +2376,7 @@ tradeTime  | 交易時間納秒
 KuCoin Futures平臺上的訂單分爲兩種類型：**Taker** 和 **Maker**。Taker單會與買賣盤上的已有訂單立即成交，而Maker單則相反，會一直留在買賣盤中等待撮合。Taker單消耗了市場的流動性，因此會被收取taker費用，而Maker單增加了市場的流動性，會被收取較低的手續費甚至獲得手續費補貼。請注意：市價單、冰山單和隱藏單都會被扣除taker手續費。
 
 
-下單時，系統會預凍結您賬戶中的taker費用。流動性（liquidity）字段中的參數說明了訂單將會被收取taker還是maker費用。
+下單時，系統會預凍結您賬戶中的taker費用。流動性（liquidity）字段中的參數說明瞭訂單將會被收取taker還是maker費用。
 
 加倉訂單需要預凍費用，減倉訂單不凍結任何費用。加倉訂單凍結的費用包括倉位保證金、開倉交易費和平倉交易費。訂單撮合成功後, 如果加倉會扣除加倉交易費, 如果是平倉會扣取平倉交易費。
 
@@ -2434,7 +2434,7 @@ tradeId  | 交易編號
 orderId  | 訂單編號
 side  | 買賣方向
 liquidity  | 流動性類型 taker or maker
-forceTaker  | 是否強制作爲taker處理
+forceTaker  | 是否強製作爲taker處理
 price  | 成交價格
 size  | 成交數量
 value  | 成交價值

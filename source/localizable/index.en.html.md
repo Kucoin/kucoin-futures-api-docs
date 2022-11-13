@@ -1111,7 +1111,7 @@ Field | Description
         "fee": 0,//Withdrawal fee charges
         "walletTxId": "",//Wallet TXID
         "createdAt": 1557816726000,//Withdrawal time
-        "remark": "测试.",//Withdrawal remarks
+        "remark": "測試.",//Withdrawal remarks
         "reason": "Assets freezing failed."// Reason causing the failure
       }]
     }
