@@ -857,11 +857,12 @@ subName | ⼦賬號名
 ### 請求參數
 請求參數 | 類型 | 是否必須 |  含義
 --------- | ------- | ------- | -------
-ipWhitelist | String | 否 | IP白名單(每個IP用半角逗號隔開，最多添加20個)
-passphrase | String | 是 | 密碼(7～32位字符，不可輸入空格)
-permission | String | 否 | 權限列表(只能設置General、Trade權限，如："General,Trade”。默認爲General)
-remark | String | 是 | 備註(1～24位字符)
 subName | String | 是 | 子賬號名, 創建api key的子賬號名稱
+passphrase | String | 是 | 密碼(7～32位字符，不可輸入空格)
+remark | String | 是 | 備註(1～24位字符)
+permission | String | 否 | 權限列表(只能設置General、Trade權限，如："General,Trade”。默認爲General)
+ipWhitelist | String | 否 | IP白名單(每個IP用半角逗號隔開，最多添加20個)
+expire | String | 否 | API過期時間；不過期(默認值)`-1`，30天`30`，90天`90`，180天`180`，360天`360`
 
 ### 返回值
 字段 | 含義
@@ -897,11 +898,13 @@ passphrase | 密碼
 ### 請求參數
 請求參數 | 類型 | 是否必須 | 含義
 --------- | ------- | ------- | -------
+subName | String |  是 | 子賬號名(API Key對應子賬號名)
 apiKey | String | 是 | API-Key(需要修改的API Key)
-ipWhitelist | String | 否 | IP⽩名單(每個IP⽤半⻆逗號隔開，最多添加20個。如果修改，ip將會重置)
-passphrase | String | 是 | 密碼(API Key 密碼)
-permission | String | 否 | 權限列表(只能設置General、Trade權限，默認爲General。如果修改，權限將會重置)
-subName | String | 是 | ⼦賬號名(API Key對應⼦賬號名)
+passphrase | String | 是 |  密碼(API Key 密碼)
+permission | String |  否 |  權限列表(只能設置General、Trade權限，默認爲General。如果修改，權限將會重置)
+ipWhitelist | String | 否 | IP白名單(每個IP用半角逗號隔開，最多添加20個。如果修改，ip將會重置)
+expire | String | 否 | API過期時間；不過期(默認值)`-1`，30天`30`，90天`90`，180天`180`，360天`360`
+
 ### 返回值
 字段 | 含義
 --------- | -------

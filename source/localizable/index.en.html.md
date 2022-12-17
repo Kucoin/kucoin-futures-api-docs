@@ -830,11 +830,12 @@ This endpoint requires the `General` permission.
 ### PARAMETERS
 Param | Type | Mandatory | Description
 --------- | ------- | ------- | -------
-ipWhitelist | String | No | IP whitelist(You may add up to 20 IPs. Use a halfwidth comma to each IP)
-passphrase | String | Yes | Password(Must contain 7-32 characters. Cannot contain any spaces.)
-permission | String | No | Permissions(Only "General" and "Trade" permissions can be set, such as "General, Trade". The default is "General")
-remark | String | Yes | Remarks(1~24 characters)
 subName | String | Yes | Sub-account name, create sub account name of API Key.
+passphrase | String | Yes | Password(Must contain 7-32 characters. Cannot contain any spaces.)
+remark | String | Yes | Remarks(1~24 characters)
+permission | String | No | Permissions(Only "General" and "Trade" permissions can be set, such as "General, Trade". The default is "General")
+ipWhitelist | String | No | IP whitelist(You may add up to 20 IPs. Use a halfwidth comma to each IP)
+expire | String | No | API expiration time; Never expire(default)`-1`，30Day`30`，90Day`90`，180Day`180`，360Day`360`
 ### RESPONSES
 Field | Description
 --------- | -------
@@ -869,12 +870,12 @@ This endpoint requires the `General` permission.
 ### PARAMETERS
 Param | Type | Mandatory | Description
 --------- | ------- | ------- | -------
-apiKey | String | Yes | API-Key(Sub-account APIKey)
-ipWhitelist | String | No | IP whitelist(you may add up to 20 IPs. Use a halfwidth comma to each IP.If modified, the IP will be reset.)
-passphrase | String | Yes | Password of API key
-permission | String | No | Permission list.If modified, permissions 
-will be reset.
 subName | String | Yes | Sub-account name
+apiKey | String | Yes | API-Key(Sub-account APIKey)
+passphrase | String | Yes | Password of API key
+permission | String | No | Permission list.If modified, permissions will be reset.
+ipWhitelist | String | No | IP whitelist(you may add up to 20 IPs. Use a halfwidth comma to each IP.If modified, the IP will be reset.)
+expire | String | No | API expiration time; Never expire(default)`-1`，30Day`30`，90Day`90`，180Day`180`，360Day`360`
 ### RESPONSES
 Field | Description
 --------- | -------
