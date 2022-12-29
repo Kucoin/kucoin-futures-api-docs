@@ -4356,7 +4356,7 @@ Subscribe this topic to get the market data of the contract.
 
 <aside class="spacer4"></aside>
 
-## System Annoucements
+## Funding Fee Settlement
 ```json
   //System Annoucements
   { 
@@ -4368,7 +4368,7 @@ Subscribe this topic to get the market data of the contract.
 ```
 Topic:`/contract/announcement`
 
-Subscribe this topic to get the system announcements.
+Subscribe this topic to get Funding Fee Settlement.
 
 <aside class="spacer4"></aside>
 
