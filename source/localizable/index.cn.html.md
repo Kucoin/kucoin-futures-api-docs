@@ -4464,10 +4464,10 @@ Topic:`/contract/instrument:{symbol}`
 
 <aside class="spacer4"></aside>
 
-## 系統公告
+## 資金費用結算
 Topic:`/contract/announcement`
 
-訂閱此topic，可獲取系統公告的推送。
+訂閱此topic，可獲取資金費用結算的推送。
 
 ```json
  //系統公告
