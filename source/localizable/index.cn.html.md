@@ -252,12 +252,16 @@ USDT結算合約上線, 交易所從只支持一個幣種 XBT, 變爲同時支�
 
 ## 請求頻率限制
 
-當請求頻率超過限制頻率時，系統將返回code爲**429**的超頻錯誤碼。
-<aside class="notice">如果接口請求頻率超過限制，你的IP或賬戶會被限制使用10s。</aside>
-
 ### REST API
 
-對需要校驗API權限的私有接口，限制賬號userid。不需要檢驗權限API，則限制IP。
+對需要校驗API權限的私有接口，限制賬號userid。不需要檢驗權限API，則限制IP。目前Kucoin一共有三種限頻，分別如下
+
+1、error code：1015，根據IP限制頻率，是cloudflare基於ip的限制，所有的接口共用該限頻，目前是500/10s,後臺可能會微調，block 30s。Cloudfeare沒有ip白名單的配置，所以無法特殊調整，但是這個問題是可以避免的，比如使用Websocket接口代替Rest接口(如果接口支持的話)。也可以用一臺伺服器綁定多個ip地址（ipv4或者ipv6），或者不同的子帳號使用不同的ip。
+
+2、error code：200002，kucoin每個私有接口的限頻，是基於用戶的uid+介面模式的限制，block10s。比如某個接口調用頻率過高，就可能遇到這個問題，建議降低那個接口的使用頻率
+
+3、error code：429000，kucoin單機容量限制。可以理解為伺服器超載了。
+
 <aside class="notice">接口有特定請求頻率限制說明，以特定說明爲準。</aside>
 
 ### WEBSOCKET
@@ -408,6 +412,7 @@ REST API對用戶、交易及市場數據均提供了接口。
 400100 | Parameter Error -- 請求參數不合法
 404000 | Url Not Found -- 找不到請求資源
 411100 | User are frozen -- 用戶已被凍結，請聯繫幫助中心
+415000 | Unsupported Media Type -- 請求頭等Content-Type需要設置成application/json
 429000 | Too Many Requests -- 超頻錯誤:基於接口的全站流量限制，可以直接重試請求
 500000 | Internal Server Error -- 服務器出錯，請稍後再試
 
@@ -2984,6 +2989,10 @@ data | 修改會撤銷用戶當前掛單，返回結果僅代表修改申請提�
 | forward   | boolean | [可選] 是否前向查詢，**true**或者**false**，默認爲**true** |
 | maxCount  | int     | [可選] 最大記錄條數，默認爲10                          |
 
+
+**注意:**由於數據變化的很快，如果只選擇offset,而沒有選擇startAt和endAt，可能會導致數據不准或數據重複，建議按startAt和endAt來分頁
+
+
 ### 返回值
 字段 | 含義
 --------- | -------
@@ -2997,6 +3006,7 @@ positionCost | 結算時的倉位價值
 funding | 結算的資金費用，正數表示收入；負數表示支出
 settleCurrency | 結算幣種
 hasMore | 是否還有下一頁
+
 
 # 市場數據
 
