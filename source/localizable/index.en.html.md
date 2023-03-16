@@ -244,11 +244,17 @@ The login session and the API key in the sandbox environment are completely sepa
 * REST API: **https://api-sandbox-futures.kucoin.com**  (https://sandbox-api.kumex.com has been Deprecated)
 
 ## Request Rate Limit
-When a rate limit is exceeded, a status of **429** will be returned.
-<aside class="notice">Once the rate limit is exceeded, the system will restrict your use of your IP or account for 10s.</aside>
 
 ### REST API
-The limit strategy of private endpoints will restrict account by userid. The limit strategy of public endpoints will restrict IP.
+The limit strategy of private endpoints will restrict account by userid. The limit strategy of public endpoints will restrict IP. Currently Kucoin has three rate limits, which are as follows:
+
+1.code: 1015, according to the IP rate limit, cloudflare is based on the IP limit, all endpoint share the rate limit, currently 500/10s, the background may be fine-tuned, block 30s. Cloudfeare does not have the configuration of the ip whitelist, so it cannot be specially adjusted, but this problem can be avoided, such as using the Websocket instead of the Rest(if the interface supports it). You can also use one server to bind multiple ip addresses (ipv4 or ipv6), and then use different ip for different sub-accounts.
+
+2.code: 200002, rate limit of each private endpoint of kucoin, based on user uid+endpoint mode limit, block10s. For example, if a certain endpoint is called too frequently, you may encounter this problem. It is recommended to reduce the rate of use of that interface.
+
+3.code: 429000, kucoin stand-alone capacity limit. It can be understood that the server is overloaded. 
+
+
 <aside class="notice">Note that when an API has a specific rate limit, please refer to the specific limit.</aside>
 
 ### WEBSOCKET
@@ -386,6 +392,7 @@ Code | Meaning
 400100 | Parameter Error -- You tried to access the resource with invalid parameters
 404000 | URL Not Found -- The requested resource could not be found
 411100 | User is frozen -- Please contact us via support center
+415000 | Unsupported Media Type -- The Content-Type of the request header needs to be set to application/json
 429000 | Too Many Requests -- Trigger the total traffic limit of this interface of KuCoin server, you can retry the request
 500000 | Internal Server Error -- We had a problem with our server. Try again later.
 
@@ -2888,6 +2895,9 @@ This API is restricted for each account, the request rate limit is **9 times/3s*
 | forward   | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default |
 | maxCount  | int     | *[optional]* Max record count. The default record count is 10                          |
 
+**Note:**Because the data changes quickly, if only select offset instead of startAt and endAt, it may cause data inaccuracy or data duplication. It is recommended to page by startAt and endAt
+
+
 ### RESPONSES
 Field | Description
 --------- | -------
@@ -2901,6 +2911,7 @@ positionCost | Position value at settlement period
 funding | Settled funding fees. A positive number means that the user received the funding fee, and vice versa.
 settleCurrency | settlement currency
 hasMore | Whether there are more pages
+
 
 # Market Data
 Signature is not required for this part.
