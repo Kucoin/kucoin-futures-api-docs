@@ -15,49 +15,73 @@ KuCoin Futures API分爲兩部分：**REST API 和 Websocket 實時數據流**
 
 **爲了進一步提升API安全性，KuCoin已經升級到了V2版本的API-KEY，驗籤邏輯也發生了一些變化，建議到[API管理頁面](https://futures.kucoin.com/api)添加並更換到新的API-KEY。KuCoin將繼續支持使用老的API-KEY到2021年05月01日。請查看“消息簽名”，瞭解更多詳情**
 
+#### 2023.04.02
+
+* 【修改】`GET /api/v1/transfer-list`接口，新增入參字段，queryStatus、queryStatus、pageSize
+* 【修改】`GET /api/v1/orders`接口，新增入參字段，currentPage、pageSize
+* 【修改】`GET /api/v1/stopOrders`接口，新增入參字段，currentPage、pageSize
+* 【修改】`GET /api/v1/fills`接口，新增入參字段：currentPage、pageSize，新增出參字段：openFeePay、closeFeePay
+* 【修改】`GET /api/v1/recentFills`接口，新增入參字段：currentPage、pageSize，新增出參字段：openFeePay、closeFeePay
+* 【修改】`GET /api/v1/position`接口，新增出參字段：userId
+* 【修改】`GET /api/v1/positions`接口，新增出參字段：userId
+* 【修改】`POST /api/v1/position/margin/deposit-margin`接口，新增出參字段：userId
+* 【修改】`GET /api/v1/premium/query`接口，刪除出參字段：predictedValue
+* 【修改】`GET /api/v1/recentDoneOrders`接口，新增入參字段：symbol
+* 【修改】`GET /api/v1/positions`接口，新增入參字段：currency
+* 【廢棄】`GET /api/v1/deposit-address`请参考现货接口
+* 【廢棄】`GET /api/v1/deposit-list`请参考现货接口
+* 【廢棄】`GET /api/v1/withdrawals/quotas`请参考现货接口
+* 【廢棄】`GET /api/v1/withdrawal-list`请参考现货接口
+* 【廢棄】`GET /api/v1/withdrawals`请参考现货接口
+* 【廢棄】`GET /api/v1/transfer-out`
+* 【廢棄】`DELETE /api/v1/cancel/transfer-out`
+
+
+
+
 #### 2022.11.01
 
-* 廢棄`DELETE /api/v1/withdrawals/{withdrawalId}`取消提現接口
+* 【廢棄】`DELETE /api/v1/withdrawals/{withdrawalId}`取消提現接口
 
 #### 2022.10.18
 
-* 新增子賬號相關接口: `GET /api/v1/sub/api-key`、`POST /api/v1/sub/api-key/update`、`DELETE /api/v1/sub/api-key`
+* 【新增】子賬號相關接口: `GET /api/v1/sub/api-key`、`POST /api/v1/sub/api-key/update`、`DELETE /api/v1/sub/api-key`
 
 #### 2022.09.22
 
-* 新增子賬號相關接口: `POST /api/v1/sub/api-key`
+* 【新增】子賬號相關接口: `POST /api/v1/sub/api-key`
 
 #### 2022.07.21
-* 廢棄`POST /api/v1/withdrawals`接口
+* 【廢棄】`POST /api/v1/withdrawals`接口
 
 <!-- #### 2022.04.30
 * 合約API文檔已升級，最新地址請參考：<code>https://docs.kucoin.com/futures/new/cn</code> -->
 
 #### 2022.03.24
-* 廢棄了`GET /api/v1/level2/message/query`接口
-* 新增接口返回值描述
-* 新增`POST /api/v3/transfer-out`接口
-* 新增`POST /api/v1/transfer-in`接口
+* 【廢棄】了`GET /api/v1/level2/message/query`接口
+* 【新增】接口返回值描述
+* 【新增】`POST /api/v3/transfer-out`接口
+* 【新增】`POST /api/v1/transfer-in`接口
 
 #### 2022.02.07
-* 新增`GET /api/v1/position`接口返回字段：maintainMargin、riskLimitLevel.
+* 【新增】`GET /api/v1/position`接口返回字段：maintainMargin、riskLimitLevel.
 
 #### 2021.12.07
-* 修改倉位變化接口`"topic": "/contract/position:XBTUSDM"`說明
+* 【修改】倉位變化接口`"topic": "/contract/position:XBTUSDM"`說明
 
 #### 2021.11.19
-* 新增階梯風險限額相關接口:`GET /v1/contracts/risk-limit/{symbol}`、`POST /v1/position/risk-limit-level/change`<br/> 
-* 倉位推送的topic:/contract/position:{symbol} 新增風險限額調整結果`position.adjustRiskLimit`.
+* 【新增】階梯風險限額相關接口:`GET /v1/contracts/risk-limit/{symbol}`、`POST /v1/position/risk-limit-level/change`<br/> 
+* 【新增】倉位推送的topic:/contract/position:{symbol} 新增風險限額調整結果`position.adjustRiskLimit`.
 
 #### 2021.08.18
-* 移除了`POST /api/v2/transfer-out`接口的輸出參數BizNo.
-* 修正了`GET /api/v1/account-overview`接口的返回字段marginBalance描述.
+* 【修改】移除了`POST /api/v2/transfer-out`接口的輸出參數BizNo.
+* 【修改】修正了`GET /api/v1/account-overview`接口的返回字段marginBalance描述.
 
 #### 2021.07.15
-* 修改請求頻率限制
+* 【修改】修請求頻率限制
 
 #### 2021.03.18
-* 賬戶資金消息推送 /contractAccount/wallet 的subject:availableBalance.change增加了holdBalance字段。 <br/>
+* 【新增】賬戶資金消息推送 /contractAccount/wallet 的subject:availableBalance.change增加了holdBalance字段。 <br/>
 
 #### 2021.03.02
 * 停用已廢棄的level-3推送：/contractMarket/level3:{symbol}, 推薦使用/contractMarket/level3v2:{symbol}
@@ -785,6 +809,9 @@ maxCount | long | [可選] 每頁顯示條數 默認50
 currency | String | [可選] 幣種 **XBT或USDT**
 forward | boolean | [可選] 是否前向查詢，**true**或者**false**，默認爲**true** 
 
+<aside class="notice">針對startAt、endAt的補充說明：startAt必須小於endAt；並且間隔不能超過1天；允許只傳一個字段，如果只傳一個字段時，另有一個字段系統會自動進行加減1天補齊</aside>
+
+
 ### 返回值
 字段 | 含義
 --------- | -------
@@ -947,270 +974,9 @@ subName | String | 是 | ⼦賬號名(api key對應⼦賬號名)
 apiKey | API-Key
 subName | ⼦賬號名
 
-# 充值
-## 獲取充幣地址
 
-```json
-  {
-    "code": "200000",
-    "data": {
-      "address": "bc1q466dvmharut0uhycdqu9nlmwcw5gec4p8wt22j",//充幣地址
-      "memo": null,//地址標籤，如果返回爲空，則該幣種沒有memo。當您在其他平臺申請提現到KuCoin的時候，如果該幣種有memo(tag)，需要填寫memo，確保能準確入賬到您到賬戶
-      "chain": "BTC-Segwit"//幣種的鏈名
-   } 
-}
-```
-
-### HTTP請求
-`GET /api/v1/deposit-address`
-
-### 請求示例
-`GET /api/v1/deposit-address?currency=XBT`
-
-### API權限
-該接口需要**通用權限**
-
-### 參數
-參數 | 數據類型 | 含義
---------- | ------- | -----------
-currency | String | 幣種（**XBT 或USDT**）
-
-### 返回值
-字段 | 含義
---------- | -------
-| address | 充值地址 | 
-| memo | 地址標籤，如果返回爲空，則該幣種沒有memo。當您在其他平臺申請提現到KuCoin的時候，如果該幣種有memo(tag)，需要填寫memo，確保能準確入賬到您到賬戶 | 
-| chain | 幣種的鏈名。  | 
-
-## 獲取充值列表
-```json
-  {
-    "code": "200000",
-    "data": {
-      "currentPage": 1,
-      "pageSize": 50,
-      "totalNum": 1,
-      "totalPage": 1,
-      "items": [{
-        "currency": "XBT",//幣種
-        "status": "SUCCESS",//狀態類型：PROCESSING, WALLET_PROCESSING, SUCCESS, FAILURE
-        "address": "5CD018972914B66104BF8842",//充值地址
-        "isInner": false,//是否站內充值
-        "amount": 1,//充值金額
-        "fee": 0,//充值手續費
-        "walletTxId": "5CD018972914B66104BF8842",//錢包交易txId
-        "createdAt": 1557141673000 //充值時間
-      }]
-    }
-  }
-```
-
-默認返回最新第一頁數據
-
-### HTTP請求
-`GET /api/v1/deposit-list`
-
-### 請求示例
-`GET /api/v1/deposit-list?currentPage=1&pageSize=50&status=PROCESSING?currency=XBT`
-
-### API權限
-該接口需要**通用權限**
-
-### 參數
-參數 | 數據類型 | 含義
---------- | ------- | -----------
-startAt | long | [可選]  開始時間（毫秒）
-endAt | long | [可選]  截止時間（毫秒） 
-status | String | [可選]  狀態 **PROCESSING, SUCCESS, FAILURE**
-currency | String | [可選]  幣種 **XBT,USDT**
-
-### 返回值
-字段 | 含義
---------- | -------
-| currency | 幣種 | 
-| status | 狀態類型：PROCESSING, WALLET_PROCESSING, SUCCESS, FAILURE | 
-| address | 充值地址 | 
-| isInner | 是否站內充值 | 
-| amount | 充值金額 | 
-| fee | 充值手續費 | 
-| walletTxId | 錢包交易txId | 
-| createdAt | 充值時間 | 
-
-# 提現
-## 獲取提現額度
-
-```json
- {
-    "code": "200000",
-    "data": {
-      "currency": "XBT",//幣種
-      "chainId": "bech32",// 鏈標識
-      "limitAmount": 2,//24H提現總額度
-      "usedAmount": 0,//24H已使用提現額度
-      "remainAmount": 2,//24H可提現額度
-      "availableAmount": 99.89993052,//可用餘額
-      "withdrawMinFee": 0.0005,//提現手續費
-      "innerWithdrawMinFee": 0,// 站內提現手續費
-      "withdrawMinSize": 0.002,//最小提現數量
-      "isWithdrawEnabled": true,//是否可以提現
-      "precision": 8//提現金額精度
-    }
- }
-```
-
-### HTTP請求
-`GET /api/v1/withdrawals/quotas`
-
-### 請求示例
-`GET /api/v1/withdrawals/quotas?currency=XBT`
-
-### API權限
-該接口需要**通用權限**
-
-### 參數
-參數 | 數據類型 | 含義
---------- | ------- | -----------
-currency | String | 幣種（**XBT或USDT**）
-
-### 返回值
-字段 | 含義
---------- | -------
-| currency | 幣種 | 
-| chainId | 鏈標識 | 
-| limitAmount | 24H提現總額度 | 
-| remainAmount | 24H已使用提現額度 | 
-| usedAmount | 24H可提現額度 | 
-| availableAmount | 可用餘額 | 
-| withdrawMinFee | 提現手續費 | 
-| innerWithdrawMinFee | 站內提現手續費 | 
-| withdrawMinSize | 最小提現數量 | 
-| isWithdrawEnabled | 是否可以提現 | 
-| precision | 提現金額精度 | 
-
-## 發起提現(廢棄)
-
-```json
-  {
-   "code": "200000",
-    "data": {
-    "withdrawalId": "5bffb63303aa675e8bbe18f9" //提現id`可以用於後續取消提現 
-    }
-  }
-```
-
-<aside class="notice">該接口已廢棄，請您先從合約賬戶內部劃轉資產到您的儲蓄賬戶，再從儲蓄賬戶進行提現</aside>
-
-### HTTP請求
-`POST /api/v1/withdrawals`
-
-### 請求示例
-`POST /api/v1/withdrawals`
-
-### API權限
-該接口需要**轉出權限**
-
-### 參數
-參數 | 數量類型 | 含義
---------- | ------- | -----------
-currency  | String | 幣種（**XBT,USDT**）
-address   | String | 提現地址
-amount | Big  | 提現數量
-isInner|	boolean| [可選] 是否站內提現。當提現地址是站內地址，可通過此字段選擇是否上區塊鏈，默認false表示表示上鍊，ture表示站內提現
-remark | String | [可選]  備註
-chain | String | [可選]  幣種的鏈名。例如，對於USDT，現有的鏈有OMNI、ERC20、TRC20。默認值爲ERC20。這個參數用於區分多鏈的幣種，單鏈幣種不需要。
-memo | String | [可選]  地址標籤memo(tag)，如果返回爲空，則該幣種沒有memo。對於沒有memo的幣種，在提現的時候不可以傳遞memo
-
-
-### 返回值
-參數  | 含義
---------- | -----------
-withdrawalId  | 提現id，可以用於後續取消提現
-
-## 獲取提現列表
-```json
-  {
-    "code": "200000",
-    "data": {
-      "currentPage": 1,
-      "pageSize": 50,
-      "totalNum": 10,
-      "totalPage": 1,
-      "items": [{
-        "withdrawalId": "5cda659603aa67131f305f7e",//提現唯一標識，可用於取消提現
-        "currency": "XBT",//幣種
-        "status": "FAILURE",//狀態
-        "address": "3JaG3ReoZCtLcqszxMEvktBn7xZdU9gaoJ",//提現地址
-        "memo": "",//提現地址標識
-        "isInner": true,//是否站內提現
-        "amount": 1,//提現金額
-        "fee": 0,//提現手續費
-        "walletTxId": "",//錢包交易txId
-        "createdAt": 1557816726000,//提現時間
-        "remark": "測試.",//提現備註
-        "reason": "Assets freezing failed."//失敗原因
-      }]
-    }
-  }
-```
-
-
-### HTTP請求
-`GET /api/v1/withdrawal-list`
-
-### 請求示例
-`GET /api/v1/withdrawal-list?currentPage=1&pageSize=50&status=PROCESSING`
-
-### API權限
-該接口需要**通用權限**
-
-### 參數
-參數 | 數據類型 | 含義
---------- | ------- | -----------
-status | String | [可選] 狀態. `PROCESSING`, `WALLET_PROCESSING`, `SUCCESS`, `FAILURE`
-startAt | long | [可選] 開始時間（毫秒）
-endAt | long | [可選]  截止時間（毫秒） 
-currency | String | [可選]  幣種 **XBT,USDT**
-
-### 返回值
-參數  | 含義
---------- | -----------
-withdrawalId  | 提現唯一標識，可用於取消提現
-currency  | 幣種
-status  | 狀態
-address  | 提現地址
-memo  | 提現地址標識
-isInner  | 是否站內提現
-amount  | 提現金額
-fee  | 提現手續費
-walletTxId  | 錢包交易txId
-createdAt  | 提現時間
-remark  | 提現備註
-reason  | 失敗原因
 
 # 劃轉
-## 轉出到KuCoin儲蓄賬戶
-```json
-  { 
-    "code": "200000",
-    "data": {
-      "applyId": "5bffb63303aa675e8bbe18f9" //轉出申請id
-    }  
-  }
-```
- 轉出金額將從KuCoin Futures賬戶扣除，轉出前請確保KuCoin Futures賬戶可用餘額充足。接口響應表示轉出成功後，系統將返回applyId。此ID可用於取消轉出申請。
-
-### HTTP請求
-`POST /api/v1/transfer-out`（已廢棄，請使用 POST /api/v3/transfer-out）
-### 請求示例
-`POST /api/v1/transfer-out`
-### API權限
-該接口需要**提現權限**
-
-### 參數
-參數 | 數據類型 | 含義
---------- | ------- | -----------
-bizNo | String | 業務請求號，建議使用UUID
-amount | Number | 轉出金額
 
 
 ## 轉出到KuCoin儲蓄賬戶
@@ -1247,7 +1013,7 @@ amount | Number | 轉出金額
 ### 參數
 參數 | 數據類型 | 含義
 --------- | ------- | -----------
-amount | Number | 轉出金額
+amount | Number | 轉出金額，最大不能超過1000000000
 currency | String | 幣種 **XBT,USDT**
 
 ### 返回值
@@ -1305,7 +1071,7 @@ updatedAt  | 更新時間
 ### 參數
 參數 | 數據類型 | 含義
 --------- | ------- | -----------
-amount | Number | 轉出金額
+amount | Number | 轉出金額，最大不能超過1000000000
 currency | String | 幣種 **XBT,USDT**
 recAccountType | String | 收款賬戶，只能是*MAIN*-儲蓄賬戶、*TRADE*-幣幣賬戶
 
@@ -1394,7 +1160,15 @@ payAccountType | String | 付款賬戶，只能是*MAIN*-儲蓄賬戶、*TRADE*-
 startAt | long | [可選] 開始時間（毫秒）
 endAt | long | [可選]  截止時間（毫秒） 
 status | String | [可選] 狀態 **PROCESSING-處理中，SUCCESS-成功, FAILURE-失敗**
+queryStatus| List | [可選] 狀態集合 **PROCESSING-處理中，SUCCESS-成功, FAILURE-失敗**
 currency | String | [可選]  幣種 **XBT,USDT**
+currentPage | long | [可選] 頁數，不傳默認1
+pageSize | long | [可選] 頁碼，不傳默認50
+
+
+<aside class="notice">針對startAt、endAt的補充說明：startAt必須小於endAt；並且間隔不能超過1天；允許只傳一個字段，如果只傳一個字段時，另有一個字段系統會自動進行加減1天補齊</aside>
+
+
 
 ### 返回值
 參數  | 含義
@@ -1410,7 +1184,7 @@ offset  | 起始偏移量，一般使用上個請求最後一條返回結果的�
 createdAt  | 提交申請時間
 remark  | 用戶備註
 
-## 取消轉出
+## 取消轉出（廢棄）
 
 ```json
  { 
@@ -1478,7 +1252,7 @@ applyId | String | 轉出申請ID(發起轉出返回)
 
 | 參數     | 數據類型   | 含義                                                  |
 | --------- | ------ | -----------------------|
-| clientOid | String | 唯一的訂單ID，可用於識別訂單。如：UUID<br/>只能包含數字、字母、下劃線（_）或 分隔線（-）|
+| clientOid | String | 唯一的訂單ID，可用於識別訂單，長度最大不超過40。如：UUID<br/>只能包含數字、字母、下劃線（_）或 分隔線（-）|
 | side      | String | **buy** 或 **sell**    |
 | symbol    | String | 有效合約代碼。如：XBTUSDM                  |
 | type      | String | [可選] 訂單類型，包括**limit**或**market**,默認limit。|
@@ -1902,7 +1676,9 @@ symbol |String|[可選] 僅返回指定的委託列表，如：XBTUSDM。
 side | String | [可選] **buy** 或 **sell** 
 type | String | [可選] 訂單類型，包括：限價單、市價單、限價止損、市價止損。**limit**, **market**, **limit_stop** or **market_stop** 
 startAt | long | [可選] 開始時間（毫秒）
-endAt | long | [[可選]  截止時間（毫秒） 
+endAt | long | [[可選]  截止時間（毫秒）
+currentPage | long | [可選] 頁數，不傳默認1
+pageSize | long | [可選] 頁碼，不傳默認50，最大不能超過1000
 
 ### 返回值
 參數  | 含義
@@ -2037,7 +1813,9 @@ symbol |String|[可選] 僅返回指定的委託列表，如：XBTUSDM。
 side | String | [可選]**buy** 或 **sell** 
 type | String | [可選]**limit** 或 **market** 
 startAt | long | [可選] 開始時間（毫秒）
-endAt | long | [可選]  截止時間（毫秒） 
+endAt | long | [可選]  截止時間（毫秒）
+currentPage | long | [可選] 頁數，不傳默認1
+pageSize | long | [可選] 頁碼，不傳默認50，最大不能超過1000
 
 請使用查詢參數獲取指定合約的訂單。
 
@@ -2143,6 +1921,11 @@ reduceOnly | 只減倉標記
 
 ### API權限
 該接口需獲取**通用權限**。
+
+### 參數
+參數 | 數據類型 | 含義
+--------- | ------- | -----------
+symbol | String |[可選] 合約symbol 
 
 ### 返回值
 參數  | 含義
@@ -2315,6 +2098,8 @@ reduceOnly | 只減倉標記
             "tradeType": "trade",  //交易類型: trade, liquidation, ADL or settlement
             "createdAt": 1558334496000,  //創建時間
             "settleCurrency": "XBT", //結算幣種
+			"openFeePay": "0.002",
+			"closeFeePay": "0.002",
             "tradeTime": 1558334496000000000 //交易時間納秒
           }
       ]
@@ -2346,7 +2131,9 @@ symbol | String |[可選] 合約symbol
 side | String |[可選] **buy** or **sell** 
 type | String |[可選] **limit**, **market**, **limit_stop** or **market_stop** 
 startAt | long |[可選] 開始時間（毫秒）
-endAt | long |[可選]  截止時間（毫秒） 
+endAt | long |[可選]  截止時間（毫秒）
+currentPage | long | [可選] 頁數，不傳默認1
+pageSize | long | [可選] 頁碼，不傳默認50，最大不能超過1000
 
 ### 返回值
 參數  | 含義
@@ -2370,6 +2157,8 @@ tradeType  | 交易類型: trade, liquidation, ADL or settlement
 createdAt  | 創建時間
 settleCurrency  | 結算幣種
 tradeTime  | 交易時間納秒
+openFeePay | 開倉交易手續費
+closeFeePay | 平倉交易手續費
 
 如果需要低延時獲取自己的最近成交歷史記錄, 請使用24小時成交列表接口。 此接口返回的歷史成交可能存在一定的延遲。
 請使用查詢參數獲取指定合約的已成交訂單。
@@ -2413,6 +2202,8 @@ KuCoin Futures平臺上的訂單分爲兩種類型：**Taker** 和 **Maker**。T
      "tradeType": "trade",  //交易類型, 可能是交易, 強平 或ADL 
      "createdAt": 1558334496000,  //創建時間
      "settleCurrency": "XBT", //結算幣種
+	 "openFeePay": "0.002",
+	 "closeFeePay": "0.002",
      "tradeTime": 1558334496000000000 //交易時間納秒
     }
    ]
@@ -2433,6 +2224,14 @@ KuCoin Futures平臺上的訂單分爲兩種類型：**Taker** 和 **Maker**。T
 
 ### 頻率限制
 此接口針對每個賬號請求頻率限制爲**9次/3s**
+
+### 參數
+參數 | 數據類型 | 含義
+--------- | ------- | -----------
+symbol | String |[可選] 合約symbol 
+
+
+
 
 ### 返回值
 參數  | 含義
@@ -2456,6 +2255,8 @@ tradeType  | 交易類型: trade, liquidation, ADL or settlement
 createdAt  | 創建時間
 settleCurrency  | 結算幣種
 tradeTime  | 交易時間納秒
+openFeePay | 開倉交易手續費
+closeFeePay | 平倉交易手續費
 
 ## 活動訂單價值統計
 
@@ -2540,7 +2341,8 @@ settleCurrency  | 結算幣種
     "bankruptPrice": 32006.0,  						//破產價格
     "settleCurrency": "USDT",  						//結算幣種
     "maintainMargin": 0.25,  						//維持保證金率
-    "riskLimitLevel": 1   							//當前風險限額等級
+    "userId": 1234321123,
+	"riskLimitLevel": 1   							//當前風險限額等級
 }
 ```
 
@@ -2603,6 +2405,7 @@ bankruptPrice  | 破產價格
 settleCurrency  | 結算幣種
 maintainMargin  | 維持保證金率
 riskLimitLevel  | 當前風險限額等級
+userId | 用戶id
 
 ## 獲取用戶倉位列表
 
@@ -2645,6 +2448,7 @@ riskLimitLevel  | 當前風險限額等級
     "bankruptPrice": 32006.0,                        //破產價格
     "settleCurrency": "USDT",                        //結算幣種
     "isInverse": false,                              //是否是反向合約
+	"userId": 1234321123,							 //用戶id
     "maintainMargin": 0.005                          //維持保證金率
   }
 ```
@@ -2659,6 +2463,11 @@ riskLimitLevel  | 當前風險限額等級
 
 ### API權限
 該接口需獲取**通用權限**。
+
+### 參數
+| 參數  | 數據類型   | 含義 |
+| ------ | ------ | ----------- |
+| currency | String | [可選] 幣種，比如XBT,USDT    |
 
 ### 頻率限制
 此接口針對每個賬號請求頻率限制爲**9次/3s**
@@ -2704,6 +2513,7 @@ bankruptPrice  | 破產價格
 settleCurrency  | 結算幣種
 isInverse  | 是否是反向合約
 maintainMargin  | 維持保證金率
+userId | 用戶Id
 
 ## 更改自動追加保證金狀態
 ```json
@@ -2765,6 +2575,7 @@ maintainMargin  | 維持保證金率
   "avgEntryPrice": 43388.0,
   "liquidationPrice": 41440.0,
   "bankruptPrice": 41218.0,
+  "userId": 1234321123,
   "settleCurrency": "USDT"
 }
 ```
@@ -2783,7 +2594,7 @@ maintainMargin  | 維持保證金率
 | ------ | ------ | ----------- |
 | symbol | String | 合約名稱    |
 | margin | Number | 保證金數量（增加保證金不能低於0.00001667XBT）|
-| bizNo  | String | 業務唯一id  |
+| bizNo  | String | 業務唯一id，長度最大不超過36 |
 
 ### 返回值
 參數  | 含義
@@ -2824,6 +2635,7 @@ avgEntryPrice  | 平均開倉價格
 liquidationPrice  | 強平價格
 bankruptPrice  | 破產價格
 settleCurrency  | 結算幣種
+userId | 用戶id
 
 # 階梯風險限額
 ## 獲取合約階梯風險
@@ -3579,7 +3391,7 @@ Taker訂單的成交方向。Taker訂單指立刻與買賣盤上的已有訂單�
 | reverse   | boolean | [可選]是否逆序查詢, **true**或**false**，默認爲**true** |
 | offset    | long    | [可選] 起始偏移量，一般使用上個請求最後一條返回結果的唯一屬性，默認返回第一頁|
 | forward   | boolean | [可選] 是否前向查詢，true或false，默認爲true |
-| maxCount  | int     | [可選] 最大記錄條數，默認爲10  |
+| maxCount  | int     | [可選] 最大記錄條數，默認爲10，長度最大不超過100  |
 
 ### 返回值
 字段 | 含義
@@ -3653,7 +3465,7 @@ hasMore | 是否還有下一頁
 | reverse   | boolean | [可選] 是否逆序查詢，**true** 或 **false**，默認爲**true** |
 | offset    | long    | [可選] 起始偏移量，一般使用上個請求最後一條返回結果的唯一屬性，默認返回第一頁   |
 | forward   | boolean | [可選] 是否前向查詢，**true** 或 **false**，默認爲**true** |
-| maxCount  | int     | [可選] 最大記錄條數，默認爲10      |
+| maxCount  | int     | [可選] 最大記錄條數，默認爲10，長度最大不超過100      |
 
 ### 返回值
 字段 | 含義
@@ -3746,7 +3558,7 @@ indexPrice | 指數價格
 | reverse   | boolean | [可選] 是否逆序查詢, **true** 或者 **false**, 默認爲**true** |
 | offset    | long    | [可選] 起始偏移量，一般使用上個請求最後一條返回結果的唯一屬性，默認返回第一頁|
 | forward   | boolean | [可選] 是否前向查詢, **true**或者**false**, 默認爲**true** |
-| maxCount  | int     | [可選] 最大記錄條數, 默認爲10                          |
+| maxCount  | int     | [可選] 最大記錄條數, 默認爲10，長度最大不超過100           |
 
 ### 返回值
 字段 | 含義
@@ -3755,7 +3567,7 @@ symbol | 資金費率symbol
 granularity | 粒度(毫秒)
 timePoint | 時間點(毫秒)
 value | 資金費率
-predictedValue | 預測資金費率
+hasMore | 是否還有下一頁
 
 ## 查詢當前資金費率
 
@@ -4554,7 +4366,9 @@ Topic:`/contractMarket/snapshot:{symbol}`
 
 
 
-# 私有消息
+# 私有頻道
+
+訂閱私人頻道需要`privateChannel=“true”`。
 
 ## 訂單私有消息-按照市場獨立推送
 ```json
