@@ -13,46 +13,70 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 
 **To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to [create](https://futures.kucoin.com/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021. [Check new signing method](#signing-a-message)**
 
+
+#### 2023.04.02
+
+* 【Modify】`GET /api/v1/transfer-list`interface, Add request parameter: queryStatus、queryStatus、pageSize
+* 【Modify】`GET /api/v1/orders`interface, Add request parameter: currentPage、pageSize
+* 【Modify】`GET /api/v1/stopOrders`interface, Add request parameter:  currentPage、pageSize
+* 【Modify】`GET /api/v1/fills`interface, Add request parameter：currentPage、pageSize, Add response field：openFeePay、closeFeePay
+* 【Modify】`GET /api/v1/recentFills`interface, Add request parameter：currentPage、pageSize, Add response field：openFeePay、closeFeePay
+* 【Modify】`GET /api/v1/position`interface, Add response field：userId
+* 【Modify】`GET /api/v1/positions`interface, Add response field：userId
+* 【Modify】`POST /api/v1/position/margin/deposit-margin`interface, Add response field：userId
+* 【Modify】`GET /api/v1/premium/query`interface, Remove response field：predictedValue
+* 【Modify】`GET /api/v1/recentDoneOrders`interface, Add request parameter：symbol
+* 【Modify】`GET /api/v1/positions`interface, Add request parameter：currency
+* 【Deprecate】 `GET /api/v1/deposit-address` interface, Please refer to the spot interface
+* 【Deprecate】 `GET /api/v1/deposit-list` interface, Please refer to the spot interface
+* 【Deprecate】 `GET /api/v1/withdrawals/quotas` interface, Please refer to the spot interface
+* 【Deprecate】 `GET /api/v1/withdrawal-list` interface, Please refer to the spot interface
+* 【Deprecate】 `GET /api/v1/withdrawals` interface, Please refer to the spot interface
+* 【Deprecate】 `GET /api/v1/transfer-out` interface
+* 【Deprecate】 `DELETE /api/v1/cancel/transfer-out` interface
+
+
+
 #### 2022.11.01
 
-* Deprecate `DELETE /api/v1/withdrawals/{withdrawalId}` interface
+* 【Deprecate】Deprecate `DELETE /api/v1/withdrawals/{withdrawalId}` interface
 
 #### 2022.10.18
 
-- Add the following interfaces related to sub-account: `GET /api/v1/sub/api-key`,`POST /api/v1/sub/api-key/update`,`DELETE /api/v1/sub/api-key`
+- 【Add】Add the following interfaces related to sub-account: `GET /api/v1/sub/api-key`,`POST /api/v1/sub/api-key/update`,`DELETE /api/v1/sub/api-key`
 
 #### 2022.09.22
 
-- Add the following interfaces related to sub-account: `POST /api/v1/sub/api-key`
+- 【Add】Add the following interfaces related to sub-account: `POST /api/v1/sub/api-key`
 
 #### 2022.07.21
-* Deprecate `POST /api/v1/withdrawals` endpoint
+* 【Deprecate】Deprecate `POST /api/v1/withdrawals` endpoint
 
 <!-- #### 2022.04.30
 * The Futures API documentation has been upgraded, please read and use the new documentation: <code>https://docs.kucoin.com/futures/new</code> -->
 
 #### 2022.03.16
-* Deprecate [GET /api/v1/level2/message/query](#level-2-pulling-messages-deprecated) endpoint
-* Added endpoint return value description.
-* Add [POST /api/v3/transfer-out](#transfer-funds-to-kucoin-main-account-or-kucoin-trade-account) endpoint
-* Add [POST /api/v1/transfer-in](#transfer-funds-to-kucoin-futures-account) endpoint
+* 【Deprecate】Deprecate [GET /api/v1/level2/message/query](#level-2-pulling-messages-deprecated) endpoint
+* 【Add】Added endpoint return value description.
+* 【Add】Add [POST /api/v3/transfer-out](#transfer-funds-to-kucoin-main-account-or-kucoin-trade-account) endpoint
+* 【Add】Add [POST /api/v1/transfer-in](#transfer-funds-to-kucoin-futures-account) endpoint
 
 #### 2022.02.07
-* New response field maintainMargin,riskLimitLevel have been added to the [GET /api/v1/position](#get-position-details) endpoint
+* 【Add】New response field maintainMargin,riskLimitLevel have been added to the [GET /api/v1/position](#get-position-details) endpoint
 
 #### 2021.12.07
-* Modify comment in interface ["topic": "/contract/position:XBTUSDM"](#position-change-events).
+* 【Modify】Modify comment in interface ["topic": "/contract/position:XBTUSDM"](#position-change-events).
 
 #### 2021.11.19
-* Added interface of risk limit level: [GET /v1/contracts/risk-limit/{symbol}](#obtain-futures-risk-limit-level) , [POST /v1/position/risk-limit-level/change](#adjust-risk-limit-level) <br/>
-* Added adjustment result of risk limit level to subject: [position.adjustRiskLimit](#adjustment-result-of-risk-limit-level). in the topic of position: /contract/position:{symbol} 
+* 【Add】Added interface of risk limit level: [GET /v1/contracts/risk-limit/{symbol}](#obtain-futures-risk-limit-level) , [POST /v1/position/risk-limit-level/change](#adjust-risk-limit-level) <br/>
+* 【Add】Added adjustment result of risk limit level to subject: [position.adjustRiskLimit](#adjustment-result-of-risk-limit-level). in the topic of position: /contract/position:{symbol} 
 
 #### 2021.08.18
-* Remove the BizNo parameter in interface [POST /api/v2/transfer-out](#transfer-funds-to-kucoin-main-account-2).
-* Modify the field marginBalance comment in interface [GET /api/v1/account-overview](#get-account-overview).
+* 【Modify】Remove the BizNo parameter in interface [POST /api/v2/transfer-out](#transfer-funds-to-kucoin-main-account-2).
+* 【Modify】Modify the field marginBalance comment in interface [GET /api/v1/account-overview](#get-account-overview).
 
 #### 2021.07.15
-* Modify the strategy of [Request Rate Limit](#request-rate-limit).
+* 【Modify】Modify the strategy of [Request Rate Limit](#request-rate-limit).
 
 #### 2021.03.18
 * Added field holdBalance to subject:availableBalance.change in the topic of account balance /contractAccount/wallet <br/>
@@ -120,7 +144,7 @@ The whole documentation is divided into two parts: 1)**REST API** and 2) **Webso
 * Add support for query order by client order id, for the following interfaces:<br/>
     GET /api/v1/orders/{order-id}
 
-#### April 15，2020
+#### April 15, 2020
 * New field "memo" (address ID) is added to the response from GET /api/v1/withdrawal-list
 #### March 30, 2020 
 The USDT-Margined Contracts is scheduled to be launched on March 30, 2020 on KuCoin Futures and the supported types of crypto will be expanded from the original one (XBT) to two (XBT and USDT). The detailed modifications for API document is as follows:
@@ -842,7 +866,7 @@ passphrase | String | Yes | Password(Must contain 7-32 characters. Cannot contai
 remark | String | Yes | Remarks(1~24 characters)
 permission | String | No | Permissions(Only "General" and "Trade" permissions can be set, such as "General, Trade". The default is "General")
 ipWhitelist | String | No | IP whitelist(You may add up to 20 IPs. Use a halfwidth comma to each IP)
-expire | String | No | API expiration time; Never expire(default)`-1`，30Day`30`，90Day`90`，180Day`180`，360Day`360`
+expire | String | No | API expiration time; Never expire(default)`-1`, 30Day`30`, 90Day`90`, 180Day`180`, 360Day`360`
 ### RESPONSES
 Field | Description
 --------- | -------
@@ -882,7 +906,7 @@ apiKey | String | Yes | API-Key(Sub-account APIKey)
 passphrase | String | Yes | Password of API key
 permission | String | No | Permission list.If modified, permissions will be reset.
 ipWhitelist | String | No | IP whitelist(you may add up to 20 IPs. Use a halfwidth comma to each IP.If modified, the IP will be reset.)
-expire | String | No | API expiration time; Never expire(default)`-1`，30Day`30`，90Day`90`，180Day`180`，360Day`360`
+expire | String | No | API expiration time; Never expire(default)`-1`, 30Day`30`, 90Day`90`, 180Day`180`, 360Day`360`
 ### RESPONSES
 Field | Description
 --------- | -------
@@ -921,272 +945,11 @@ Field | Description
 apiKey | API-Key
 subName | Sub-account name
 
-# Deposit
-## Get Deposit Address
 
-```json
-  {
-    "code": "200000",
-    "data": {
-      "address": "bc1q466dvmharut0uhycdqu9nlmwcw5gec4p8wt22j",//Deposit address
-      "memo": null,//Address tag. If the returned value is null, it means that the requested token has no memo. If you are to transfer funds from another platform to KuCoin Futures and if the token to be transferred has memo(tag), you need to fill in the memo to ensure the transferred funds will be sent to the address you specified. 
-      "chain": "BTC-Segwit"//The chain name of currency
-   } 
-}
-```
-
-### HTTP Request
-GET /api/v1/deposit-address
-
-### Example
-GET /api/v1/deposit-address?currency=XBT
-
-### API Permission
-This endpoint requires the **General** permission.
-
-### Parameters
-Param | Type  | Description
---------- | ------- | -----------
-currency | String | Currency,including **XBT,USDT**
-
-### RESPONSES
-Field | Description
---------- | -------
-| address | Deposit address | 
-| memo | Address tag. If the returned value is null, it means that the requested token has no memo. If you are to transfer funds from another platform to KuCoin Futures and if the token to be transferred has memo(tag), you need to fill in the memo to ensure the transferred funds will be sent to the address you specified.  | 
-| chain | The chain name of currency | 
-
-## Get Deposits List
-```json
-  {
-    "code": "200000",
-    "data": {
-      "currentPage": 1,
-      "pageSize": 50,
-      "totalNum": 1,
-      "totalPage": 1,
-      "items": [{
-        "currency": "XBT",//Currency
-        "status": "SUCCESS",//Status type: PROCESSING, WALLET_PROCESSING, SUCCESS, FAILURE
-        "address": "5CD018972914B66104BF8842",//Deposit address
-        "isInner": false,//Inner transfer or not
-        "amount": 1,//Deposit amount
-        "fee": 0,//Fees for deposit
-        "walletTxId": "5CD018972914B66104BF8842",//Wallet TXID
-        "createdAt": 1557141673000 //Funds deposit time
-      }]
-    }
-  }
-```
-
-The system will return the data of the first page by default.
-
-### HTTP Request
-GET /api/v1/deposit-list
-
-### Example
-GET /api/v1/deposit-list?currentPage=1&pageSize=50&status=PROCESSING
-
-### API Permission
-This endpoint requires the **General** permission.
-
-### Parameters
-Param | Type  | Description
---------- | ------- | -----------
-startAt | long | *[Optional]* Start time (milisecond)
-endAt | long | *[Optional]* End time (milisecond)
-status | String | *[Optional]* Status, including **PROCESSING, SUCCESS, and FAILURE**
-currency | String | *[Optional]* Currency, including **XBT,USDT**
-
-### RESPONSES
-Field | Description
---------- | -------
-| currency | Currency | 
-| status | Status type: PROCESSING, WALLET_PROCESSING, SUCCESS, FAILURE | 
-| address | Deposit address | 
-| isInner | Inner transfer or not | 
-| amount | Deposit amount | 
-| fee | Fees for deposit | 
-| walletTxId | Wallet TXID | 
-| createdAt | Funds deposit time | 
-
-# Withdrawal
-##  Get Withdrawal Limit
-
-```json
- {
-    "code": "200000",
-    "data": {
-      "currency": "XBT",//Currency
-      "chainId": "bech32",// Chain identification
-      "limitAmount": 2,//24h withdrawal limit
-      "usedAmount": 0,//Withdrawal amount over the past 24h.
-      "remainAmount": 2,//24h available withdrawal amount 
-      "availableAmount": 99.89993052,//Available balance 
-      "withdrawMinFee": 0.0005,//Withdrawal fee charges
-      "innerWithdrawMinFee": 0,//Inner withdrawal fee charges
-      "withdrawMinSize": 0.002,//Min. withdrawal amount
-      "isWithdrawEnabled": true,//Available to withdrawal or not
-      "precision": 8//Precision of the withdrawal amount
-    }
- }
-```
-
-### HTTP Request
-`GET /api/v1/withdrawals/quotas`
-
-### Example
-`GET /api/v1/withdrawals/quotas?currency=XBT`
-
-### API Permission
-This endpoint requires the **General** permission.
-
-### Parameters
-Param | Type  | Description
---------- | ------- | -----------
-currency | String | Currency,  including **XBT,USDT**
-
-### RESPONSES
-Field | Description
---------- | -------
-| currency | Currency | 
-| chainId | Chain identification | 
-| limitAmount | 24h withdrawal limit | 
-| remainAmount | 24h available withdrawal amount  | 
-| usedAmount | Withdrawal amount over the past 24h. | 
-| availableAmount | Available balance  | 
-| withdrawMinFee | Withdrawal fee charges | 
-| innerWithdrawMinFee | Inner withdrawal fee charges | 
-| withdrawMinSize | Min. withdrawal amount | 
-| isWithdrawEnabled | Available to withdrawal or not | 
-| precision | Precision of the withdrawal amount | 
-
-## Withdraw Funds(deprecated)
-
-```json
-  {
-   "code": "200000",
-    "data": {
-    "withdrawalId": "5bffb63303aa675e8bbe18f9" // Withdrawal ID. This ID can be used to cancel the withdrawal
-    }
-  }
-```
-
-<aside class="notice">The endpoint was deprecated, please transfer assets from the FUTURES account to the MAIN account first, and then withdraw from the MAIN account</aside>
-
-### HTTP Request
-`POST /api/v1/withdrawals`
-
-### Example
-`POST /api/v1/withdrawals`
-
-### API Permission
-This endpoint requires the **Withdrawal** permission.
-
-### Parameters
-Param | Type | Description
---------- | ------- | -----------
-currency  | String | Currency,including **XBT,USDT**
-address   | String | Withdrawal address
-amount | Number | Withdrawal amount
-isInner|	boolean| *[Optional]* Inner withdrawal or not. If the withdrawal address is an internal address, you can set to **False** to transfer via blockchain or set to **True** to withdraw through the inner transfer.
-remark | String | *[Optional]* Remarks
-chain |	String | *[Optional]* The chain name of currency, e.g. The available value for USDT are OMNI, ERC20, TRC20, default is ERC20. This only apply for multi-chain currency, and there is no need for single chain currency.
-memo | String | *[Optional]*  Address remark. If there’s no remark, it is empty. When you withdraw from other platforms to the KuCoin Futures, you need to fill in memo(tag). If you do not fill memo (tag), your deposit may not be available, please be cautious.
-
-### RESPONSES
-Field | Description
---------- | -------
-| withdrawalId | Withdrawal ID. This ID can be used to cancel the withdrawal | 
-
-## Get Withdrawal List
-```json
-  {
-    "code": "200000",
-    "data": {
-      "currentPage": 1,
-      "pageSize": 50,
-      "totalNum": 10,
-      "totalPage": 1,
-      "items": [{
-        "withdrawalId": "5cda659603aa67131f305f7e",//Withdrawal ID. This ID can be used to cancel the withdrawal
-        "currency": "XBT",//Currency
-        "status": "FAILURE",//Status
-        "address": "3JaG3ReoZCtLcqszxMEvktBn7xZdU9gaoJ",//Withdrawal address
-        "memo": "",// Address remark.
-        "isInner": true,//Inner withdrawal or not
-        "amount": 1,//Withdrawal amount
-        "fee": 0,//Withdrawal fee charges
-        "walletTxId": "",//Wallet TXID
-        "createdAt": 1557816726000,//Withdrawal time
-        "remark": "測試.",//Withdrawal remarks
-        "reason": "Assets freezing failed."// Reason causing the failure
-      }]
-    }
-  }
-```
-
-### HTTP Request
-`GET /api/v1/withdrawal-list`
-
-### Example
-`GET /api/v1/withdrawal-list?currentPage=1&pageSize=50&status=PROCESSING`
-
-### API Permission
-This endpoint requires the **General** permission.
-
-### Parameters
-Param | Type  | Description
---------- | ------- | -----------
-status | String | *[optional]*  **PROCESSING, WALLET_PROCESSING, SUCCESS, FAILURE**
-startAt | long | *[optional]*  Start time (milisecond)
-endAt | long | *[optional]*  End time (milisecond)
-currency | String | *[optional]* Currency, including **XBT,USDT**
-
-### RESPONSES
-Param  | Type
---------- | -----------
-withdrawalId  | Withdrawal ID. This ID can be used to cancel the withdrawal
-currency  | Currency
-status  | Status
-address  | Withdrawal address
-memo  | Address remark.
-isInner  | Inner withdrawal or not
-amount  | Withdrawal amount
-fee  | Withdrawal fee charges
-walletTxId  | Wallet TXID
-createdAt  | Withdrawal time
-remark  | Withdrawal remarks
-reason  | Reason causing the failure
 
 # Transfer
-## Transfer Funds to KuCoin-Main Account
-```json
-  { 
-    "code": "200000",
-    "data": {
-      "applyId": "5bffb63303aa675e8bbe18f9" //Transfer-out request ID
-    }  
-  }
-```
-The amount to be transferred will be deducted from the **KuCoin Futures Account**. Please ensure that you have sufficient funds in your KuCoin Futures Account, or the transfer will fail. 
-Once the transfer arrives your KuCoin-Main Account, the endpoint will respond and return the **applyId**. This ID could be used to cancel the transfer request. 
 
-
-### HTTP Request
-`POST /api/v1/transfer-out` [It's deprecated, please use POST /api/v3/transfer-out instead]
-### Example
-`POST /api/v1/transfer-out`
-### API Permission
-This endpoint requires the **Withdrawal** permission.
-
-### Parameters
-Param | Type  | Description
---------- | ------- | -----------
-bizNo | String | A unique ID generated by the user, to ensure the operation is processed by the system only once. You are suggested to use UUID
-amount | Number | Amount to be transfered out
-
-## Transfer Funds to KuCoin-Main Account
+## Transfer to Main Account
 ```json
 {
   "applyId": "620a0bbefeaa6a000110e833",//Transfer-out request ID
@@ -1222,7 +985,7 @@ This endpoint requires the **"Trade"** permission.
 ### Parameters
 Param | Type  | Description
 --------- | ------- | -----------
-amount | Number | Amount to be transfered out
+amount | Number | Amount to be transfered out, the maximum cannot exceed 1000000000
 currency | String | Currency, including **XBT,USDT**
 
 ### RESPONSES
@@ -1237,7 +1000,7 @@ recAccountType  | Receive account type
 recTag  | Receive account sub type
 recRemark  | Receive account tx remark
 recSystem  | Receive system
-status  | Status:APPLY，PROCESSING，PENDING_APPROVAL，APPROVED，REJECTED，PENDING_CANCEL，CANCEL，SUCCESS
+status  | Status:APPLY, PROCESSING, PENDING_APPROVAL, APPROVED, REJECTED, PENDING_CANCEL, CANCEL, SUCCESS
 currency  | Currency
 amount  | Transfer amout
 fee  | Transfer fee
@@ -1246,7 +1009,7 @@ reason  | Fail Reason
 createdAt  | Create time
 updatedAt  | Update time
 
-## Transfer Funds to KuCoin-Main Account or KuCoin-TRADE Account
+## Transfer to Main or TRADE Account
 ```json
 {
   "applyId": "620a0bbefeaa6a000110e833",//Transfer-out request ID
@@ -1282,7 +1045,7 @@ This endpoint requires the **"Trade"** permission.
 ### Parameters
 Param | Type  | Description
 --------- | ------- | -----------
-amount | Number | Amount to be transfered out
+amount | Number | Amount to be transfered out, the maximum cannot exceed 1000000000
 currency | String | Currency, including **XBT,USDT**
 recAccountType | String | Receive account type, including **MAIN,TRADE**
 
@@ -1298,7 +1061,7 @@ recAccountType  | Receive account type
 recTag  | Receive account sub type
 recRemark  | Receive account tx remark
 recSystem  | Receive system
-status  | Status:APPLY，PROCESSING，PENDING_APPROVAL，APPROVED，REJECTED，PENDING_CANCEL，CANCEL，SUCCESS
+status  | Status:APPLY, PROCESSING, PENDING_APPROVAL, APPROVED, REJECTED, PENDING_CANCEL, CANCEL, SUCCESS
 currency  | Currency
 amount  | Transfer amout
 fee  | Transfer fee
@@ -1307,7 +1070,7 @@ reason  | Fail Reason
 createdAt  | Create time
 updatedAt  | Update time
 
-## Transfer Funds to KuCoin-Futures Account
+## Transfer to Futures Account
 ```json
 {
   "code": "200", //If the code is 200, it means the transfer is successful, otherwise it means failure.
@@ -1376,7 +1139,12 @@ Param | Type  | Description
 startAt | long | *[Optional]*  Start time (milisecond)
 endAt | long | *[Optional]* End time (milisecond)
 status | String | *[Optional]* Status **PROCESSING, SUCCESS, FAILURE**
+queryStatus| List | *[Optional]* Status List **PROCESSING, SUCCESS, FAILURE**
 currency | String | Currency, including **XBT,USDT**
+currentPage | long | *[Optional]* Current request page, The default currentPage is 1
+pageSize | long | *[Optional]* pageSize, The default pageSize is 50
+
+
 
 ### RESPONSES
 Param  | Type
@@ -1392,7 +1160,7 @@ offset  | Offset
 createdAt  | Request application time
 remark  | User remark
 
-## Cancel Transfer-Out Request
+## Cancel Transfer-Out Request(deprecated)
 
 ```json
  { 
@@ -1457,7 +1225,7 @@ This API is restricted for each account, the request rate limit is **30 times/3s
 
 | Param     | type   | Description  |
 | --------- | ------ | -----|
-| clientOid | String | Unique order id created by users to identify their orders,  e.g. UUID, Only allows numbers, characters, underline(_), and separator(-) |
+| clientOid | String | Unique order id created by users to identify their orders, the maximum length cannot exceed 40,  e.g. UUID, Only allows numbers, characters, underline(_), and separator(-) |
 | side      | String | **buy** or **sell**                      |
 | symbol    | String | a valid contract code. e.g. XBTUSDM                    |
 | type      | String | *[optional]*  Either **limit** or **market**
@@ -1660,7 +1428,7 @@ Cancel an order (including a stop order).
 
 You will receive success message once the system has received the cancellation request. The cancellation request will be processed by matching engine in sequence. To know if the request has been processed, you may check the order status or update message from the pushes.
 
-The **order id** is the server-assigned order id，not the specified clientOid.
+The **order id** is the server-assigned order id, not the specified clientOid.
 
 If the order can not be canceled (already filled or previously canceled, etc), then an error response will indicate the reason in the **message** field.
 
@@ -1843,6 +1611,9 @@ side | String | *[optional]* **buy** or **sell**
 type | String | *[optional]* **limit**, **market**, **limit_stop** or **market_stop** 
 startAt | long | *[optional]* Start time (milisecond)
 endAt | long | *[optional]* End time (milisecond)
+currentPage | long | *[Optional]* Current request page, The default currentPage is 1
+pageSize | long | *[Optional]* pageSize, The default pageSize is 50, The maximum cannot exceed 1000
+
 
 ### RESPONSES
 Param  | Type
@@ -1975,6 +1746,8 @@ side | String | *[optional]* **buy** or **sell**
 type | String | *[optional]* **limit**, **market** 
 startAt | long | *[optional]* Start time (milisecond)
 endAt | long | *[optional]* End time (milisecond)
+currentPage | long | *[Optional]* Current request page, The default currentPage is 1
+pageSize | long | *[Optional]* pageSize, The default pageSize is 50, The maximum cannot exceed 1000
 
 ### RESPONSES
 Param  | Type
@@ -2085,6 +1858,11 @@ If you need to get your recent traded order history with low latency, you may qu
 
 ### API Permission
 This endpoint requires the **General** permission.
+
+### PARAMETERS
+Param | Type | Description
+--------- | ------- | -----------
+symbol | String |*[optional]* Symbol of the contract
 
 ### RESPONSES
 Param  | Type
@@ -2256,6 +2034,8 @@ reduceOnly  | A mark to reduce the position size only
             "tradeType": "trade",  //Trade type (trade, liquidation, ADL or settlement)
             "createdAt": 1558334496000,  //Time the order created
             "settleCurrency": "XBT", //settlement currency
+			"openFeePay": "0.002",
+			"closeFeePay": "0.002",
             "tradeTime": 1558334496000000000 //trade time in nanosecond
           }
       ]
@@ -2288,6 +2068,8 @@ side | String |*[optional]* **buy** or **sell**
 type | String |*[optional]* **limit**, **market**, **limit_stop** or **market_stop** 
 startAt | long |*[optional]* Start time (milisecond)
 endAt | long |*[optional]* End time (milisecond)
+currentPage | long | *[Optional]* Current request page, The default currentPage is 1
+pageSize | long | *[Optional]* pageSize, The default pageSize is 50, The maximum cannot exceed 1000
 
 ### RESPONSES
 Param  | Type
@@ -2311,6 +2093,8 @@ tradeType  |  Trade type (trade, liquidation, ADL or settlement)
 createdAt  |  Time the order created
 settleCurrency  |  Transaction fee
 tradeTime  |  trade time in nanosecond
+openFeePay | Opening transaction fee
+closeFeePay | Closing transaction fee
 
 **This request uses pagination.**
 
@@ -2319,7 +2103,7 @@ The system allows you to retrieve data up to one week (start from the last day b
 
 **Fee**
 
-Orders on KuCoin Futures platform are classified into two types， **taker** and **maker**. A **taker** order matches other resting orders on the exchange order book, and gets executed immediately after order entry. A **maker** order, on the contrary, stays on the exchange order book and awaits to be matched. Taker orders will be charged taker fees, while maker orders will receive maker rebates. Please note that market orders, **iceberg orders** and **hidden orders** are always charged taker fees. 
+Orders on KuCoin Futures platform are classified into two types,  **taker** and **maker**. A **taker** order matches other resting orders on the exchange order book, and gets executed immediately after order entry. A **maker** order, on the contrary, stays on the exchange order book and awaits to be matched. Taker orders will be charged taker fees, while maker orders will receive maker rebates. Please note that market orders, **iceberg orders** and **hidden orders** are always charged taker fees. 
 
 The system will pre-freeze a predicted taker fee when you place an order.The liquidity field indicates if the fill was charged taker or maker fees.
 
@@ -2355,6 +2139,8 @@ Fills are returned sorted by descending fill time.
          "tradeType": "trade",  //Trade type (tradek, liquidation or ADL )
          "createdAt": 1558334496000,  //Time the order created
          "settleCurrency": "XBT", //settlement currency
+		 "openFeePay": "0.002",
+		 "closeFeePay": "0.002",
          "tradeTime": 1558334496000000000 //trade time in nanosecond
      }  
     ] 
@@ -2374,6 +2160,12 @@ This endpoint requires the **General** permission.
 
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **9 times/3s**.
+
+
+### PARAMETERS
+Param | Type | Description
+--------- | ------- | -----------
+symbol | String |*[optional]* Symbol of the contract
 
 ### RESPONSES
 Param  | Type
@@ -2397,6 +2189,8 @@ tradeType  |  Trade type (trade, liquidation, ADL or settlement)
 createdAt  |  Time the order created
 settleCurrency  |  Transaction fee
 tradeTime  |  trade time in nanosecond
+openFeePay | Opening transaction fee
+closeFeePay | Closing transaction fee
 
 ## Active Order Value Calculation
 
@@ -2482,7 +2276,8 @@ settleCurrency  | settlement currency
     "bankruptPrice": 32006.0, 											 //Bankruptcy price
     "settleCurrency": "USDT", 											 //Currency used to clear and settle the trades
     "maintainMargin": 0.25,  											   //Maintenance margin rate
-    "riskLimitLevel": 1  											       //Risk Limit Level
+    "userId": 1234321123,
+	"riskLimitLevel": 1  											       //Risk Limit Level
 }
 ```
 
@@ -2544,6 +2339,7 @@ bankruptPrice  | Bankruptcy price
 settleCurrency  | Currency used to clear and settle the trades
 maintainMargin  | Maintenance margin rate
 riskLimitLevel  | Risk Limit Level
+userId | userId
 
 ## Get Position List                   
 
@@ -2578,7 +2374,7 @@ riskLimitLevel  | Risk Limit Level
     "posMargin": 8.03040576, 												 //Position margin
     "posMaint": 0.23284656, 												 //Maintenance margin
     "maintMargin": 8.03733576, 											 //Position margin
-    "realisedGrossPnl": 0.0, 												 //Accumulated realised gross profit value
+    "realisedGrossPnl": 0.0, 											 //Accumulated realised gross profit value
     "realisedPnl": -0.0240048, 											 //Realised profit and loss
     "unrealisedPnl": 0.00693, 											 //Unrealised profit and loss
     "unrealisedPnlPcnt": 0.0002, 										 //Profit-loss ratio of the position
@@ -2587,8 +2383,9 @@ riskLimitLevel  | Risk Limit Level
     "liquidationPrice": 32211.0, 										 //Liquidation price
     "bankruptPrice": 32006.0, 											 //Bankruptcy price
     "settleCurrency": "USDT", 											 //Currency used to clear and settle the trades
-    "isInverse": False,  											       //Reverse contract or not
-    "maintainMargin": 0.005  											 //Maintenance margin requirement
+    "isInverse": False,  											     //Reverse contract or not
+    "userId": 1234321123,												 //userid
+	"maintainMargin": 0.005  											 //Maintenance margin requirement
 }
 ```
 
@@ -2602,6 +2399,11 @@ Get the position details of a specified position.
 
 ### API Permission
 This endpoint requires the **General** permission.
+
+### PARAMETERS
+| Param  | Type   | Description |
+| ------ | ------ | ----------- |
+| currency | String | *[optional]* currency code, such as XBT,USDT   |
 
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **9 times/3s**.
@@ -2647,6 +2449,7 @@ bankruptPrice  | Bankruptcy price
 settleCurrency  | Currency used to clear and settle the trades
 isInverse  | Reverse contract or not
 maintainMargin  | Maintenance margin requirement
+userId | userId
 
 ## Enable/Disable of Auto-Deposit Margin
 ```json
@@ -2711,6 +2514,7 @@ This endpoint requires the **General** permission.
   "avgEntryPrice": 43388.0,
   "liquidationPrice": 41440.0,
   "bankruptPrice": 41218.0,
+  "userId": 1234321123,
   "settleCurrency": "USDT"
 }
 ```
@@ -2729,7 +2533,51 @@ This endpoint requires the **General** permission.
 | ------ | ------ | ----------- |
 | symbol | String | Ticker symbol of the contract    |
 | margin | Number | Margin amount (min. margin amount≥0.00001667XBT） |
-| bizNo  | String | A unique ID generated by the user, to ensure the operation is processed by the system only once |
+| bizNo  | String | A unique ID generated by the user, to ensure the operation is processed by the system only once, The maximum length cannot exceed 36 |
+
+### RESPONSES
+Field | Description
+--------- | -------
+id  | Position ID
+symbol  | Symbol of the contract
+autoDeposit  | Auto deposit margin or not
+maintMarginReq  | Maintenance margin requirement
+riskLimit  | Risk limit
+realLeverage  | Leverage o the order
+crossMode  | Cross mode or not
+delevPercentage  | ADL ranking percentile
+openingTimestamp  | Open time
+currentTimestamp  | Current timestamp
+currentQty  | Current postion quantity
+currentCost  | Current postion value
+currentComm  | Current commission
+unrealisedCost  | Unrealised value
+realisedGrossCost  | Accumulated realised gross profit value
+realisedCost  | Current realised position value
+isOpen  | Opened position or not
+markPrice  | Mark price
+markValue  | Mark value
+posCost  | Position value
+posCross  | added margin
+posInit  | Leverage margin
+posComm  | Bankruptcy cost
+posLoss  | Funding fees paid out
+posMargin  | Position margin
+posMaint  | Maintenance margin
+maintMargin  | Position margin
+realisedGrossPnl  | Accumulated realised gross profit value
+realisedPnl  | Realised profit and loss
+unrealisedPnl  | Unrealised profit and loss
+unrealisedPnlPcnt  | Profit-loss ratio of the position
+unrealisedRoePcnt  | Rate of return on investment
+avgEntryPrice  | Average entry price
+liquidationPrice  | Liquidation price
+bankruptPrice  | Bankruptcy price
+settleCurrency  | Currency used to clear and settle the trades
+userId | userId
+
+
+
 
 # Risk Limit Level
 
@@ -3496,7 +3344,7 @@ Check interest rate list.
 | reverse   | boolean | *[optional]* This parameter functions to judge whether the lookup is reverse. **True** means “yes”. **False** means no. This parameter is set as **True** by default.  |
 | offset    | long    | *[optional]* Start offset. The unique attribute of the last returned result of the last request. The data of the first page will be returned by default.|
 | forward   | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default|
-| maxCount  | int     | *[optional]* Max record count. The default record count is 10    |
+| maxCount  | int     | *[optional]* Max record count. The default record count is 10, The maximum length cannot exceed 100    |
 
 ### RESPONSES
 Field | Description
@@ -3569,7 +3417,7 @@ Check index list
 | reverse   | boolean | *[optional]* This parameter functions to judge whether the lookup is reverse. **True** means “yes”.         **False** means no. This parameter is set as **True** by default |
 | offset    | long    | *[optional]* Start offset. The unique attribute of the last returned result of the last request. The data of the first page will be returned by default. |
 | forward   | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default |
-| maxCount  | int     | *[optional]* Max record count. The default record count is 10               |
+| maxCount  | int     | *[optional]* Max record count. The default record count is 10, The maximum length cannot exceed 100               |
 
 ### RESPONSES
 Field | Description
@@ -3666,7 +3514,7 @@ Submit request to get premium index.
 | reverse   | boolean | *[optional]* This parameter functions to judge whether the lookup is reverse. **True** means “yes”. **False** means no. This parameter is set as **True** by default|
 | offset    | long    | *[optional]* Start offset. The unique attribute of the last returned result of the last request. The data of the first page will be returned by default.|
 | forward   | boolean | *[optional]* This parameter functions to judge whether the lookup is forward or not. **True** means “yes” and **False** means “no”. This parameter is set as true by default |
-| maxCount  | int     | *[optional]* Max record count. The default record count is 10                      |
+| maxCount  | int     | *[optional]* Max record count. The default record count is 10, The maximum length cannot exceed 100                      |
 
 ### RESPONSES
 Field | Description
@@ -4004,7 +3852,7 @@ For Example, enter command below to open **bt1** multiple tunnel :
  {"id": "1Jpg30DEdU", "type": "openTunnel", "newTunnelId": "bt1", "response": true}
 
 Add “**tunnelId**” in the command: 
-{"id": "1JpoPamgFM", "type": "subscribe", "topic": "/market/ticker:KCS-BTC"，"tunnelId": "bt1", "response": true}
+{"id": "1JpoPamgFM", "type": "subscribe", "topic": "/market/ticker:KCS-BTC", "tunnelId": "bt1", "response": true}
 
 You would then, receive messages corresponded to id **tunnelIId**:  
 {"id": "1JpoPamgFM", "type": "message", "topic": "/market/ticker:KCS-BTC", "subject": "trade.ticker", "tunnelId": "bt1", "data": {...}}
@@ -4444,6 +4292,8 @@ The transaction statistics will be pushed to users every 5 seconds.
 <aside class="spacer4"></aside>
 
 # Private Channels
+
+Subscribe to private channels require `privateChannel=“true”`.
 
 ## Trade Orders - According To The Market
 ```json
