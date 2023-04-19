@@ -3905,6 +3905,7 @@ Topic:`/contractMarket/tickerV2:{symbol}`
 Subscribe this topic to get the realtime push of BBO changes.
 After subscription, when there are changes in the order book, the system will push the real-time ticker symbol information to you. 
 It is recommended to use the new topic for timely information. 
+Returned for every 100 milliseconds at most.
 
 <aside class="spacer8"></aside>
 

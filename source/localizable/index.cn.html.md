@@ -3979,6 +3979,8 @@ Topic:`/contractMarket/tickerV2:{symbol}`
 
 每當買賣盤有變化時，推送實時ticker。v2版本推送更具有實時性，推薦接入該版本。
 
+推送頻率爲最多100ms一次。
+
 <aside class="spacer8"></aside>
 
 ## 交易實時行情 ticker
