@@ -2763,7 +2763,7 @@ fundingQuoteSymbol | 計價貨幣symbol
 fundingRateSymbol | 資金費率symbol
 indexSymbol | 指數symbol
 settlementSymbol | 結算symbol
-status | 合約狀態
+status | 合約狀態：Init(初始)、Open(已上线)、BeingSettled(结算中)、Settled(已结算)、Paused(已暂停)、Closed(已下线)、CancelOnly(只能撤单)
 fundingFeeRate | 資金費率值
 predictedFundingFeeRate | 預測資金費率值
 openInterest | 活動倉位數

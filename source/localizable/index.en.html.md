@@ -2708,7 +2708,7 @@ fundingQuoteSymbol | Ticker symbol of the quote currency
 fundingRateSymbol | Funding rate symbol
 indexSymbol | Index symbol
 settlementSymbol | Settlement Symbol
-status | Contract status
+status | Contract status: Init (initial), Open (online), BeingSettled (settlement), Settled (settlement), Paused (suspended), Closed (offline), CancelOnly (can only cancel the order)
 fundingFeeRate | Funding fee rate
 predictedFundingFeeRate | Predicted funding fee rate
 openInterest | open interest
