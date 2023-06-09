@@ -804,7 +804,7 @@ Once the transfer arrives your KuCoin-Main Account, the endpoint will respond an
 ### Example
 `POST /api/v2/transfer-out`
 ### API Permission
-This endpoint requires the **"Trade"** permission.
+This endpoint requires the **Futures Trading** permission.
 
 ### Parameters
 Param | Type  | Description
@@ -864,7 +864,7 @@ Once the transfer arrives your KuCoin-Main Account, the endpoint will respond an
 ### Example
 `POST /api/v3/transfer-out`
 ### API Permission
-This endpoint requires the **"Trade"** permission.
+This endpoint requires the **Futures Trading** permission.
 
 ### Parameters
 Param | Type  | Description
@@ -911,7 +911,7 @@ The amount to be transferred will be deducted from the **payAccount**. Please en
 ### Example
 `POST /api/v1/transfer-in`
 ### API Permission
-This endpoint requires the **"Trade"** permission.
+This endpoint requires the **Futures Trading** permission.
 
 ### Parameters
 Param | Type  | Description
@@ -1040,7 +1040,7 @@ The maximum limit orders for a single contract is **100** per account, and the m
 `POST /api/v1/orders`
 
 ### API Permission
-This endpoint requires the **Trade** permission
+This endpoint requires the **Futures Trading** permission
 
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **30 times/3s**.
@@ -1263,7 +1263,7 @@ If the order can not be canceled (already filled or previously canceled, etc), t
 `DELETE /api/v1/orders/5cdfc120b21023a909e5ad52`
 
 ### API Permission ###
-This endpoint requires the **Trade** permission.
+This endpoint requires the **Futures Trading** permission.
 
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **40 times/3s**.
@@ -1298,7 +1298,7 @@ Cancel all open orders (excluding stop orders). The response is a list of orderI
 `DELETE /api/v1/orders?symbol=XBTUSDM`
 
 ### API Permission
-This endpoint requires the **Trade** permission.
+This endpoint requires the **Futures Trading** permission.
 
 ### REQUEST RATE LIMIT
 This API is restricted for each account, the request rate limit is **9 times/3s**.
@@ -1341,7 +1341,7 @@ Cancel all untriggered stop orders. The response is a list of orderIDs of the ca
 
 
 ### API Permission
-This endpoint requires the **Trade** permission.
+This endpoint requires the **Futures Trading** permission.
 
 ### PARAMETERS
 You can delete specific symbol using query parameters.
@@ -2485,7 +2485,7 @@ This interface is for the adjustment of the risk limit level. To adjust the leve
 `POST /api/v1/position/risk-limit-level/change`
 
 ### API Permission
-This endpoint requires the **Trade** permission.
+This endpoint requires the **Futures Trading** permission.
 
 ### PARAMETERS
 | Param     | Type    | Description                                                  |
